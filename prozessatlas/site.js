@@ -1,0 +1,1 @@
+(()=>{document.getElementById('atlas-language').addEventListener('change',e=>{const url=new URL(location.href);url.searchParams.set('lang',e.target.value);location.assign(url.pathname+url.search+url.hash)});})();

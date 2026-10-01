@@ -1,0 +1,1294 @@
+<!doctype html>
+<html lang="sq" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Prozessatlas · Atlasi i proceseve | KeyOne</title><meta name="description" content="Kuptoni proceset. Lidhni treguesit. Përgatitni vendimet."><link rel="stylesheet" href="/fonts/fonts.css"><link rel="stylesheet" href="/prozessatlas/site.css">
+<style>
+/* Layout: Werkshalle als Grundriss (Leitstand oben, Wertstrom-Förderband Mitte, Versorgung unten), rechts Handlungsbedarf.
+   Ebene 2/3 öffnen als Seitenblatt. Darunter der Strategieraum als 4-Schritt-Entscheidungsprozess.
+   HMI-Prinzip: Normalzustand neutral, Farbe nur bei Abweichung (Bernstein = Warnung, Rot = kritisch). */
+:root{
+  --bg:#ECF2F2; --panel:#FFFFFF; --panel2:#F5F9F9; --ink:#0F2227; --muted:#566E73; --line:#C9D9D9; --grid:#0B858312;
+  --turq:#0B8583; --turq2:#0A5A5E; --soft:#DDEEEC; --warn:#B26A00; --warn-soft:#FBEBD2; --crit:#C0392B; --crit-soft:#F9DCD8;
+  --scrim:#0A1A1E80;
+  --f-tech:"Bahnschrift","DIN Alternate","DIN 2014","D-DIN","Roboto Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;
+  --f-mono:ui-monospace,"Cascadia Mono","SFMono-Regular",Consolas,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#081417; --panel:#0E1E22; --panel2:#11262B; --ink:#DCEAEA; --muted:#8CA8AC; --line:#213B41; --grid:#34BDB814;
+  --turq:#39BFB9; --turq2:#8AD9D3; --soft:#123331; --warn:#EDA83E; --warn-soft:#3A2A0E; --crit:#F2786A; --crit-soft:#401B17;
+  --scrim:#000000A0; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#081417; --panel:#0E1E22; --panel2:#11262B; --ink:#DCEAEA; --muted:#8CA8AC; --line:#213B41; --grid:#34BDB814;
+  --turq:#39BFB9; --turq2:#8AD9D3; --soft:#123331; --warn:#EDA83E; --warn-soft:#3A2A0E; --crit:#F2786A; --crit-soft:#401B17;
+  --scrim:#000000A0; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;padding-inline:20px;padding-block:0 56px;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:28px 28px;-webkit-font-smoothing:antialiased}
+body.lock{overflow:hidden}
+h1,h2,h3,h4{margin:0;font-family:var(--f-tech);font-weight:600;line-height:1.1;text-wrap:balance}
+p{margin:0}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--turq);outline-offset:2px}
+.wrap{max-width:1320px;margin:0 auto}
+.mono{font-family:var(--f-mono)}
+.tag{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+
+/* ---------- Kopf ---------- */
+.top{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding-block:16px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:12px}
+.brand svg{width:34px;height:40px;flex:none}
+.brand b{display:block;font-family:var(--f-tech);font-size:19px;font-weight:600;letter-spacing:.01em}
+.brand small{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.spacer{flex:1}
+.levels{display:flex;align-items:center;gap:0;font-family:var(--f-mono);font-size:11px;letter-spacing:.06em}
+.levels span{padding:5px 10px;border:1px solid var(--line);color:var(--muted);background:var(--panel)}
+.levels span+span{border-left:0}
+.levels span.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.seg{display:inline-flex;border:1px solid var(--line);background:var(--panel);padding:3px;border-radius:6px}
+.seg button{border:0;background:transparent;padding:6px 12px;border-radius:4px;cursor:pointer;font-size:13px;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--turq2);color:var(--panel)}
+
+.intro{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:32px;align-items:end;padding-block:30px 22px}
+.intro h1{font-size:clamp(30px,4.2vw,50px);letter-spacing:-.01em}
+.intro h1 em{font-style:normal;color:var(--turq)}
+.intro p{color:var(--muted);font-size:16px;max-width:58ch}
+
+/* Werkskennzahlen */
+.plantkpi{display:grid;grid-template-columns:1.2fr 1.3fr 1fr 1fr;border:1px solid var(--line);background:var(--panel);margin-bottom:18px}
+.plantkpi>div{padding:14px 18px;display:grid;gap:4px;align-content:start;min-width:0}
+.plantkpi>div+div{border-left:1px solid var(--line)}
+.plantkpi .big{font-family:var(--f-tech);font-size:34px;font-weight:600;line-height:1}
+.plantkpi .big small{font-size:16px;color:var(--muted);font-weight:400}
+.gauge{display:flex;align-items:center;gap:14px}
+.gauge svg{width:92px;height:52px;flex:none}
+.counts{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:4px}
+.counts span{display:inline-flex;align-items:center;gap:6px;font-size:14px}
+.counts b{font-family:var(--f-tech);font-size:22px}
+
+/* ---------- Statussymbole (Form + Farbe) ---------- */
+.sym{display:inline-block;width:11px;height:11px;flex:none}
+.sym.ok{border-radius:50%;border:2px solid var(--muted);opacity:.7}
+.sym.warn{background:var(--warn);clip-path:polygon(50% 0,100% 100%,0 100%)}
+.sym.crit{background:var(--crit)}
+
+/* ---------- Werkshalle ---------- */
+.main{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}
+.main>*,.st{min-width:0}
+.plant{border:2px solid var(--ink);background:var(--panel2);position:relative;padding:14px}
+.plant-h{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.zone{border:1px solid var(--line);background:var(--panel2);position:relative}
+.zone-h{display:flex;align-items:center;gap:10px;padding:7px 12px;border-bottom:1px solid var(--line);
+  background:repeating-linear-gradient(135deg,transparent 0 6px,var(--grid) 6px 8px)}
+.zone-h b{font-family:var(--f-tech);font-weight:600;font-size:15px}
+.zone-h .tag{margin-left:auto}
+.stations{display:grid;gap:12px;padding:12px}
+.zone.lead .stations,.zone.supp .stations{grid-template-columns:repeat(4,minmax(0,1fr))}
+
+.st{position:relative;text-align:left;cursor:pointer;background:var(--panel);border:1px solid var(--line);padding:11px 12px 10px;display:grid;gap:7px;min-height:128px;align-content:start;
+  transition:transform .15s,border-color .15s,box-shadow .15s}
+.st:hover{transform:translateY(-2px);border-color:var(--turq);box-shadow:0 8px 18px -12px var(--turq)}
+.st .hd{display:flex;align-items:center;justify-content:space-between;gap:6px}
+.st .code{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.st .nm{font-family:var(--f-tech);font-size:16px;font-weight:600;line-height:1.15;min-height:2.3em;hyphens:auto;overflow-wrap:break-word}
+.st .bar{height:5px;background:var(--line);position:relative;overflow:hidden}
+.st .bar i{position:absolute;inset:0 auto 0 0;background:var(--muted)}
+.st .ft{display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.st .sc{font-family:var(--f-tech);font-size:17px;color:var(--ink);font-weight:600}
+.pips{display:inline-flex;gap:3px}
+.pips i{width:7px;height:7px;border:1px solid var(--muted);display:block;transform:rotate(45deg)}
+.pips i.on{background:var(--turq);border-color:var(--turq)}
+.st .al{font-size:11.5px;min-height:1.4em;display:flex;gap:10px}
+.st .al span{display:inline-flex;align-items:center;gap:4px}
+.st.warn{border-color:var(--warn);box-shadow:inset 0 3px 0 var(--warn)}
+.st.warn .bar i{background:var(--warn)}
+.st.crit{border-color:var(--crit);box-shadow:inset 0 3px 0 var(--crit);background:linear-gradient(var(--crit-soft),var(--panel) 55%)}
+.st.crit .bar i{background:var(--crit)}
+.plant.mat .st{background:var(--mbg);border-color:var(--line);box-shadow:none}
+.plant.mat .st .bar i{background:var(--turq)}
+.plant.mat .st .al{visibility:hidden}
+
+/* Rohrleitungen */
+.pipes{display:flex;justify-content:space-around;align-items:center;gap:10px;height:40px;position:relative;
+  background-image:repeating-linear-gradient(90deg,transparent 0 58px,var(--line) 58px 60px);}
+.pipes span{background:var(--panel2);padding:2px 10px;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);position:relative;z-index:1;border:1px solid var(--line)}
+.pipes .flow{position:absolute;inset:0;background-image:repeating-linear-gradient(180deg,var(--turq) 0 6px,transparent 6px 14px);
+  -webkit-mask:repeating-linear-gradient(90deg,transparent 0 57px,#000 57px 61px,transparent 61px 120px);mask:repeating-linear-gradient(90deg,transparent 0 57px,#000 57px 61px,transparent 61px 120px);opacity:.55;animation:pipeDown 1.4s linear infinite}
+.pipes.up .flow{animation-name:pipeUp}
+@keyframes pipeDown{to{background-position:0 14px}}
+@keyframes pipeUp{to{background-position:0 -14px}}
+
+/* Wertstrom mit Förderband */
+.line{display:grid;grid-template-columns:58px minmax(0,1fr) 58px;gap:10px;padding:12px;align-items:stretch}
+.dock{display:flex;align-items:center;justify-content:center;background:var(--ink);color:var(--bg);clip-path:polygon(0 0,70% 0,100% 50%,70% 100%,0 100%);padding-right:10px}
+.dock.out{clip-path:polygon(0 0,70% 0,100% 50%,70% 100%,0 100%,30% 50%);padding-left:12px;background:var(--turq2)}
+.dock span{writing-mode:vertical-rl;transform:rotate(180deg);font-family:var(--f-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase}
+.core{display:grid;grid-template-rows:auto 18px;gap:8px}
+.core .stations{grid-template-columns:repeat(5,minmax(0,1fr));gap:18px;padding:0}
+.core .st:not(:last-child)::after{content:"";position:absolute;right:-15px;top:50%;width:10px;height:10px;border-top:2px solid var(--ink);border-right:2px solid var(--ink);transform:translateY(-50%) rotate(45deg)}
+.belt{position:relative;overflow:hidden;background:var(--ink);border-radius:9px}
+.belt::before{content:"";position:absolute;inset:3px 6px;border-radius:6px;background:repeating-linear-gradient(90deg,var(--muted) 0 2px,transparent 2px 16px);opacity:.55;animation:belt 1s linear infinite}
+@keyframes belt{to{background-position:16px 0}}
+.belt i{position:absolute;top:3px;width:18px;height:12px;background:var(--turq);border-radius:2px;left:-20px;animation:parcel 9s linear infinite}
+.belt i:nth-child(2){animation-delay:-3s}.belt i:nth-child(3){animation-delay:-6s}
+@keyframes parcel{to{left:100%}}
+
+/* Seitenleiste */
+.side{display:grid;gap:14px}
+.card{background:var(--panel);border:1px solid var(--line)}
+.card-h{padding:10px 14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.card-h h3{font-size:16px}
+.todo{list-style:none;margin:0;padding:0}
+.todo li+li{border-top:1px solid var(--line)}
+.todo button{width:100%;border:0;background:transparent;text-align:left;padding:10px 14px;cursor:pointer;display:grid;grid-template-columns:14px minmax(0,1fr) auto;gap:10px;align-items:center}
+.todo button:hover{background:var(--panel2)}
+.todo b{display:block;font-weight:600;font-size:13.5px;line-height:1.3}
+.todo small{color:var(--muted);font-size:12px}
+.todo .v{font-family:var(--f-mono);font-size:12px;text-align:right;white-space:nowrap}
+.legend{padding:12px 14px;display:grid;gap:9px;font-size:13px}
+.legend div{display:flex;gap:10px;align-items:center}
+.legend p{color:var(--muted);font-size:12.5px;border-top:1px dashed var(--line);padding-top:9px}
+
+/* ---------- Seitenblatt (Ebene 2/3) ---------- */
+.scrim{position:fixed;inset:0;background:var(--scrim);z-index:40;opacity:0;transition:opacity .2s}
+.scrim.on{opacity:1}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(860px,100%);background:var(--bg);z-index:41;transform:translateX(102%);transition:transform .28s cubic-bezier(.2,.7,.2,1);
+  display:flex;flex-direction:column;border-left:2px solid var(--ink);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.drawer.on{transform:none}
+.d-top{display:flex;align-items:center;gap:10px;padding:12px 20px;border-bottom:1px solid var(--line);background:var(--panel)}
+.crumbs{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-family:var(--f-mono);font-size:11.5px;min-width:0}
+.crumbs button{border:0;background:transparent;padding:2px 4px;cursor:pointer;color:var(--turq);text-decoration:underline;text-underline-offset:3px}
+.crumbs span{color:var(--muted)}
+.x{margin-left:auto;border:1px solid var(--line);background:var(--panel2);width:34px;height:34px;cursor:pointer;display:grid;place-items:center;flex:none}
+.d-body{overflow-y:auto;padding:22px 24px 40px;display:grid;gap:22px;align-content:start}
+.d-body>*{min-width:0}
+.ph{display:grid;gap:8px}
+.ph h2{font-size:clamp(24px,3vw,32px)}
+.ph .en{font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+.ph p{max-width:64ch}
+.strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);background:var(--panel)}
+.strip>div{padding:12px 14px;display:grid;gap:3px;min-width:0}
+.strip>div+div{border-left:1px solid var(--line)}
+.strip b{font-family:var(--f-tech);font-size:22px;font-weight:600}
+.statechip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600}
+.statechip.warn{color:var(--warn)}.statechip.crit{color:var(--crit)}
+.sub{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.sub::after{content:"";flex:1;height:1px;background:var(--line)}
+.sipoc{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0}
+.sipoc div{background:var(--panel);border:1px solid var(--line);padding:10px 12px 12px;position:relative;display:grid;gap:4px;align-content:start;min-width:0;font-size:13px}
+.sipoc div+div{border-left:0}
+.sipoc b{font-family:var(--f-tech);font-size:22px;color:var(--turq);line-height:1}
+.sipoc div.pr{background:var(--soft)}
+.groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.groups div{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:8px;align-items:baseline;padding:8px 10px;background:var(--panel);border:1px solid var(--line);font-size:13.5px}
+.groups .c{font-family:var(--f-mono);font-size:11.5px;color:var(--turq)}
+.groups .n{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.ktab{width:100%;border-collapse:collapse;background:var(--panel);font-size:13.5px}
+.tblwrap{overflow-x:auto;border:1px solid var(--line)}
+.ktab th{font-family:var(--f-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500;text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);background:var(--panel2);white-space:nowrap}
+.ktab td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+.ktab tr:last-child td{border-bottom:0}
+.ktab tbody tr{cursor:pointer}
+.ktab tbody tr:hover td{background:var(--panel2)}
+.ktab .kn b{font-weight:600;display:block}
+.ktab .kn small{color:var(--muted);font-size:11.5px}
+.ktab .r{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.wbar{display:flex;align-items:center;gap:8px;min-width:110px}
+.wbar span{flex:1;height:6px;background:var(--line);position:relative}
+.wbar span i{position:absolute;inset:0 auto 0 0;background:var(--turq2)}
+.wbar em{font-style:normal;font-family:var(--f-mono);font-size:11.5px;width:34px;text-align:right}
+.spark{width:90px;height:26px;display:block}
+.mat{display:grid;gap:8px}
+.mat .row{display:grid;grid-template-columns:110px minmax(0,1fr) 150px;gap:12px;align-items:center;font-size:13.5px}
+.mat .cells{display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
+.mat .cells i{height:14px;background:var(--line)}
+.mat .cells i.on{background:var(--turq)}
+.mat .lv{font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+details.scale{font-size:13px;color:var(--muted)}
+details.scale summary{cursor:pointer;color:var(--turq);font-size:12.5px}
+details.scale ol{margin:8px 0 0;padding-left:20px}
+
+/* KPI-Blatt */
+.kv{display:grid;grid-template-columns:auto auto 1fr;gap:26px;align-items:end;background:var(--panel);border:1px solid var(--line);padding:16px 18px}
+.kv .val{font-family:var(--f-tech);font-size:46px;font-weight:600;line-height:.95}
+.kv .val small{font-size:18px;color:var(--muted);font-weight:400;margin-left:4px}
+.kv .tg{display:grid;gap:2px}
+.kv .tg b{font-family:var(--f-tech);font-size:20px}
+.kv .st2{justify-self:end;text-align:right;display:grid;gap:4px}
+.chartbox{background:var(--panel);border:1px solid var(--line);padding:12px 12px 6px}
+.chartbox svg{display:block;width:100%;height:auto}
+.chartbox .cap{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;padding:0 4px 8px;font-size:12.5px;color:var(--muted)}
+.cleg{display:flex;gap:14px;flex-wrap:wrap}
+.cleg span{display:inline-flex;align-items:center;gap:6px}
+.cleg i{width:16px;height:0;border-top:2px solid;display:inline-block}
+.spec{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;border:1px solid var(--line);background:var(--panel)}
+.spec div{padding:10px 14px;border-bottom:1px solid var(--line);display:grid;gap:2px;min-width:0}
+.spec div:nth-child(odd){border-right:1px solid var(--line)}
+.spec div.full{grid-column:1/-1;border-right:0}
+.spec dt{font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.spec dd{margin:0;font-size:14px}
+.spec dd.f{font-family:var(--f-mono);font-size:13px;color:var(--turq2)}
+.weight{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:center;background:var(--soft);border:1px solid var(--line);padding:14px 16px}
+.weight .pct{font-family:var(--f-tech);font-size:38px;font-weight:600;color:var(--turq2);line-height:1}
+.weight p{font-size:14px}
+.weight small{display:block;color:var(--muted);font-size:12.5px;margin-top:4px}
+
+/* ---------- Strategieraum ---------- */
+.room{margin-top:34px;border:2px solid var(--ink);background:var(--panel)}
+.room-h{padding:18px 20px;border-bottom:1px solid var(--line);display:grid;gap:6px}
+.room-h h2{font-size:clamp(24px,3vw,32px)}
+.room-h p{color:var(--muted);max-width:70ch}
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-bottom:1px solid var(--line)}
+.steps button{border:0;background:var(--panel2);text-align:left;padding:12px 16px;cursor:pointer;display:grid;gap:3px;position:relative;border-right:1px solid var(--line)}
+.steps button:last-child{border-right:0}
+.steps button .n{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.steps button b{font-family:var(--f-tech);font-size:17px;font-weight:600}
+.steps button small{font-size:12.5px;color:var(--muted)}
+.steps button[aria-selected="true"]{background:var(--panel);box-shadow:inset 0 -3px 0 var(--turq)}
+.steps button[aria-selected="true"] .n{color:var(--turq)}
+.tool{padding:20px;display:grid;gap:18px}
+.tool>*{min-width:0}
+.tool .lead{max-width:72ch;color:var(--muted)}
+.tows{display:grid;grid-template-columns:140px repeat(2,minmax(0,1fr));gap:0;border:1px solid var(--line)}
+.tows>div{padding:12px 14px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-width:0;font-size:13.5px}
+.tows>div:nth-child(3n){border-right:0}
+.tows>div:nth-last-child(-n+3){border-bottom:0}
+.tows .hd{background:var(--panel2)}
+.tows .hd b{font-family:var(--f-tech);font-size:16px;display:block;margin-bottom:4px}
+.tows ul{margin:0;padding-left:16px;color:var(--muted)}
+.tows .strat{background:var(--soft)}
+.tows .strat b{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;color:var(--turq2);display:block;margin-bottom:4px}
+.smap{overflow-x:auto;border:1px solid var(--line);background:var(--panel2)}
+.smap svg{display:block;width:100%;min-width:820px;height:auto}
+.smap .obj{cursor:pointer}
+.smap .obj rect{fill:var(--panel);stroke:var(--ink);stroke-width:1.2;transition:fill .15s}
+.smap .obj:hover rect,.smap .obj:focus rect{fill:var(--soft)}
+.smap .obj.warn rect{stroke:var(--warn);stroke-width:2}
+.smap .obj.crit rect{stroke:var(--crit);stroke-width:2}
+.ahp{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:22px;align-items:start}
+.pair{display:grid;grid-template-columns:90px minmax(0,1fr) 90px;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.pair span:last-child{text-align:right}
+.pair input{width:100%;accent-color:var(--turq)}
+.pair .v{grid-column:1/-1;text-align:center;font-family:var(--f-mono);font-size:11.5px;color:var(--muted);margin-top:-4px}
+.res{background:var(--panel2);border:1px solid var(--line);padding:14px 16px;display:grid;gap:10px}
+.hbar{display:grid;grid-template-columns:92px minmax(0,1fr) 48px;gap:10px;align-items:center;font-size:13.5px}
+.hbar span{height:12px;background:var(--line);position:relative}
+.hbar span i{position:absolute;inset:0 auto 0 0;background:var(--turq)}
+.hbar em{font-style:normal;font-family:var(--f-mono);font-size:12px;text-align:right}
+.cr{font-size:13px;display:flex;gap:8px;align-items:center}
+.btn{border:1px solid var(--turq2);background:var(--turq2);color:var(--panel);padding:9px 14px;cursor:pointer;font-weight:600;font-size:13.5px;justify-self:start}
+.btn.ghost{background:transparent;color:var(--turq2)}
+.nwa{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:22px;align-items:start}
+.nwt{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--panel)}
+.nwt th,.nwt td{padding:8px 10px;border:1px solid var(--line);text-align:center}
+.nwt th{font-family:var(--f-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500;background:var(--panel2)}
+.nwt td:first-child,.nwt th:first-child{text-align:left}
+.nwt input[type=number]{width:52px;padding:4px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);text-align:center;font:inherit}
+.nwt input[type=range]{width:100%;accent-color:var(--turq)}
+.nwt .wv{font-family:var(--f-mono);font-size:11.5px;display:block}
+.nwt tfoot td{font-family:var(--f-tech);font-size:17px;font-weight:600}
+.nwt tfoot td.win{background:var(--soft);color:var(--turq2)}
+.robust{font-size:13.5px;padding:12px 14px;border:1px solid var(--line);background:var(--panel2)}
+.guide{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.guide div{border-top:2px solid var(--turq);padding-top:8px;font-size:13px}
+.guide b{display:block;font-family:var(--f-tech);font-size:15px}
+
+footer{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);display:grid;gap:10px;font-size:12.5px;color:var(--muted)}
+footer .attr{font-style:italic;max-width:110ch}
+
+/* ---------- Responsiv ---------- */
+@media (max-width:1180px){
+  .main{grid-template-columns:1fr}
+  .side{grid-template-columns:1fr 1fr}
+}
+@media (max-width:900px){
+  .intro{grid-template-columns:1fr;gap:12px}
+  .plantkpi{grid-template-columns:1fr 1fr}
+  .plantkpi>div:nth-child(3){border-left:0}
+  .plantkpi>div:nth-child(n+3){border-top:1px solid var(--line)}
+  .zone.lead .stations,.zone.supp .stations{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .line{grid-template-columns:1fr}
+  .dock{clip-path:none;padding:6px}.dock.out{clip-path:none;padding:6px}
+  .dock span{writing-mode:horizontal-tb;transform:none}
+  .core{grid-template-rows:auto}
+  .belt{display:none}
+  .core .stations{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .core .st::after{display:none}
+  .pipes{height:34px;background-image:none}
+  .pipes .flow{display:none}
+  .side{grid-template-columns:1fr}
+  .strip{grid-template-columns:1fr 1fr}
+  .strip>div:nth-child(3){border-left:0}
+  .strip>div:nth-child(n+3){border-top:1px solid var(--line)}
+  .sipoc{grid-template-columns:1fr}
+  .sipoc div+div{border-left:1px solid var(--line);border-top:0}
+  .groups{grid-template-columns:1fr}
+  .kv{grid-template-columns:1fr 1fr}
+  .kv .st2{grid-column:1/-1;justify-self:start;text-align:left}
+  .steps{grid-template-columns:1fr 1fr}
+  .steps button:nth-child(2){border-right:0}
+  .steps button:nth-child(n+3){border-top:1px solid var(--line)}
+  .ahp,.nwa{grid-template-columns:1fr}
+  .guide{grid-template-columns:1fr 1fr}
+  .tows{grid-template-columns:90px repeat(2,minmax(0,1fr))}
+}
+@media (max-width:560px){
+  body{padding-inline:14px}
+  .levels{display:none}
+  .plant{padding:8px}
+  .zone.lead .stations,.zone.supp .stations,.core .stations{grid-template-columns:1fr 1fr;gap:8px}
+  .stations{padding:8px}
+  .st{min-height:118px;padding:9px 10px}
+  .st .nm{font-size:14.5px}
+  .spec{grid-template-columns:1fr}
+  .spec div:nth-child(odd){border-right:0}
+  .mat .row{grid-template-columns:1fr;gap:4px}
+  .d-body{padding:18px 16px 36px}
+  .d-top{padding:10px 14px}
+  .kv .val{font-size:38px}
+  .tows{grid-template-columns:1fr}
+  .tows>div{border-right:0}
+  .tows .corner{display:none}
+  .steps{grid-template-columns:1fr}
+  .steps button{border-right:0;border-top:1px solid var(--line)}
+  .guide{grid-template-columns:1fr}
+  .weight{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  .plantkpi{grid-template-columns:1fr}
+  .plantkpi>div{border-left:0!important;border-top:1px solid var(--line)}
+  .plantkpi>div:first-child{border-top:0}
+  .zone-h .tag:last-child{display:none}
+  .st .al{flex-direction:column;gap:2px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ===== Prozessatlas: Karte als Hauptansicht ===== */
+:root{
+  --sea:#E3EDF0; --sea-line:#C9DCE1; --land:#F6F4EC; --land-k:#E9EADF; --coast:#2C4A50; --border:#6E8589; --shore:#BFD9DC;
+  --warnF:#F4D59C; --critF:#EFA79B;
+  --m1:#EEF1EA; --m2:#CFE6E1; --m3:#9FD1C9; --m4:#5BB2AA; --m5:#1E8A84;
+  --bF:#5A6FC0; --bK:#0B8583; --bP:#9A5BB0; --bL:#7C9A2C;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --sea:#0A171B; --sea-line:#15292E; --land:#1C2C2F; --land-k:#243639; --coast:#A9C6C9; --border:#6F8F93; --shore:#16363A;
+  --warnF:#6A4B12; --critF:#6E2A22;
+  --m1:#1C2C2F; --m2:#1E4643; --m3:#236461; --m4:#2B837C; --m5:#3BA79F;
+  --bF:#8595DB; --bK:#3CBDB6; --bP:#C08BD4; --bL:#A5C45A;}}
+:root[data-theme="dark"]{
+  --sea:#0A171B; --sea-line:#15292E; --land:#1C2C2F; --land-k:#243639; --coast:#A9C6C9; --border:#6F8F93; --shore:#16363A;
+  --warnF:#6A4B12; --critF:#6E2A22;
+  --m1:#1C2C2F; --m2:#1E4643; --m3:#236461; --m4:#2B837C; --m5:#3BA79F;
+  --bF:#8595DB; --bK:#3CBDB6; --bP:#C08BD4; --bL:#A5C45A;}
+
+.tabs{display:inline-flex;gap:0;border:1px solid var(--line);background:var(--panel)}
+.tabs button{border:0;background:transparent;padding:8px 16px;cursor:pointer;font-family:var(--f-tech);font-size:15px;font-weight:600;color:var(--muted)}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+.scale-row{display:flex;flex-wrap:wrap;gap:8px 22px;align-items:baseline;padding-block:14px 12px}
+.scale-row h1{font-size:clamp(22px,2.4vw,28px);margin-right:6px}
+.scale-row .u{display:inline-flex;align-items:baseline;gap:6px;font-size:13.5px;color:var(--muted)}
+.scale-row .u b{font-family:var(--f-tech);font-size:22px;color:var(--ink)}
+.scale-row .u i{font-style:normal;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--turq)}
+
+.atlas{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;align-items:start}
+.atlas>*{min-width:0}
+.mapbox{position:relative;border:2px solid var(--ink);background:var(--sea);overflow:hidden}
+.mapbox svg{display:block;width:100%;height:auto;touch-action:manipulation}
+.map-top{position:absolute;left:12px;top:10px;right:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;pointer-events:none;z-index:2}
+.map-top>*{pointer-events:auto}
+.mcrumb{font-family:var(--f-mono);font-size:11.5px;background:var(--panel);border:1px solid var(--line);padding:5px 10px;display:flex;gap:6px;align-items:center}
+.mcrumb button{border:0;background:transparent;cursor:pointer;color:var(--turq);text-decoration:underline;text-underline-offset:3px;padding:0;font:inherit}
+.mcrumb span{color:var(--muted)}
+.backbtn{border:1px solid var(--ink);background:var(--ink);color:var(--bg);padding:6px 12px;cursor:pointer;font-size:12.5px;font-weight:600}
+.mlegend{background:var(--panel);border-top:1px solid var(--line);padding:9px 12px;font-size:12px;display:grid;gap:5px}
+.mlegend .t{font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mlegend .r{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.mlegend .r span{display:inline-flex;gap:6px;align-items:center}
+.sw{width:14px;height:12px;display:inline-block;border:1px solid var(--border);clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%)}
+.tip{position:absolute;z-index:5;pointer-events:none;background:var(--panel);border:1px solid var(--ink);box-shadow:0 10px 24px -12px #0006;padding:10px 12px;min-width:220px;max-width:300px;font-size:13px;display:grid;gap:4px;opacity:0;transition:opacity .12s}
+.tip.on{opacity:1}
+.tip .path{font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--turq)}
+.tip b.c{font-family:var(--f-tech);font-size:17px;font-weight:600;line-height:1.15}
+.tip .pv{color:var(--muted);font-size:12.5px}
+.tip ul{list-style:none;margin:4px 0 0;padding:6px 0 0;border-top:1px solid var(--line);display:grid;gap:4px}
+.tip li{display:grid;grid-template-columns:12px minmax(0,1fr) auto;gap:8px;align-items:center;font-size:12.5px}
+.tip li em{font-style:normal;font-family:var(--f-mono);font-size:11.5px}
+.tip .hint{font-size:11.5px;color:var(--muted);margin-top:2px}
+
+/* SVG-Karte */
+.hex{stroke:var(--sea);stroke-width:1.1;transition:fill .25s}
+.country{cursor:pointer;transition:opacity .3s}
+.country:hover .hex{filter:brightness(.96)}
+.zoomed .country:not(.sel){opacity:.28}
+.zoomed .country:not(.sel) .pin{display:none}
+.hexhl{fill:none;stroke:var(--ink);stroke-width:2.2;pointer-events:none}
+.coast{fill:none;stroke:var(--coast);stroke-width:1.8;stroke-linecap:round;pointer-events:none}
+.shore{fill:none;stroke:var(--shore);stroke-width:9;stroke-linecap:round;pointer-events:none}
+.brd{fill:none;stroke:var(--border);stroke-width:1.2;stroke-dasharray:3 2.5;pointer-events:none}
+.clab{font-family:var(--f-tech);font-weight:600;font-size:10.5px;letter-spacing:.03em;text-transform:uppercase;fill:var(--ink);paint-order:stroke;stroke:var(--land);stroke-width:3.2px;stroke-linejoin:round;pointer-events:none}
+.clab .ic{letter-spacing:0}
+.zoomed .clab{opacity:0}
+
+.code{font-family:var(--f-mono);font-size:7.5px;fill:var(--muted);pointer-events:none;opacity:0;transition:opacity .3s}
+.zoomed .sel .code{opacity:1}
+.pin circle{stroke:var(--panel);stroke-width:1}
+.pin text{font-family:var(--f-mono);font-size:5.5px;font-weight:600;fill:var(--panel);pointer-events:none;opacity:0}
+.zoomed .sel .pin text{opacity:1}
+.zoomed .sel .pin{cursor:pointer}
+.cont{font-family:var(--f-tech);font-size:14px;font-weight:600;letter-spacing:.28em;fill:var(--muted);text-transform:uppercase;pointer-events:none}
+.cont-sub{font-family:var(--f-mono);font-size:8.5px;letter-spacing:.14em;fill:var(--muted);text-transform:uppercase;pointer-events:none}
+.zoomed .cont,.zoomed .cont-sub,.zoomed .cur,.zoomed .curl{opacity:.25}
+.zoomed .coast,.zoomed .shore,.zoomed .brd{opacity:.45}
+.zoomed .sel .pin circle{r:5.6}
+.zoomed .sel .pin text{font-size:6.6px}
+.pin text{transform:translateY(.3px)}
+.cur{fill:none;stroke:var(--turq);stroke-width:1.4;stroke-dasharray:5 5;animation:cur 1.6s linear infinite;pointer-events:none}
+@keyframes cur{to{stroke-dashoffset:-20}}
+.curl{font-family:var(--f-mono);font-size:8.5px;letter-spacing:.1em;fill:var(--turq2);text-transform:uppercase;paint-order:stroke;stroke:var(--sea);stroke-width:3px;pointer-events:none}
+.grat{fill:none;stroke:var(--sea-line);stroke-width:.8;pointer-events:none}
+.compass text{font-family:var(--f-mono);font-size:8px;fill:var(--muted)}
+
+/* Seitenpanel */
+.panel{display:grid;gap:14px}
+.pcard{background:var(--panel);border:1px solid var(--line)}
+.pcard>.h{padding:10px 14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.pcard>.h h3{font-size:16px}
+.pcard>.b{padding:12px 14px;display:grid;gap:10px}
+.world{display:flex;align-items:center;gap:14px}
+.world svg{width:88px;height:50px;flex:none}
+.world .big{font-family:var(--f-tech);font-size:32px;font-weight:600;line-height:1}
+.world .big small{font-size:15px;color:var(--muted);font-weight:400}
+.conts{display:grid;gap:12px}
+.conts .cr{display:grid;gap:6px}
+.conts .cr .hd{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.conts .cr .hd b{font-family:var(--f-tech);font-size:15px;font-weight:600}
+.conts .cr .hd span{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chips button{border:1px solid var(--line);background:var(--panel2);padding:4px 8px;font-size:12px;cursor:pointer;display:inline-flex;gap:5px;align-items:center}
+.chips button:hover{border-color:var(--turq)}
+.chips button.warn{border-color:var(--warn)}
+.chips button.crit{border-color:var(--crit)}
+.chips .n{font-family:var(--f-mono);font-size:10.5px;color:var(--muted)}
+.cp .tag{display:block;margin-bottom:4px}
+.cp h2{font-size:22px}
+.cp .en{font-family:var(--f-mono);font-size:10.5px;color:var(--muted)}
+.cp p{font-size:13.5px}
+.mini{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--line)}
+.mini div{padding:8px 10px;display:grid;gap:2px;min-width:0;overflow-wrap:anywhere}
+.mini div+div{border-left:1px solid var(--line)}
+.mini b{font-family:var(--f-tech);font-size:19px}
+.klist{list-style:none;margin:0;padding:0;border:1px solid var(--line)}
+.klist li+li{border-top:1px solid var(--line)}
+.klist button{width:100%;border:0;background:transparent;text-align:left;cursor:pointer;padding:9px 10px;display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:10px;align-items:center}
+.klist button:hover{background:var(--panel2)}
+.klist .num{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-mono);font-size:11px;font-weight:600;color:var(--panel);background:var(--ink)}
+.klist .num.warn{background:var(--warn)}.klist .num.crit{background:var(--crit)}
+.klist b{display:block;font-size:13.5px;font-weight:600;line-height:1.25}
+.klist small{color:var(--muted);font-size:11.5px}
+.klist .v{font-family:var(--f-mono);font-size:12px;text-align:right;white-space:nowrap}
+.provs{display:grid;gap:4px}
+.provs button{border:1px solid var(--line);background:var(--panel2);text-align:left;padding:6px 8px;font-size:12.5px;cursor:pointer;display:grid;grid-template-columns:40px minmax(0,1fr);gap:6px}
+.provs button span{font-family:var(--f-mono);font-size:11px;color:var(--turq)}
+.provs button:hover{border-color:var(--turq)}
+
+.view[hidden]{display:none!important}
+@media (max-width:1100px){.atlas{grid-template-columns:1fr}}
+@media (max-width:640px){
+  .tip{display:none}
+  .cont{font-size:13px;letter-spacing:.25em}
+}
+@media (prefers-reduced-motion:reduce){.cur{animation:none}}
+
+.narrow .cont,.narrow .cont-sub,.narrow .curl,.narrow .compass{display:none}
+.narrow .clab{font-size:12px}
+
+</style>
+<link rel="stylesheet" href="/legal.css"></head>
+<body><section class="atlas-intro" dir="ltr" lang="sq"><nav class="atlas-sitebar"><a class="atlas-home" href="/?lang=sq" aria-label="KeyOne"><img src="/keyone-logo.png" alt="KeyOne — by Keywan Fakhri" width="140" height="70"></a><a href="/?lang=sq#projects">Kryefaqja</a><label>Gjuha<select id="atlas-language"><option value="de" >Deutsch</option><option value="en" >English</option><option value="fa" >فارسی</option><option value="ar" >العربية</option><option value="tr" >Türkçe</option><option value="it" >Italiano</option><option value="fr" >Français</option><option value="ko" >한국어</option><option value="zh" >中文</option><option value="ja" >日本語</option><option value="es" >Español</option><option value="sq" selected>Shqip</option></select></label></nav><div class="atlas-heading"><div><span class="atlas-eyebrow">KEYONE / PROCESS INTELLIGENCE / DEMO</span><h1>Prozessatlas · Atlasi i proceseve</h1><p class="atlas-lead">Kuptoni proceset. Lidhni treguesit. Përgatitni vendimet.</p><p>Një hartë ndërvepruese e organizatës me 13 procese, 71 grupe procesesh dhe 59 tregues. Eksploroni performancën, pjekurinë, peshat dhe kartën e balancuar të rezultateve, si dhe TOWS, hartën strategjike, AHP dhe analizën e ponderuar të vendimeve.</p></div><a class="atlas-contact" href="/contact/?lang=sq">Diskuto projektin</a></div><ul class="atlas-features"><li>Harta e proceseve</li><li>Treguesit kryesorë</li><li>Pjekuria</li><li>Strategjia dhe vendimet</li></ul><div class="atlas-notice"><p>Demo publike me të dhëna plotësisht fiktive të një kompanie. Objektivat, matjet, rolet dhe peshat janë shembuj, jo rekomandime operative. Ndryshimet mbeten në këtë sesion; asnjë hyrje nuk dërgohet te një shërbim IA.</p><p><strong>Demoja origjinale është në gjermanisht. Prezantimi i projektit ofrohet në 12 gjuhë; tekstet e specializuara të demos ruhen në gjuhën origjinale.</strong></p></div></section>
+<div class="wrap" lang="de" dir="ltr">
+  <header class="top">
+    <div class="brand">
+      <svg viewBox="0 0 34 40" aria-hidden="true"><path d="M3 39 V20 A15 15 0 0 1 17 3 A15 15 0 0 1 31 20 V39" fill="none" stroke="var(--turq)" stroke-width="2.4"/><circle cx="17" cy="25" r="8.5" fill="none" stroke="var(--ink)" stroke-width="1.5"/><path d="M8.5 25 H25.5 M17 16.5 C13 20 13 30 17 33.5 C21 30 21 20 17 16.5" fill="none" stroke="var(--ink)" stroke-width="1.1"/></svg>
+      <div><b>KeyOne Prozessatlas</b><small>Prozesse · Kennzahlen · Entscheidungen</small></div>
+    </div>
+    <div class="spacer"></div>
+    <div class="tabs" role="tablist" aria-label="Bereich">
+      <button role="tab" id="t-atlas" aria-selected="true">Atlas</button>
+      <button role="tab" id="t-room" aria-selected="false">Strategieraum</button>
+    </div>
+    <div class="seg" role="group" aria-label="Kartenebene" id="layers">
+      <button data-l="perf" aria-pressed="true">Leistung</button>
+      <button data-l="mat" aria-pressed="false">Reifegrad</button>
+      <button data-l="wt" aria-pressed="false">Gewichtung</button>
+      <button data-l="bsc" aria-pressed="false">BSC</button>
+    </div>
+  </header>
+
+  <section class="view" id="v-atlas">
+    <div class="scale-row">
+      <h1>Die Organisation als Weltkarte</h1>
+      <span class="u"><b>3</b><i>Kontinente</i>Prozessarten</span>
+      <span class="u"><b>13</b><i>Länder</i>Prozesse</span>
+      <span class="u"><b>71</b><i>Provinzen</i>Prozessgruppen</span>
+      <span class="u"><b>59</b><i>Städte</i>Kennzahlen</span>
+    </div>
+    <div class="atlas">
+      <div class="mapbox" id="mapbox">
+        <div class="map-top"><div class="mcrumb" id="mcrumb"></div><button class="backbtn" id="back" hidden>← Weltkarte</button></div>
+        <svg id="map" role="img" aria-label="Prozesslandkarte: drei Kontinente mit 13 Prozessen als Länder und 71 Prozessgruppen als Provinzen"></svg>
+        <div class="tip" id="tip" role="status" aria-live="polite"></div>
+        <div class="mlegend" id="mlegend"></div>
+      </div>
+      <aside class="panel" id="panel"></aside>
+    </div>
+  </section>
+
+  <section class="view room" id="v-room" hidden>
+    <div class="room-h">
+      <span class="tag">Strategieraum</span>
+      <h2>Vom Lagebild zur Entscheidung, in vier Schritten</h2>
+      <p>Die Werkzeuge sind selbst ein Prozess: erst die Richtung klären, dann Ziele verknüpfen, dann Kriterien gewichten, dann Optionen bewerten. Die Gewichte aus Schritt 3 lassen sich direkt in Schritt 4 übernehmen.</p>
+    </div>
+    <div class="steps" role="tablist" id="steps">
+      <button role="tab" aria-selected="true" data-t="tows"><span class="n">SCHRITT 1</span><b>Richtung ableiten</b><small>Welche Stoßrichtung? · TOWS-Matrix</small></button>
+      <button role="tab" aria-selected="false" data-t="map"><span class="n">SCHRITT 2</span><b>Ziele verknüpfen</b><small>Wie hängen Ziele zusammen? · Strategy Map</small></button>
+      <button role="tab" aria-selected="false" data-t="ahp"><span class="n">SCHRITT 3</span><b>Kriterien gewichten</b><small>Was ist wie wichtig? · AHP</small></button>
+      <button role="tab" aria-selected="false" data-t="nwa"><span class="n">SCHRITT 4</span><b>Optionen bewerten</b><small>Welche Option gewinnt? · Nutzwertanalyse</small></button>
+    </div>
+    <div class="tool" id="tool" role="tabpanel"></div>
+  </section>
+
+  <footer>
+    <p><b>Quellenhinweis.</b> Die Prozessstruktur (Kategorien und Prozessgruppen der Ebene 2) basiert auf dem APQC Process Classification Framework® (PCF), Cross-Industry, Version 7.x, ins Deutsche übertragen und für diese Darstellung angepasst.</p>
+    <p class="attr" lang="en">APQC’s Process Classification Framework® (PCF) is an open standard developed by APQC, a nonprofit that promotes benchmarking and best practices worldwide. The PCF is intended to facilitate organizational improvement through process management and benchmarking, regardless of industry, size, or geography. To download the full PCF or industry-specific versions of the PCF, as well as associated measures and benchmarking, please visit www.apqc.org/pcf.</p>
+    <p>Kennzahlen, Zielwerte, Gewichte, Rollen und alle Messwerte sind Demo-Daten eines fiktiven Unternehmens. Das Reifegradmodell ist eine eigene Entwicklung auf Basis des PDCA-Zyklus. © KeyOne · Keywan Fakhri</p>
+  </footer>
+</div>
+
+<div class="scrim" id="scrim" hidden></div>
+<aside lang="de" dir="ltr" class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="d-title" hidden>
+  <div class="d-top">
+    <nav class="crumbs" id="crumbs" aria-label="Pfad"></nav>
+    <button class="x" id="dx" aria-label="Schließen"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M1 1 L13 13 M13 1 L1 13" stroke="currentColor" stroke-width="2"/></svg></button>
+  </div>
+  <div class="d-body" id="dbody"></div>
+</aside>
+
+<script>
+/* ===== Datenmodell =====
+   Struktur: Prozesskategorien und Prozessgruppen (Ebene 2) nach APQC PCF Cross-Industry, ins Deutsche übertragen.
+   Kennzahlen, Werte, Gewichte, Rollen: Demo-Daten (frei erfunden).
+   KPI-Felder: n Name · d Definition · f Formel · u Einheit · fr Frequenz · p Richtung (hi|lo|band) · t Ziel · w Warngrenze
+               b [lo,hi] Zielband · m Toleranz Band · c Ist · wt Gewicht % · why Bedeutung · src Datenquelle · bsc Perspektive
+               g Prozessgruppe · ch Diagramm (trend|spc|pareto) · tr Tendenz (+1 besser, -1 schlechter, 0 stabil) · dp Nachkommastellen */
+const PROC = [
+{id:"1",zone:"L",sh:"Vision & Strategie",de:"Vision und Strategie entwickeln",en:"Develop Vision and Strategy",
+ owner:"Geschäftsführung",purpose:"Legt fest, wohin sich das Unternehmen entwickelt, und übersetzt dies in messbare Ziele und Initiativen.",
+ sipoc:["Eigentümer, Markt, Controlling","Marktanalysen, Ist-Kennzahlen, Risiken","Vision klären → Strategie ableiten → Initiativen steuern","Strategie, Zielsystem, Initiativenportfolio","Alle Bereiche, Aufsichtsgremien"],
+ groups:[["1.1","Geschäftskonzept und langfristige Vision definieren"],["1.2","Geschäftsstrategie entwickeln"],["1.3","Strategische Initiativen entwickeln und messen"],["1.4","Geschäftsmodelle entwickeln und pflegen"]],
+ mat:[4,3,3,2],
+ k:[
+ {n:"Zielerreichung Strategie",d:"Anteil der strategischen Jahresziele, die im Plan liegen.",f:"Ziele im Plan ÷ alle strategischen Ziele × 100",u:"%",fr:"quartalsweise",p:"hi",t:80,w:65,c:76,wt:35,why:"Zeigt direkt, ob die Strategie in Ergebnisse übersetzt wird.",src:"Strategie-Cockpit, Zielvereinbarungen",bsc:"F",g:"1.3",ch:"trend",tr:1},
+ {n:"Umsetzungsquote Initiativen",d:"Anteil der strategischen Initiativen, die bei Termin, Budget und Umfang im Plan liegen.",f:"Initiativen im Plan ÷ aktive Initiativen × 100",u:"%",fr:"monatlich",p:"hi",t:85,w:70,c:88,wt:25,why:"Frühindikator: Verzögerte Initiativen gefährden die Ziele von morgen.",src:"Projektportfolio-Werkzeug",bsc:"P",g:"1.3",ch:"trend",tr:1},
+ {n:"Strategiedurchdringung",d:"Anteil der Mitarbeitenden, die die Ziele ihres Bereichs korrekt benennen können.",f:"Richtige Antworten ÷ Befragte × 100",u:"%",fr:"halbjährlich",p:"hi",t:75,w:60,c:58,wt:20,why:"Eine Strategie, die niemand kennt, wird nicht umgesetzt.",src:"Pulsbefragung",bsc:"L",g:"1.2",ch:"trend",tr:1},
+ {n:"Umsatzanteil neuer Geschäftsmodelle",d:"Umsatzanteil aus Geschäftsmodellen, die jünger als drei Jahre sind.",f:"Umsatz neue Modelle ÷ Gesamtumsatz × 100",u:"%",fr:"quartalsweise",p:"hi",t:15,w:10,c:15.2,wt:20,why:"Misst, ob sich das Unternehmen rechtzeitig erneuert.",src:"Controlling, Segmentberichte",bsc:"F",g:"1.4",ch:"trend",tr:1,dp:1}
+ ]},
+{id:"2",zone:"C",sh:"Produkte entwickeln",de:"Produkte und Dienstleistungen entwickeln und managen",en:"Develop and Manage Products and Services",
+ owner:"Leitung Produktentwicklung",purpose:"Macht aus Markt- und Kundenbedürfnissen marktreife Produkte und Dienstleistungen.",
+ sipoc:["Vertrieb, Kunden, Forschung","Ideen, Anforderungen, Marktdaten","Idee bewerten → entwickeln → freigeben","Freigegebene Produkte, Spezifikationen","Vertrieb, Supply Chain, Kunden"],
+ groups:[["2.1","Entwicklungsprogramm steuern und managen"],["2.2","Neue Produkt- und Dienstleistungsideen generieren und definieren"],["2.3","Produkte und Dienstleistungen entwickeln"]],
+ mat:[3,3,2,2],
+ k:[
+ {n:"Time-to-Market",d:"Durchschnittliche Dauer von der Ideenfreigabe bis zur Markteinführung.",f:"Σ (Markteinführung − Freigabe) ÷ Anzahl Projekte",u:"Tage",fr:"je Projekt",p:"lo",t:180,w:220,c:196,wt:30,why:"Wer schneller am Markt ist, sichert sich Preise und Marktanteile.",src:"PLM-System, Projektmeilensteine",bsc:"P",g:"2.3",ch:"spc",tr:0},
+ {n:"Umsatzanteil neuer Produkte",d:"Umsatzanteil von Produkten, die jünger als drei Jahre sind.",f:"Umsatz Neuprodukte ÷ Gesamtumsatz × 100",u:"%",fr:"quartalsweise",p:"hi",t:25,w:18,c:27,wt:25,why:"Zeigt, ob Entwicklung in Umsatz mündet.",src:"ERP, Produktstammdaten",bsc:"F",g:"2.1",ch:"trend",tr:1},
+ {n:"Meilensteintreue",d:"Anteil der Entwicklungsmeilensteine, die termingerecht erreicht werden.",f:"Termingerechte Meilensteine ÷ fällige Meilensteine × 100",u:"%",fr:"monatlich",p:"hi",t:90,w:80,c:91,wt:20,why:"Verzögerungen in der Entwicklung verschieben alle nachgelagerten Prozesse.",src:"Projektmanagement-Werkzeug",bsc:"P",g:"2.1",ch:"trend",tr:0},
+ {n:"Ideen-Konversionsrate",d:"Anteil der eingereichten Ideen, die in die Entwicklungsphase gelangen.",f:"Ideen in Entwicklung ÷ eingereichte Ideen × 100",u:"%",fr:"quartalsweise",p:"hi",t:12,w:8,c:13,wt:10,why:"Misst die Qualität des Ideentrichters, nicht nur seine Menge.",src:"Ideenmanagement",bsc:"L",g:"2.2",ch:"trend",tr:1},
+ {n:"Änderungen nach Serienfreigabe",d:"Anzahl technischer Änderungen an bereits freigegebenen Produkten.",f:"Σ Änderungsanträge nach Freigabe je Monat",u:"Anz.",fr:"monatlich",p:"lo",t:3,w:5,c:2,wt:15,why:"Nach der Zehnerregel der Fehlerkosten wird eine Änderung mit jeder Phase deutlich teurer.",src:"Änderungsmanagement (PLM)",bsc:"P",g:"2.3",ch:"spc",tr:0,dp:0}
+ ]},
+{id:"3",zone:"C",sh:"Vermarkten & Verkaufen",de:"Produkte und Dienstleistungen vermarkten und verkaufen",en:"Market and Sell Products and Services",
+ owner:"Vertriebsleitung",purpose:"Versteht Märkte und Kunden und gewinnt profitable Aufträge.",
+ sipoc:["Marktforschung, Produktentwicklung","Marktdaten, Produktportfolio, Preise","Markt verstehen → Kunden ansprechen → Auftrag gewinnen","Aufträge, Absatzplan, Kundendaten","Supply Chain, Service, Finanzen"],
+ groups:[["3.1","Märkte, Kunden und Fähigkeiten verstehen"],["3.2","Marketingstrategie entwickeln"],["3.3","Marketingpläne entwickeln und steuern"],["3.4","Vertriebsstrategie entwickeln"],["3.5","Vertriebspläne entwickeln und steuern"]],
+ mat:[4,4,3,3],
+ k:[
+ {n:"Umsatz zum Plan",d:"Erzielter Umsatz im Verhältnis zum geplanten Umsatz.",f:"Ist-Umsatz ÷ Plan-Umsatz × 100",u:"%",fr:"monatlich",p:"hi",t:100,w:95,c:101.2,wt:25,why:"Die zentrale Ergebnisgröße des Vertriebs.",src:"ERP, Faktura",bsc:"F",g:"3.5",ch:"trend",tr:1,dp:1},
+ {n:"Angebotserfolgsquote",d:"Anteil der abgegebenen Angebote, die zu einem Auftrag führen.",f:"Gewonnene Angebote ÷ abgegebene Angebote × 100",u:"%",fr:"monatlich",p:"hi",t:30,w:24,c:31,wt:20,why:"Zeigt, ob der Vertrieb die richtigen Kunden mit dem richtigen Angebot anspricht.",src:"CRM",bsc:"K",g:"3.5",ch:"trend",tr:1},
+ {n:"Kundenakquisitionskosten",d:"Marketing- und Vertriebskosten je gewonnenem Neukunden.",f:"(Marketingkosten + Vertriebskosten) ÷ Neukunden",u:"€",fr:"quartalsweise",p:"lo",t:450,w:550,c:520,wt:15,why:"Wachstum lohnt sich nur, wenn der Kunde mehr einbringt, als er kostet.",src:"Controlling, CRM",bsc:"F",g:"3.3",ch:"trend",tr:-1},
+ {n:"Pipeline-Deckung",d:"Gewichtete Vertriebspipeline im Verhältnis zum offenen Umsatzziel.",f:"Σ (Chancenwert × Abschlusswahrscheinlichkeit) ÷ offenes Umsatzziel",u:"×",fr:"monatlich",p:"hi",t:3.0,w:2.2,c:2.6,wt:20,why:"Frühindikator für den Umsatz der nächsten zwei bis drei Quartale.",src:"CRM",bsc:"K",g:"3.4",ch:"trend",tr:0,dp:1},
+ {n:"Kundenbindungsrate",d:"Anteil der Bestandskunden, die innerhalb der Periode Kunden bleiben.",f:"(Kunden Ende − Neukunden) ÷ Kunden Anfang × 100",u:"%",fr:"jährlich rollierend",p:"hi",t:90,w:85,c:91,wt:20,why:"Einen Kunden zu halten ist meist deutlich günstiger, als einen neuen zu gewinnen.",src:"CRM, ERP",bsc:"K",g:"3.1",ch:"trend",tr:1}
+ ]},
+{id:"4",zone:"C",sh:"Supply Chain",de:"Supply Chain für physische Produkte managen",en:"Manage Supply Chain for Physical Products",
+ owner:"Leitung Supply Chain",purpose:"Plant, beschafft, produziert und liefert physische Produkte termingerecht und wirtschaftlich.",
+ sipoc:["Lieferanten, Vertrieb (Absatzplan)","Aufträge, Material, Kapazitäten","Planen → Beschaffen → Herstellen → Liefern","Gelieferte Produkte, Bestände, Lieferdaten","Kunden, Service, Finanzen"],
+ groups:[["4.1","Supply-Chain-Ressourcen planen und abstimmen"],["4.2","Material und Dienstleistungen beschaffen"],["4.3","Produkt herstellen, montieren und prüfen"],["4.4","Logistik und Lagerhaltung steuern"]],
+ mat:[4,4,4,3],
+ k:[
+ {n:"Liefertreue (OTIF)",d:"Anteil der Kundenaufträge, die vollständig und zum zugesagten Termin geliefert werden.",f:"Aufträge vollständig und pünktlich ÷ alle Aufträge × 100",u:"%",fr:"wöchentlich",p:"hi",t:95,w:90,c:93.2,wt:30,why:"Die Kennzahl, die der Kunde direkt spürt.",src:"ERP, Versanddaten",bsc:"K",g:"4.4",ch:"trend",tr:1,dp:1},
+ {n:"Lagerreichweite",d:"Wie viele Tage der aktuelle Bestand beim durchschnittlichen Verbrauch reicht.",f:"Ø Bestand ÷ Ø Tagesverbrauch",u:"Tage",fr:"monatlich",p:"band",b:[20,35],m:8,c:38,wt:20,why:"Zu hoch bindet Kapital, zu niedrig gefährdet die Lieferfähigkeit.",src:"ERP, Bestandsführung",bsc:"F",g:"4.1",ch:"trend",tr:-1},
+ {n:"Lieferanten-Termintreue",d:"Anteil der Wareneingänge, die zum bestätigten Termin eintreffen.",f:"Pünktliche Wareneingänge ÷ alle Wareneingänge × 100",u:"%",fr:"monatlich",p:"hi",t:92,w:85,c:92.5,wt:20,why:"Unzuverlässige Lieferanten erzwingen Sicherheitsbestände und Eilaufträge.",src:"ERP, Wareneingang",bsc:"P",g:"4.2",ch:"trend",tr:0},
+ {n:"Bestandsgenauigkeit",d:"Anteil der geprüften Lagerplätze ohne Differenz zwischen System- und Istbestand.",f:"Plätze ohne Differenz ÷ geprüfte Plätze × 100",u:"%",fr:"monatlich (Stichprobeninventur)",p:"hi",t:98.5,w:97,c:99.1,wt:15,why:"Falsche Bestände führen zu Fehlplanungen in der gesamten Kette.",src:"Lagerverwaltungssystem, Inventur",bsc:"P",g:"4.4",ch:"trend",tr:1,dp:1},
+ {n:"Auftragsdurchlaufzeit",d:"Zeit vom Auftragseingang bis zum Warenausgang.",f:"Warenausgang − Auftragseingang (Median je Woche)",u:"Tage",fr:"wöchentlich",p:"lo",t:3.0,w:4.0,c:2.9,wt:15,why:"Kurze, stabile Durchlaufzeiten sind die Basis für verlässliche Liefertermine.",src:"ERP, Zeitstempel",bsc:"P",g:"4.4",ch:"spc",tr:0,dp:1}
+ ]},
+{id:"5",zone:"C",sh:"Leistung erbringen",de:"Dienstleistungen erbringen",en:"Deliver Service",
+ owner:"Leitung Service Delivery",purpose:"Erbringt vereinbarte Dienstleistungen in der zugesagten Qualität beim Kunden.",
+ sipoc:["Vertrieb, Personal, IT","Serviceaufträge, Personal, Werkzeuge","Einplanen → Einsatz durchführen → abschließen","Erbrachte Leistung, Einsatzberichte","Kunden, Finanzen"],
+ groups:[["5.1","Governance und Strategien der Leistungserbringung festlegen"],["5.2","Ressourcen der Leistungserbringung steuern"],["5.3","Leistung beim Kunden erbringen"]],
+ mat:[3,4,3,2],
+ k:[
+ {n:"SLA-Erfüllungsgrad",d:"Anteil der Serviceleistungen, die innerhalb der vereinbarten Servicelevel erbracht werden.",f:"Leistungen im SLA ÷ alle Leistungen × 100",u:"%",fr:"monatlich",p:"hi",t:95,w:90,c:96.1,wt:35,why:"Das vertragliche Versprechen an den Kunden.",src:"Ticketsystem",bsc:"K",g:"5.3",ch:"trend",tr:1,dp:1},
+ {n:"Auslastung Servicepersonal",d:"Anteil der verrechenbaren Stunden an der verfügbaren Arbeitszeit.",f:"Verrechenbare Stunden ÷ verfügbare Stunden × 100",u:"%",fr:"monatlich",p:"band",b:[75,85],m:8,c:88,wt:20,why:"Unter dem Zielband verliert man Geld, darüber leidet die Qualität.",src:"Zeiterfassung",bsc:"F",g:"5.2",ch:"trend",tr:-1},
+ {n:"First Time Right",d:"Anteil der Serviceeinsätze, die beim ersten Termin abgeschlossen werden.",f:"Beim ersten Einsatz gelöste Aufträge ÷ alle Aufträge × 100",u:"%",fr:"monatlich",p:"hi",t:85,w:78,c:86,wt:25,why:"Jeder Zweiteinsatz kostet doppelt und verärgert den Kunden.",src:"Field-Service-System",bsc:"P",g:"5.3",ch:"trend",tr:1},
+ {n:"Kosten je Serviceauftrag",d:"Durchschnittliche Vollkosten eines Serviceauftrags.",f:"Gesamtkosten Service ÷ Anzahl Aufträge",u:"€",fr:"monatlich",p:"lo",t:120,w:140,c:116,wt:20,why:"Zeigt, ob der Service wirtschaftlich erbracht wird.",src:"Kostenrechnung",bsc:"F",g:"5.2",ch:"trend",tr:1}
+ ]},
+{id:"6",zone:"C",sh:"Kundenservice",de:"Kundenservice managen",en:"Manage Customer Service",
+ owner:"Leitung Kundenservice",purpose:"Beantwortet Anliegen, betreut Produkte nach dem Kauf und misst die Zufriedenheit.",
+ sipoc:["Kunden, Vertrieb, Supply Chain","Anfragen, Reklamationen, Rückmeldungen","Anliegen aufnehmen → lösen → auswerten","Gelöste Anliegen, Zufriedenheitswerte, Verbesserungsimpulse","Kunden, Produktentwicklung, Leitung"],
+ groups:[["6.1","Kundenservicestrategie entwickeln"],["6.2","Kundenkontakte planen und steuern"],["6.3","Produkte nach dem Verkauf betreuen"],["6.4","Rückrufe und behördliche Audits steuern"],["6.5","Serviceprozesse und Kundenzufriedenheit bewerten"]],
+ mat:[3,3,4,3],
+ k:[
+ {n:"Kundenzufriedenheit (CSAT)",d:"Anteil der befragten Kunden, die zufrieden oder sehr zufrieden sind.",f:"Antworten 4–5 (Skala 1–5) ÷ alle Antworten × 100",u:"%",fr:"monatlich",p:"hi",t:85,w:78,c:86,wt:30,why:"Die direkteste Rückmeldung über die Qualität aller Kernprozesse.",src:"Kundenbefragung nach Kontakt",bsc:"K",g:"6.5",ch:"trend",tr:1},
+ {n:"Net Promoter Score",d:"Weiterempfehlungsbereitschaft der Kunden.",f:"% Promotoren (9–10) − % Kritiker (0–6)",u:"Pkt.",fr:"quartalsweise",p:"hi",t:40,w:25,c:41,wt:20,why:"Guter Frühindikator für Wachstum aus Weiterempfehlung.",src:"Kundenbefragung",bsc:"K",g:"6.5",ch:"trend",tr:1},
+ {n:"Erstkontaktlösungsquote",d:"Anteil der Anliegen, die beim ersten Kontakt abschließend gelöst werden.",f:"Beim Erstkontakt gelöste Anliegen ÷ alle Anliegen × 100",u:"%",fr:"monatlich",p:"hi",t:75,w:65,c:76,wt:20,why:"Senkt Kosten und steigert die Zufriedenheit gleichzeitig.",src:"CRM, Ticketsystem",bsc:"P",g:"6.2",ch:"trend",tr:1},
+ {n:"Reklamationsquote",d:"Anteil der Aufträge mit einer berechtigten Reklamation.",f:"Berechtigte Reklamationen ÷ ausgelieferte Aufträge × 100",u:"%",fr:"monatlich",p:"lo",t:1.5,w:2.2,c:2.4,wt:20,why:"Zeigt, wo Qualität verloren geht. Die Pareto-Analyse zeigt die Hauptursachen.",src:"Reklamationsmanagement",bsc:"P",g:"6.3",ch:"pareto",tr:-1,dp:1,
+  pa:[["Falschlieferung",38],["Transportschaden",24],["Verspätung",17],["Produktmangel",11],["Rechnungsfehler",6],["Sonstiges",4]]},
+ {n:"Bearbeitungszeit Anfragen",d:"Durchschnittliche Zeit bis zur abschließenden Antwort auf eine Kundenanfrage.",f:"Σ (Abschluss − Eingang) ÷ Anzahl Anfragen",u:"Std.",fr:"wöchentlich",p:"lo",t:24,w:36,c:21,wt:10,why:"Kunden bewerten Service stark nach der Reaktionsgeschwindigkeit.",src:"Ticketsystem",bsc:"K",g:"6.2",ch:"spc",tr:0}
+ ]},
+{id:"7",zone:"S",sh:"Personal",de:"Humankapital entwickeln und managen",en:"Develop and Manage Human Capital",
+ owner:"Leitung Personal",purpose:"Gewinnt, entwickelt und bindet die Menschen, die alle anderen Prozesse tragen.",
+ sipoc:["Arbeitsmarkt, Führungskräfte","Personalbedarf, Budgets, Rückmeldungen","Planen → Gewinnen → Entwickeln → Binden","Besetzte Stellen, qualifizierte Mitarbeitende","Alle Bereiche"],
+ groups:[["7.1","Personalplanung, Richtlinien und Strategien entwickeln"],["7.2","Mitarbeitende gewinnen und auswählen"],["7.3","Einarbeitung, Schulung und Entwicklung steuern"],["7.4","Mitarbeiterbeziehungen gestalten"],["7.5","Mitarbeitende vergüten und binden"],["7.6","Mitarbeitende umsetzen und verabschieden"],["7.7","Personaldaten und -analysen verwalten"],["7.8","Mitarbeiterkommunikation steuern"]],
+ mat:[3,3,2,2],
+ k:[
+ {n:"Time-to-Hire",d:"Dauer von der Stellenfreigabe bis zur Vertragsunterschrift.",f:"Σ (Unterschrift − Freigabe) ÷ besetzte Stellen",u:"Tage",fr:"monatlich",p:"lo",t:45,w:60,c:44,wt:20,why:"Unbesetzte Stellen kosten Leistung und belasten das Team.",src:"Bewerbermanagementsystem",bsc:"L",g:"7.2",ch:"spc",tr:0},
+ {n:"Fluktuationsrate",d:"Anteil der Mitarbeitenden, die das Unternehmen auf eigenen Wunsch verlassen.",f:"Eigenkündigungen (12 Monate) ÷ Ø Belegschaft × 100",u:"%",fr:"monatlich, rollierend",p:"lo",t:8,w:11,c:9.4,wt:25,why:"Jeder Abgang kostet Wissen, Zeit und Rekrutierungsaufwand.",src:"HR-System",bsc:"L",g:"7.5",ch:"trend",tr:0,dp:1},
+ {n:"Weiterbildungsstunden",d:"Durchschnittliche Weiterbildungsstunden je Mitarbeitendem.",f:"Σ Weiterbildungsstunden ÷ Ø Belegschaft (12 Monate)",u:"h",fr:"quartalsweise",p:"hi",t:24,w:16,c:26,wt:15,why:"Investition in die Fähigkeiten von morgen.",src:"Lernmanagementsystem",bsc:"L",g:"7.3",ch:"trend",tr:1},
+ {n:"Krankenquote",d:"Anteil der krankheitsbedingten Ausfalltage an den Soll-Arbeitstagen.",f:"Krankheitstage ÷ Soll-Arbeitstage × 100",u:"%",fr:"monatlich",p:"lo",t:4.5,w:6,c:4.3,wt:15,why:"Hinweis auf Belastung, Arbeitsbedingungen und Führungsqualität.",src:"Zeitwirtschaft",bsc:"L",g:"7.4",ch:"trend",tr:0,dp:1},
+ {n:"Arbeitgeber-Weiterempfehlung (eNPS)",d:"Bereitschaft der Mitarbeitenden, das Unternehmen als Arbeitgeber zu empfehlen.",f:"% Promotoren − % Kritiker (Skala 0–10)",u:"Pkt.",fr:"halbjährlich",p:"hi",t:20,w:5,c:22,wt:25,why:"Engagierte Mitarbeitende sind die Grundlage jeder Prozessverbesserung.",src:"Mitarbeiterbefragung",bsc:"L",g:"7.5",ch:"trend",tr:1}
+ ]},
+{id:"8",zone:"S",sh:"IT",de:"Informationstechnologie managen",en:"Manage Information Technology (IT)",
+ owner:"IT-Leitung",purpose:"Stellt sichere, verfügbare und passende IT-Lösungen für alle Prozesse bereit.",
+ sipoc:["Fachbereiche, IT-Dienstleister","Anforderungen, Störungen, Budgets","Anforderung aufnehmen → Lösung bereitstellen → betreiben","Laufende Systeme, gelöste Störungen","Alle Bereiche"],
+ groups:[["8.1","IT-Kundenbeziehungen entwickeln und steuern"],["8.2","IT-Geschäftsstrategie entwickeln und steuern"],["8.3","IT-Resilienz und -Risiken steuern"],["8.4","Informationen verwalten"],["8.5","Services und Lösungen entwickeln und steuern"],["8.6","Services und Lösungen bereitstellen"],["8.7","Supportleistungen aufbauen und betreiben"]],
+ mat:[4,4,4,3],
+ k:[
+ {n:"Systemverfügbarkeit",d:"Anteil der Zeit, in der geschäftskritische Systeme verfügbar sind.",f:"(Sollzeit − Ausfallzeit) ÷ Sollzeit × 100",u:"%",fr:"monatlich",p:"hi",t:99.5,w:99.0,c:99.7,wt:30,why:"Ohne verfügbare Systeme steht jeder Prozess still.",src:"Monitoring",bsc:"P",g:"8.7",ch:"trend",tr:0,dp:2},
+ {n:"Wiederherstellungszeit (MTTR)",d:"Mittlere Zeit bis zur Wiederherstellung nach einer Störung.",f:"Σ Störungsdauer ÷ Anzahl Störungen",u:"Std.",fr:"monatlich",p:"lo",t:4,w:8,c:3.6,wt:25,why:"Bestimmt, wie teuer eine Störung für das Geschäft wird.",src:"Incident-Management",bsc:"P",g:"8.3",ch:"spc",tr:0,dp:1},
+ {n:"Termintreue IT-Projekte",d:"Anteil der IT-Projekte, die zum geplanten Termin produktiv gehen.",f:"Pünktliche Go-lives ÷ alle Go-lives × 100",u:"%",fr:"quartalsweise",p:"hi",t:85,w:70,c:66,wt:20,why:"Verspätete IT-Projekte bremsen die Verbesserung aller anderen Prozesse.",src:"Projektportfolio",bsc:"L",g:"8.6",ch:"trend",tr:-1},
+ {n:"Kritische Sicherheitsvorfälle",d:"Anzahl meldepflichtiger oder kritischer Sicherheitsvorfälle.",f:"Σ kritische Vorfälle je Monat",u:"Anz.",fr:"monatlich",p:"lo",t:1,w:3,c:1,wt:25,why:"Ein einziger schwerer Vorfall kann Monate an Fortschritt zunichtemachen.",src:"Incident-Register",bsc:"P",g:"8.3",ch:"spc",tr:0,dp:0}
+ ]},
+{id:"9",zone:"S",sh:"Finanzen",de:"Finanzielle Ressourcen managen",en:"Manage Financial Resources",
+ owner:"Leitung Finanzen",purpose:"Plant, bucht, berichtet und sichert die Liquidität des Unternehmens.",
+ sipoc:["Alle Bereiche, Banken, Steuerberatung","Belege, Pläne, Zahlungsströme","Planen → Buchen → Abschließen → Berichten","Abschlüsse, Berichte, Zahlungen","Geschäftsführung, Gremien, Behörden"],
+ groups:[["9.1","Planung und Management Accounting"],["9.2","Erlösrechnung"],["9.3","Hauptbuchhaltung und Berichtswesen"],["9.4","Anlagen- und Projektbuchhaltung"],["9.5","Lohn- und Gehaltsabrechnung"],["9.6","Kreditoren und Reisekosten abwickeln"],["9.7","Treasury steuern"],["9.8","Interne Kontrollen steuern"],["9.9","Steuern verwalten"],["9.10","Internationale Mittel und Konsolidierung"],["9.11","Außenhandel abwickeln"]],
+ mat:[4,4,4,3],
+ k:[
+ {n:"Forderungslaufzeit (DSO)",d:"Wie viele Tage es im Durchschnitt dauert, bis Kunden bezahlen.",f:"Forderungen ÷ Umsatz × Tage der Periode",u:"Tage",fr:"monatlich",p:"lo",t:40,w:50,c:47,wt:25,why:"Jeder Tag weniger setzt Liquidität frei.",src:"Debitorenbuchhaltung",bsc:"F",g:"9.2",ch:"trend",tr:-1},
+ {n:"Dauer Monatsabschluss",d:"Arbeitstage vom Monatsende bis zum freigegebenen Abschluss.",f:"Freigabedatum − Monatsende (Arbeitstage)",u:"Tage",fr:"monatlich",p:"lo",t:5,w:8,c:5,wt:20,why:"Ein schneller Abschluss macht Kennzahlen früh steuerungsfähig.",src:"Abschlusskalender",bsc:"P",g:"9.3",ch:"trend",tr:1,dp:0},
+ {n:"Budgetabweichung",d:"Absolute Abweichung der Ist-Kosten vom Budget.",f:"|Ist − Budget| ÷ Budget × 100",u:"%",fr:"monatlich",p:"lo",t:5,w:10,c:4.1,wt:20,why:"Zeigt, ob Planung und Steuerung zusammenpassen.",src:"Controlling",bsc:"F",g:"9.1",ch:"trend",tr:1,dp:1},
+ {n:"Liquiditätsgrad 2",d:"Deckung der kurzfristigen Verbindlichkeiten durch flüssige Mittel und Forderungen.",f:"(Flüssige Mittel + kurzfr. Forderungen) ÷ kurzfr. Verbindlichkeiten",u:"×",fr:"monatlich",p:"hi",t:1.2,w:1.0,c:1.25,wt:20,why:"Sichert die Zahlungsfähigkeit.",src:"Bilanz, Finanzplanung",bsc:"F",g:"9.7",ch:"trend",tr:0,dp:2},
+ {n:"Skontonutzung",d:"Anteil der angebotenen Skonti, die tatsächlich genutzt werden.",f:"Genutzte Skonti ÷ angebotene Skonti × 100",u:"%",fr:"monatlich",p:"hi",t:90,w:80,c:91,wt:15,why:"Skonto ist oft die rentabelste kurzfristige Geldanlage.",src:"Kreditorenbuchhaltung",bsc:"F",g:"9.6",ch:"trend",tr:1}
+ ]},
+{id:"10",zone:"S",sh:"Anlagen",de:"Anlagen beschaffen, errichten und managen",en:"Acquire, Construct, and Manage Assets",
+ owner:"Leitung Technik und Instandhaltung",purpose:"Beschafft, betreibt und erhält die Anlagen, auf denen die Leistung entsteht.",
+ sipoc:["Anlagenhersteller, Produktion","Investitionsanträge, Störmeldungen, Wartungspläne","Planen → Beschaffen → Instand halten → Ausmustern","Verfügbare Anlagen, Wartungsnachweise","Supply Chain, Service"],
+ groups:[["10.1","Anlagen planen und beschaffen"],["10.2","Produktive Anlagen planen und errichten"],["10.3","Produktive Anlagen instand halten"],["10.4","Anlagen ausmustern"]],
+ mat:[3,4,4,3],
+ k:[
+ {n:"Gesamtanlageneffektivität (OEE)",d:"Verfügbarkeit × Leistung × Qualität der Engpassanlagen.",f:"Verfügbarkeitsgrad × Leistungsgrad × Qualitätsgrad × 100",u:"%",fr:"wöchentlich",p:"hi",t:75,w:65,c:71,wt:35,why:"Zeigt verborgene Kapazität, ohne in neue Anlagen zu investieren.",src:"Maschinendatenerfassung",bsc:"P",g:"10.3",ch:"trend",tr:1},
+ {n:"Technische Verfügbarkeit",d:"Anteil der geplanten Betriebszeit, in der die Anlagen technisch einsatzbereit sind.",f:"(Planbetriebszeit − Störzeit) ÷ Planbetriebszeit × 100",u:"%",fr:"wöchentlich",p:"hi",t:95,w:92,c:95.6,wt:25,why:"Basis jeder verlässlichen Produktionsplanung.",src:"Instandhaltungssystem",bsc:"P",g:"10.3",ch:"trend",tr:0,dp:1},
+ {n:"Mittlere Zeit zwischen Ausfällen (MTBF)",d:"Durchschnittliche Betriebszeit zwischen zwei Störungen.",f:"Σ Betriebszeit ÷ Anzahl Störungen",u:"Std.",fr:"monatlich",p:"hi",t:400,w:300,c:430,wt:20,why:"Misst, ob vorbeugende Instandhaltung wirkt.",src:"Instandhaltungssystem",bsc:"P",g:"10.3",ch:"trend",tr:1},
+ {n:"Instandhaltungskostenquote",d:"Instandhaltungskosten im Verhältnis zum Wiederbeschaffungswert der Anlagen.",f:"Instandhaltungskosten ÷ Wiederbeschaffungswert × 100",u:"%",fr:"jährlich rollierend",p:"lo",t:3,w:4,c:2.8,wt:20,why:"Zu hohe Kosten deuten auf Verschleiß, zu niedrige auf Substanzverzehr.",src:"Anlagenbuchhaltung",bsc:"F",g:"10.1",ch:"trend",tr:0,dp:1}
+ ]},
+{id:"11",zone:"L",sh:"Risiko & Compliance",de:"Risiken, Compliance, Abhilfe und Resilienz managen",en:"Manage Enterprise Risk, Compliance, Remediation, and Resiliency",
+ owner:"Risikomanagement und Compliance",purpose:"Erkennt Risiken früh, sichert die Einhaltung von Regeln und hält das Unternehmen handlungsfähig.",
+ sipoc:["Alle Bereiche, Gesetzgeber, Prüfer","Risikomeldungen, Vorschriften, Auditberichte","Erkennen → Bewerten → Behandeln → Überwachen","Risikolage, Maßnahmen, Notfallpläne","Geschäftsführung, Gremien"],
+ groups:[["11.1","Unternehmensrisiken steuern"],["11.2","Compliance sicherstellen"],["11.3","Abhilfemaßnahmen steuern"],["11.4","Geschäftskontinuität sichern"]],
+ mat:[3,2,2,2],
+ k:[
+ {n:"Kritische Risiken ohne Maßnahme",d:"Anzahl der hoch bewerteten Risiken, für die keine wirksame Maßnahme läuft.",f:"Σ Risiken (Bewertung hoch) ohne aktive Maßnahme",u:"Anz.",fr:"monatlich",p:"lo",t:0,w:2,c:3,wt:30,why:"Ein bekanntes, unbehandeltes Risiko ist eine bewusste Entscheidung.",src:"Risikoregister",bsc:"P",g:"11.1",ch:"trend",tr:-1,dp:0},
+ {n:"Fristgerechte Audit-Maßnahmen",d:"Anteil der Maßnahmen aus Audits, die fristgerecht umgesetzt werden.",f:"Fristgerecht erledigte Maßnahmen ÷ fällige Maßnahmen × 100",u:"%",fr:"monatlich",p:"hi",t:90,w:80,c:86,wt:25,why:"Zeigt, ob Feststellungen wirklich zu Verbesserungen führen.",src:"Maßnahmen-Tracking",bsc:"P",g:"11.3",ch:"trend",tr:1},
+ {n:"Compliance-Schulungsquote",d:"Anteil der Mitarbeitenden mit gültiger Pflichtschulung.",f:"Mitarbeitende mit gültiger Schulung ÷ Pflichtgruppe × 100",u:"%",fr:"monatlich",p:"hi",t:95,w:90,c:96,wt:20,why:"Grundlage, um Regelverstöße gar nicht erst entstehen zu lassen.",src:"Lernmanagementsystem",bsc:"L",g:"11.2",ch:"trend",tr:1},
+ {n:"Getestete Notfallpläne",d:"Anteil der kritischen Prozesse mit einem im letzten Jahr getesteten Notfallplan.",f:"Prozesse mit getestetem Plan ÷ kritische Prozesse × 100",u:"%",fr:"quartalsweise",p:"hi",t:100,w:80,c:75,wt:25,why:"Ein ungetesteter Notfallplan ist nur ein Dokument.",src:"Register Geschäftskontinuität",bsc:"P",g:"11.4",ch:"trend",tr:1}
+ ]},
+{id:"12",zone:"L",sh:"Externe Beziehungen",de:"Externe Beziehungen managen",en:"Manage External Relationships",
+ owner:"Geschäftsführung und Kommunikation",purpose:"Gestaltet die Beziehungen zu Investoren, Behörden, Gremien und Öffentlichkeit.",
+ sipoc:["Finanzen, Recht, Kommunikation","Berichte, Anfragen, Meldepflichten","Anliegen erfassen → abstimmen → kommunizieren","Meldungen, Berichte, Stellungnahmen","Investoren, Behörden, Öffentlichkeit"],
+ groups:[["12.1","Investorenbeziehungen aufbauen"],["12.2","Beziehungen zu Behörden und Verbänden pflegen"],["12.3","Beziehungen zu Aufsichtsgremien gestalten"],["12.4","Rechtliche und ethische Fragen steuern"],["12.5","Öffentlichkeitsarbeit steuern"]],
+ mat:[3,3,2,2],
+ k:[
+ {n:"Fristgerechte Behördenmeldungen",d:"Anteil der gesetzlichen Meldungen, die fristgerecht abgegeben werden.",f:"Fristgerechte Meldungen ÷ fällige Meldungen × 100",u:"%",fr:"monatlich",p:"hi",t:100,w:98,c:100,wt:30,why:"Verspätungen führen zu Bußgeldern und Vertrauensverlust.",src:"Fristenkalender",bsc:"P",g:"12.2",ch:"trend",tr:0,dp:0},
+ {n:"Offene Rechtsfälle",d:"Anzahl laufender gerichtlicher und außergerichtlicher Streitfälle.",f:"Σ offene Fälle zum Monatsende",u:"Anz.",fr:"monatlich",p:"lo",t:3,w:5,c:2,wt:20,why:"Jeder Streitfall bindet Management-Zeit und birgt finanzielle Risiken.",src:"Rechtsabteilung",bsc:"F",g:"12.4",ch:"trend",tr:0,dp:0},
+ {n:"Termintreue Gremienberichte",d:"Anteil der Berichte an Gremien, Banken und Investoren, die termingerecht vorliegen.",f:"Pünktliche Berichte ÷ fällige Berichte × 100",u:"%",fr:"quartalsweise",p:"hi",t:100,w:95,c:100,wt:25,why:"Verlässliche Berichte sind die Grundlage für Vertrauen.",src:"Berichtskalender",bsc:"F",g:"12.1",ch:"trend",tr:0,dp:0},
+ {n:"Positive Medienresonanz",d:"Anteil positiver oder neutraler Erwähnungen in Medien und Fachpresse.",f:"Positive + neutrale Beiträge ÷ alle Beiträge × 100",u:"%",fr:"quartalsweise",p:"hi",t:80,w:70,c:82,wt:25,why:"Die Reputation beeinflusst Kunden, Bewerber und Partner zugleich.",src:"Medienbeobachtung",bsc:"K",g:"12.5",ch:"trend",tr:1}
+ ]},
+{id:"13",zone:"L",sh:"Unternehmens\u00ADfähigkeiten",de:"Unternehmensfähigkeiten entwickeln und managen",en:"Develop and Manage Business Capabilities",
+ owner:"Qualitäts- und Prozessmanagement",purpose:"Entwickelt die Fähigkeiten, mit denen sich das Unternehmen selbst verbessert: Prozesse, Qualität, Projekte, Wissen, Sicherheit.",
+ sipoc:["Alle Bereiche","Prozessdaten, Audits, Ideen","Beschreiben → Messen → Verbessern → Verankern","Prozessmodelle, Standards, Verbesserungen","Alle Bereiche"],
+ groups:[["13.1","Geschäftsprozesse managen"],["13.2","Portfolio, Programme und Projekte managen"],["13.3","Unternehmensweite Qualität steuern"],["13.4","Veränderungen managen"],["13.5","Wissensmanagement aufbauen und steuern"],["13.6","Messen und Benchmarking"],["13.7","Arbeits-, Umwelt- und Gesundheitsschutz steuern"],["13.8","Analytik entwickeln und bereitstellen"]],
+ mat:[3,2,3,2],
+ k:[
+ {n:"Prozessdokumentationsgrad",d:"Anteil der Prozesse mit aktuellem, freigegebenem Prozesssteckbrief.",f:"Prozesse mit aktuellem Steckbrief ÷ alle Prozesse × 100",u:"%",fr:"quartalsweise",p:"hi",t:90,w:75,c:78,wt:20,why:"Nur ein beschriebener Prozess kann gemessen und verbessert werden.",src:"Prozessportal",bsc:"L",g:"13.1",ch:"trend",tr:1},
+ {n:"Qualitätskosten",d:"Kosten durch Fehler, Nacharbeit, Ausschuss und Gewährleistung im Verhältnis zum Umsatz.",f:"Fehlerkosten ÷ Umsatz × 100",u:"%",fr:"monatlich",p:"lo",t:2.5,w:3.5,c:2.9,wt:25,why:"Macht sichtbar, was schlechte Qualität tatsächlich kostet.",src:"Kostenrechnung, Reklamationen",bsc:"F",g:"13.3",ch:"trend",tr:1,dp:1},
+ {n:"Projektportfolio im Plan",d:"Anteil der Projekte, die bei Termin, Budget und Umfang im Plan liegen.",f:"Projekte im Plan ÷ aktive Projekte × 100",u:"%",fr:"monatlich",p:"hi",t:80,w:65,c:81,wt:20,why:"Zeigt, ob das Unternehmen Veränderung auch umsetzen kann.",src:"Projektportfolio",bsc:"P",g:"13.2",ch:"trend",tr:0},
+ {n:"Umgesetzte Verbesserungsideen",d:"Umgesetzte Verbesserungsvorschläge je Mitarbeitendem und Jahr.",f:"Umgesetzte Vorschläge ÷ Ø Belegschaft (12 Monate)",u:"Anz.",fr:"quartalsweise",p:"hi",t:2,w:1.2,c:2.1,wt:15,why:"Kontinuierliche Verbesserung entsteht im Alltag, nicht im Projekt.",src:"Ideenmanagement",bsc:"L",g:"13.1",ch:"trend",tr:1,dp:1},
+ {n:"Unfallhäufigkeit (LTIFR)",d:"Arbeitsunfälle mit Ausfallzeit je eine Million Arbeitsstunden.",f:"Unfälle mit Ausfall × 1.000.000 ÷ geleistete Stunden",u:"je 1 Mio. h",fr:"monatlich",p:"lo",t:5,w:8,c:4.2,wt:20,why:"Sicherheit ist die Voraussetzung für jede andere Leistung.",src:"Unfallmeldungen, Zeitwirtschaft",bsc:"L",g:"13.7",ch:"spc",tr:0,dp:1}
+ ]}
+];
+
+const BSC = {F:"Finanzen",K:"Kunden",P:"Prozesse",L:"Lernen und Entwicklung"};
+const MAT_DIM = ["Planen","Umsetzen","Prüfen","Verbessern"];
+const MAT_LVL = ["","Ad hoc","Geregelt","Standardisiert","Kennzahlengesteuert","Selbstlernend"];
+const ZONES = {L:"Leitstand",C:"Wertstrom",S:"Versorgung"};
+
+(function(){
+"use strict";
+var $=function(s){return document.querySelector(s)};
+var $$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))};
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function fmt(v,dp){return Number(v).toLocaleString("de-DE",{minimumFractionDigits:dp,maximumFractionDigits:dp})}
+var MON=["Okt","Nov","Dez","Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep"];
+var STXT={ok:"Im Soll",warn:"Warnung",crit:"Kritisch"};
+
+/* ---------- Vorbereitung ---------- */
+var KMAP={};
+PROC.forEach(function(p){p.k.forEach(function(k,i){
+  k.id=p.id+"-"+(i+1); k.pid=p.id; k.i=i;
+  if(k.dp==null){var ints=[k.c,k.t,k.w].filter(function(x){return x!=null}).every(function(x){return Number.isInteger(x)}); k.dp=ints?0:1;}
+  KMAP[k.id]=k;
+});});
+function P(id){return PROC.find(function(p){return p.id===id})}
+
+function uv(k,v){var s=fmt(v,k.dp); if(k.u==="%")return s+" %"; if(k.u==="×")return s+" ×"; return s+" "+k.u;}
+function tgt(k){ if(k.p==="band")return fmt(k.b[0],k.dp)+"–"+uv(k,k.b[1]); return (k.p==="hi"?"≥ ":"≤ ")+uv(k,k.t); }
+function warnTxt(k){ if(k.p==="band")return "± "+uv(k,k.m)+" um das Zielband"; return (k.p==="hi"?"unter ":"über ")+uv(k,k.w)+" kritisch"; }
+
+/* ---------- Status und Punkte ---------- */
+function gap(k,v){
+  if(k.p==="band"){var lo=k.b[0],hi=k.b[1];return [v<lo?lo-v:v>hi?v-hi:0,k.m];}
+  if(k.p==="hi")return [Math.max(0,k.t-v),Math.abs(k.t-k.w)];
+  return [Math.max(0,v-k.t),Math.abs(k.w-k.t)];
+}
+function status(k,v){if(v==null)v=k.c;var g=gap(k,v);return g[0]<=1e-9?"ok":g[0]<=g[1]+1e-9?"warn":"crit";}
+function score(k,v){if(v==null)v=k.c;var g=gap(k,v),d=g[0],t=g[1];if(d<=1e-9)return 100;if(d<=t)return 100-40*d/t;return Math.max(0,60-60*(d-t)/t);}
+function pScore(p){return p.k.reduce(function(a,k){return a+k.wt*score(k)},0)/100;}
+function pStatus(s){return s>=90?"ok":s>=70?"warn":"crit";}
+function matAvg(p){return p.mat.reduce(function(a,b){return a+b},0)/p.mat.length;}
+function counts(list){var c={ok:0,warn:0,crit:0};list.forEach(function(x){c[x]++});return c;}
+function devTxt(k){
+  var st=status(k); if(st==="ok")return "Ziel erreicht";
+  var d=gap(k,k.c)[0]; return "Abweichung "+(k.u==="%"?fmt(d,k.dp)+" Prozentpunkte":uv(k,d))+" vom Ziel";
+}
+
+/* ---------- Messreihen (deterministische Demo) ---------- */
+var cache={};
+function rng(seed){var s=seed>>>0||1;return function(){s^=s<<13;s>>>=0;s^=s>>>17;s^=s<<5;s>>>=0;return s/4294967296;};}
+function hash(str){var h=2166136261;for(var i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
+function kscale(k){if(k.p==="band")return (k.b[1]-k.b[0])/2+k.m;var s=Math.abs(k.t-k.w);return s||Math.max(1,Math.abs(k.t)*0.1);}
+function fix(k,v){if(k.u==="%")v=Math.min(100,v);if(v<0)v=0;var f=Math.pow(10,k.dp);return Math.round(v*f)/f;}
+function series(k){
+  if(cache[k.id])return cache[k.id];
+  var r=rng(hash(k.id)),sc=kscale(k),out=[],n,i;
+  if(k.ch==="spc"){
+    n=20;var sd=sc*0.2;
+    for(i=0;i<n-1;i++){var u1=Math.max(r(),1e-6),u2=r();var z=Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);out.push(fix(k,k.c+z*sd));}
+    out.push(k.c);
+  }else{
+    n=12;var dir=k.tr*((k.p==="lo"||k.p==="band")?-1:1);var start=k.c-dir*sc*0.9,noise=sc*0.18;
+    for(i=0;i<n-1;i++){out.push(fix(k,start+(k.c-start)*i/(n-1)+noise*(2*r()-1)));}
+    out.push(k.c);
+  }
+  cache[k.id]=out;return out;
+}
+
+/* ---------- Diagramm-Helfer ---------- */
+function nice(x){var e=Math.pow(10,Math.floor(Math.log10(x))),f=x/e;return (f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10)*e;}
+function ticks(lo,hi,n){if(hi-lo<1e-9){hi=lo+1;lo=lo-1;}var st=nice((hi-lo)/(n||4)),a=Math.floor(lo/st)*st,b=Math.ceil(hi/st)*st,t=[];for(var v=a;v<=b+st*1e-6;v+=st)t.push(+v.toFixed(10));return {t:t,a:a,b:b,dp:st<0.1?2:st<1||st%1?1:0};}
+var MONO='font-family="ui-monospace,Consolas,Menlo,monospace"';
+function rlabels(arr,x,s){arr.sort(function(a,b){return a.y-b.y});for(var i=1;i<arr.length;i++){if(arr[i].y-arr[i-1].y<13)arr[i].y=arr[i-1].y+13;}
+  arr.forEach(function(l){s.v+='<text x="'+x+'" y="'+(l.y+4)+'" font-size="11" fill="'+l.c+'" '+MONO+'>'+l.t+'</text>';});}
+function col(st){return st==="crit"?"var(--crit)":st==="warn"?"var(--warn)":"var(--ink)";}
+
+function chartTrend(k){
+  var W=720,H=280,L=54,R=86,T=16,B=34,v=series(k),refs=[];
+  if(k.p==="band")refs=[k.b[0],k.b[1]];else refs=[k.t,k.w];
+  var lo=Math.min.apply(null,v.concat(refs)),hi=Math.max.apply(null,v.concat(refs)),pad=(hi-lo)*0.12||1;
+  var tk=ticks(lo-pad,hi+pad,4);if(k.u==="%"&&tk.b>100){tk.b=100;tk.t=tk.t.filter(function(x){return x<=100});}
+  if(tk.a<0&&lo>=0){tk.a=0;tk.t=tk.t.filter(function(x){return x>=0});}
+  var x=function(i){return L+i*(W-L-R)/(v.length-1)},y=function(val){return T+(tk.b-val)/(tk.b-tk.a)*(H-T-B)};
+  var s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Verlauf '+esc(k.n)+' über 12 Monate">';
+  tk.t.forEach(function(t){s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y(t)+'" y2="'+y(t)+'" stroke="var(--line)"/><text x="'+(L-8)+'" y="'+(y(t)+4)+'" text-anchor="end" font-size="11" fill="var(--muted)" '+MONO+'>'+fmt(t,tk.dp)+'</text>';});
+  if(k.p==="band"){s+='<rect x="'+L+'" y="'+y(k.b[1])+'" width="'+(W-L-R)+'" height="'+(y(k.b[0])-y(k.b[1]))+'" fill="var(--soft)"/>';
+    s+='<text x="'+(W-R+8)+'" y="'+(y((k.b[0]+k.b[1])/2)+4)+'" font-size="11" fill="var(--turq2)" '+MONO+'>Zielband</text>';}
+  else{
+    s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y(k.w)+'" y2="'+y(k.w)+'" stroke="var(--warn)" stroke-dasharray="3 4" stroke-width="1.5"/>';
+    s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y(k.t)+'" y2="'+y(k.t)+'" stroke="var(--turq)" stroke-dasharray="6 4" stroke-width="2"/>';
+    var o={v:s};rlabels([{y:y(k.t),t:'Ziel '+fmt(k.t,k.dp),c:'var(--turq)'},{y:y(k.w),t:'Grenze '+fmt(k.w,k.dp),c:'var(--warn)'}],W-R+8,o);s=o.v;
+  }
+  var d=v.map(function(val,i){return (i?"L":"M")+x(i).toFixed(1)+","+y(val).toFixed(1)}).join("");
+  s+='<path d="'+d+"L"+x(v.length-1)+","+y(tk.a)+"L"+x(0)+","+y(tk.a)+'Z" fill="var(--turq)" opacity=".07"/>';
+  s+='<path d="'+d+'" fill="none" stroke="var(--ink)" stroke-width="2"/>';
+  v.forEach(function(val,i){var st=status(k,val),last=i===v.length-1;
+    s+='<circle cx="'+x(i)+'" cy="'+y(val)+'" r="'+(last?5.5:3)+'" fill="'+(st==="ok"?(last?"var(--ink)":"var(--panel)"):col(st))+'" stroke="'+col(st)+'" stroke-width="1.5"/>';});
+  var lv=v[v.length-1];
+  s+='<text x="'+(x(v.length-1)-8)+'" y="'+(y(lv)-12)+'" text-anchor="end" font-size="13" font-weight="600" fill="'+col(status(k,lv))+'">'+fmt(lv,k.dp)+'</text>';
+  MON.forEach(function(m,i){s+='<text x="'+x(i)+'" y="'+(H-12)+'" text-anchor="middle" font-size="11" fill="var(--muted)" '+MONO+'>'+m+'</text>';});
+  return s+'</svg>';
+}
+
+function chartSPC(k){
+  var W=720,H=280,L=54,R=96,T=16,B=34,v=series(k),n=v.length;
+  var mean=v.reduce(function(a,b){return a+b},0)/n,mr=0;for(var i=1;i<n;i++)mr+=Math.abs(v[i]-v[i-1]);mr/=(n-1);
+  var sig=mr/1.128,ucl=mean+3*sig,lcl=Math.max(0,mean-3*sig);
+  var lo=Math.min.apply(null,v.concat([lcl,k.t])),hi=Math.max.apply(null,v.concat([ucl,k.t])),pad=(hi-lo)*0.1||1;
+  var tk=ticks(Math.max(0,lo-pad),hi+pad,4);if(tk.a<0){tk.a=0;tk.t=tk.t.filter(function(x){return x>=0});}
+  var x=function(i){return L+i*(W-L-R)/(n-1)},y=function(val){return T+(tk.b-val)/(tk.b-tk.a)*(H-T-B)};
+  var s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Regelkarte '+esc(k.n)+' mit Mittelwert und Eingriffsgrenzen">';
+  tk.t.forEach(function(t){s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y(t)+'" y2="'+y(t)+'" stroke="var(--line)"/><text x="'+(L-8)+'" y="'+(y(t)+4)+'" text-anchor="end" font-size="11" fill="var(--muted)" '+MONO+'>'+fmt(t,tk.dp)+'</text>';});
+  var labs=[];function hl(val,c,dash,lab){s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y(val)+'" y2="'+y(val)+'" stroke="'+c+'" stroke-width="1.5" '+(dash?'stroke-dasharray="'+dash+'"':'')+'/>';labs.push({y:y(val),t:lab,c:c});}
+  hl(ucl,"var(--crit)","5 4","OEG "+fmt(ucl,Math.max(1,k.dp)));
+  hl(mean,"var(--muted)","","x̄ "+fmt(mean,Math.max(1,k.dp)));
+  hl(lcl,"var(--crit)","5 4","UEG "+fmt(lcl,Math.max(1,k.dp)));
+  hl(k.t,"var(--turq)","2 3","Ziel "+fmt(k.t,k.dp));
+  var o2={v:s};rlabels(labs,W-R+8,o2);s=o2.v;
+  s+='<path d="'+v.map(function(val,i){return (i?"L":"M")+x(i).toFixed(1)+","+y(val).toFixed(1)}).join("")+'" fill="none" stroke="var(--ink)" stroke-width="1.6"/>';
+  v.forEach(function(val,i){var out=val>ucl||val<lcl,last=i===n-1;
+    s+='<circle cx="'+x(i)+'" cy="'+y(val)+'" r="'+(last?5.5:3.2)+'" fill="'+(out?"var(--crit)":last?"var(--ink)":"var(--panel)")+'" stroke="'+(out?"var(--crit)":"var(--ink)")+'" stroke-width="1.5"/>';});
+  [1,5,10,15,20].forEach(function(m){s+='<text x="'+x(m-1)+'" y="'+(H-12)+'" text-anchor="middle" font-size="11" fill="var(--muted)" '+MONO+'>'+m+'</text>';});
+  s+='</svg>';
+  var outN=v.filter(function(val){return val>ucl||val<lcl}).length;
+  return {svg:s,note:outN?outN+" Messwert(e) außerhalb der Eingriffsgrenzen: Ursache prüfen.":"Alle Messwerte innerhalb der Eingriffsgrenzen: Der Prozess ist statistisch stabil."};
+}
+
+function chartPareto(k){
+  var W=720,H=300,L=46,R=56,T=18,B=58,d=k.pa.slice().sort(function(a,b){return b[1]-a[1]});
+  var tot=d.reduce(function(a,b){return a+b[1]},0),cum=0,maxv=d[0][1];
+  var tk=ticks(0,maxv,4),slot=(W-L-R)/d.length,bw=slot*0.62;
+  var y=function(val){return T+(tk.b-val)/(tk.b-tk.a)*(H-T-B)},yc=function(p){return T+(100-p)/100*(H-T-B)};
+  var s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Pareto-Diagramm der Reklamationsursachen">';
+  tk.t.forEach(function(t){s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y(t)+'" y2="'+y(t)+'" stroke="var(--line)"/><text x="'+(L-8)+'" y="'+(y(t)+4)+'" text-anchor="end" font-size="11" fill="var(--muted)" '+MONO+'>'+fmt(t,0)+'</text>';});
+  [0,50,80,100].forEach(function(p){s+='<text x="'+(W-R+8)+'" y="'+(yc(p)+4)+'" font-size="11" fill="var(--muted)" '+MONO+'>'+p+' %</text>';});
+  s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+yc(80)+'" y2="'+yc(80)+'" stroke="var(--warn)" stroke-dasharray="4 4" stroke-width="1.2"/>';
+  var pts=[];
+  d.forEach(function(it,i){var prev=cum;cum+=it[1];var pc=cum/tot*100,cx=L+slot*i+slot/2,vital=prev/tot*100<80;
+    s+='<rect x="'+(cx-bw/2)+'" y="'+y(it[1])+'" width="'+bw+'" height="'+(y(0)-y(it[1]))+'" fill="'+(vital?"var(--turq)":"var(--line)")+'"/>';
+    var inside=(y(0)-y(it[1]))>26;s+='<text x="'+cx+'" y="'+(inside?y(it[1])+17:y(it[1])-6)+'" text-anchor="middle" font-size="11.5" font-weight="600" fill="'+(inside&&vital?'var(--panel)':'var(--ink)')+'" '+MONO+'>'+it[1]+'</text>';
+    s+='<text x="'+cx+'" y="'+(H-B+18)+'" text-anchor="middle" font-size="11.5" fill="var(--ink)">'+esc(it[0])+'</text>';
+    pts.push([cx,yc(pc),pc]);});
+  s+='<path d="'+pts.map(function(p,i){return (i?"L":"M")+p[0]+","+p[1]}).join("")+'" fill="none" stroke="var(--ink)" stroke-width="1.8"/>';
+  pts.forEach(function(p){s+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="3.5" fill="var(--panel)" stroke="var(--ink)" stroke-width="1.5"/>';});
+  s+='<text x="'+L+'" y="'+(H-10)+'" font-size="11" fill="var(--muted)" '+MONO+'>Reklamationen je Ursache, letzte 3 Monate · Linie: kumulierter Anteil</text>';
+  return s+'</svg>';
+}
+
+function spark(k){
+  var v=series(k),W=90,H=26,lo=Math.min.apply(null,v),hi=Math.max.apply(null,v),r=hi-lo||1;
+  var x=function(i){return 2+i*(W-8)/(v.length-1)},y=function(val){return 3+(hi-val)/r*(H-6)};
+  var st=status(k);
+  return '<svg class="spark" viewBox="0 0 '+W+' '+H+'" aria-hidden="true"><path d="'+v.map(function(val,i){return (i?"L":"M")+x(i).toFixed(1)+","+y(val).toFixed(1)}).join("")+'" fill="none" stroke="var(--muted)" stroke-width="1.3"/><circle cx="'+x(v.length-1)+'" cy="'+y(v[v.length-1])+'" r="3" fill="'+col(st)+'"/></svg>';
+}
+
+function gauge(val,st){
+  var W=92,H=52,cx=46,cy=48,r=38,a=Math.PI*(1-val/100);
+  var x=cx+r*Math.cos(a),y=cy-r*Math.sin(a);
+  return '<svg viewBox="0 0 '+W+' '+H+'" aria-hidden="true"><path d="M8 48 A38 38 0 0 1 84 48" fill="none" stroke="var(--line)" stroke-width="8"/>'+
+    '<path d="M8 48 A38 38 0 0 1 '+x.toFixed(1)+' '+y.toFixed(1)+'" fill="none" stroke="'+(st==="ok"?"var(--turq)":col(st))+'" stroke-width="8"/>'+
+    '<line x1="'+cx+'" y1="'+cy+'" x2="'+(cx+(r-12)*Math.cos(Math.PI*0.1)).toFixed(1)+'" y2="'+(cy-(r-12)*Math.sin(Math.PI*0.1)).toFixed(1)+'" stroke="var(--muted)" stroke-width="1" opacity=".0"/></svg>';
+}
+function sym(st){return '<span class="sym '+st+'" aria-hidden="true"></span>';}
+function pips(n){var s='<span class="pips" aria-hidden="true">';for(var i=1;i<=5;i++)s+='<i class="'+(i<=Math.round(n)?"on":"")+'"></i>';return s+'</span>';}
+
+/* ---------- Seitenblatt ---------- */
+var lastTrigger=null,drawerOpen=false;
+function setLevel(n){}
+function showDrawer(trigger){
+  if(!drawerOpen){lastTrigger=trigger||document.activeElement;var d=$("#drawer"),s=$("#scrim");d.hidden=false;s.hidden=false;
+    requestAnimationFrame(function(){d.classList.add("on");s.classList.add("on")});document.body.classList.add("lock");drawerOpen=true;setTimeout(function(){$("#dx").focus()},50);}
+  $("#dbody").scrollTop=0;
+}
+function closeDrawer(){
+  if(!drawerOpen)return;var d=$("#drawer"),s=$("#scrim");d.classList.remove("on");s.classList.remove("on");document.body.classList.remove("lock");drawerOpen=false;setLevel(1);
+  setTimeout(function(){d.hidden=true;s.hidden=true},280);if(lastTrigger&&lastTrigger.focus)lastTrigger.focus();
+}
+$("#dx").onclick=closeDrawer;$("#scrim").onclick=closeDrawer;
+document.addEventListener("keydown",function(e){if(e.key==="Escape")closeDrawer();});
+function crumbs(p,k){
+  var h='<button data-c="home">Welt</button><span>›</span>';
+  if(k){h+='<button data-c="proc">'+p.id+'.0 '+esc(p.sh)+'</button><span>›</span><span>'+esc(k.n)+'</span>';}
+  else h+='<span>'+p.id+'.0 '+esc(p.sh)+'</span>';
+  $("#crumbs").innerHTML=h;
+  $("#crumbs [data-c=home]").onclick=closeDrawer;
+  var pb=$("#crumbs [data-c=proc]");if(pb)pb.onclick=function(){openProc(p.id)};
+}
+
+function openProc(pid,trigger){syncMap(pid);
+  var p=P(pid),sc=pScore(p),st=pStatus(sc),c=counts(p.k.map(function(k){return status(k)})),ma=matAvg(p);
+  crumbs(p,null);setLevel(2);
+  var groupsN={};p.k.forEach(function(k){groupsN[k.g]=(groupsN[k.g]||0)+1});
+  var h='<div class="ph"><span class="tag">Prozess '+p.id+'.0 · '+ZONES[p.zone]+'</span><h2 id="d-title">'+esc(p.de)+'</h2><span class="en" lang="en">PCF '+p.id+'.0 · '+esc(p.en)+'</span>'+
+    '<p>'+esc(p.purpose)+'</p><p class="muted" style="font-size:13.5px">Prozesseigner: <b style="color:var(--ink)">'+esc(p.owner)+'</b></p></div>';
+  h+='<div class="strip"><div><span class="tag">Prozessleistung</span><b class="num">'+fmt(sc,0)+' / 100</b><span class="statechip '+st+'">'+sym(st)+STXT[st]+'</span></div>'+
+     '<div><span class="tag">Kennzahlen</span><b class="num">'+p.k.length+'</b><span class="muted" style="font-size:12.5px">'+c.ok+' im Soll · '+c.warn+' Warnung · '+c.crit+' kritisch</span></div>'+
+     '<div><span class="tag">Reifegrad</span><b class="num">'+fmt(ma,1)+' / 5</b><span class="muted" style="font-size:12.5px">'+MAT_LVL[Math.round(ma)]+'</span></div>'+
+     '<div><span class="tag">Prozessgruppen</span><b class="num">'+p.groups.length+'</b><span class="muted" style="font-size:12.5px">Ebene 2</span></div></div>';
+  var L=["S","I","P","O","C"],T=["Lieferanten","Eingaben","Prozess","Ergebnisse","Kunden"];
+  h+='<section><div class="sub">SIPOC · Prozess auf einen Blick</div><div class="sipoc">'+p.sipoc.map(function(x,i){return '<div class="'+(i===2?"pr":"")+'"><b>'+L[i]+'</b><span class="tag">'+T[i]+'</span><span>'+esc(x)+'</span></div>'}).join("")+'</div></section>';
+  h+='<section><div class="sub">Kennzahlen · Klick öffnet das Datenblatt</div><div class="tblwrap"><table class="ktab"><thead><tr><th>Kennzahl</th><th>Gewicht</th><th class="r">Ist</th><th class="r">Ziel</th><th>Status</th><th>Verlauf</th></tr></thead><tbody>'+
+     p.k.map(function(k,i){var s2=status(k);return '<tr data-i="'+i+'" tabindex="0"><td class="kn"><b>'+esc(k.n)+'</b><small>'+k.g+' · '+esc(k.fr)+'</small></td>'+
+       '<td><span class="wbar"><span><i style="width:'+(k.wt/40*100)+'%"></i></span><em>'+k.wt+' %</em></span></td>'+
+       '<td class="r">'+esc(uv(k,k.c))+'</td><td class="r muted">'+esc(tgt(k))+'</td>'+
+       '<td><span class="statechip '+s2+'">'+sym(s2)+STXT[s2]+'</span></td><td>'+spark(k)+'</td></tr>'}).join("")+'</tbody></table></div></section>';
+  h+='<section><div class="sub">Prozessgruppen · Ebene 2</div><div class="groups">'+p.groups.map(function(g){var n=groupsN[g[0]]||0;return '<div><span class="c">'+g[0]+'</span><span>'+esc(g[1])+'</span><span class="n">'+(n?n+" KPI":"–")+'</span></div>'}).join("")+'</div></section>';
+  h+='<section><div class="sub">Reifegrad nach PDCA</div><div class="mat">'+p.mat.map(function(m,i){var cells="";for(var j=1;j<=5;j++)cells+='<i class="'+(j<=m?"on":"")+'"></i>';
+       return '<div class="row"><b>'+MAT_DIM[i]+'</b><span class="cells" aria-label="'+m+' von 5">'+cells+'</span><span class="lv">'+m+' · '+MAT_LVL[m]+'</span></div>'}).join("")+
+     '<details class="scale"><summary>Stufen des Reifegradmodells</summary><ol><li><b>Ad hoc:</b> abhängig von einzelnen Personen</li><li><b>Geregelt:</b> Abläufe sind abgestimmt, aber nicht einheitlich</li><li><b>Standardisiert:</b> beschrieben, verbindlich, geschult</li><li><b>Kennzahlengesteuert:</b> Ziele und Messung steuern den Prozess</li><li><b>Selbstlernend:</b> Abweichungen lösen systematisch Verbesserungen aus</li></ol></details></div></section>';
+  $("#dbody").innerHTML=h;
+  $$("#dbody .ktab tbody tr").forEach(function(tr){var go=function(){openKPI(pid,+tr.getAttribute("data-i"))};tr.onclick=go;tr.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}}});
+  showDrawer(trigger);
+}
+
+function openKPI(pid,i,trigger){syncMap(pid);
+  var p=P(pid),k=p.k[i],st=status(k);
+  crumbs(p,k);setLevel(3);
+  var h='<div class="ph"><span class="tag">Kennzahl '+k.id.replace("-",".K")+' · '+BSC[k.bsc]+'</span><h2 id="d-title">'+esc(k.n)+'</h2><p>'+esc(k.d)+'</p></div>';
+  h+='<div class="kv"><div><span class="tag">Ist</span><div class="val num">'+fmt(k.c,k.dp)+'<small>'+esc(k.u)+'</small></div></div>'+
+     '<div class="tg"><span class="tag">Ziel</span><b class="num">'+esc(tgt(k))+'</b><span class="muted" style="font-size:12.5px">'+esc(warnTxt(k))+'</span></div>'+
+     '<div class="st2"><span class="statechip '+st+'">'+sym(st)+STXT[st]+'</span><span class="muted" style="font-size:12.5px">'+esc(devTxt(k))+' · Punkte '+fmt(score(k),0)+' / 100</span></div></div>';
+  if(k.ch==="spc"){var c=chartSPC(k);
+    h+='<div class="chartbox"><div class="cap"><span>Regelkarte (Einzelwerte) · letzte 20 Messwerte</span><span class="cleg"><span><i style="border-color:var(--crit);border-top-style:dashed"></i>Eingriffsgrenzen (±3σ)</span><span><i style="border-color:var(--turq);border-top-style:dotted"></i>Ziel</span></span></div>'+c.svg+'<div class="cap" style="padding-top:6px"><span>'+esc(c.note)+'</span></div></div>';}
+  else if(k.ch==="pareto"){
+    h+='<div class="chartbox"><div class="cap"><span>Pareto-Analyse der Ursachen · Die türkisen Balken verursachen rund 80 % der Fälle</span></div>'+chartPareto(k)+'</div>';
+    h+='<div class="chartbox"><div class="cap"><span>Verlauf über 12 Monate</span><span class="cleg"><span><i style="border-color:var(--turq);border-top-style:dashed"></i>Ziel</span><span><i style="border-color:var(--warn);border-top-style:dashed"></i>kritische Grenze</span></span></div>'+chartTrend(k)+'</div>';}
+  else{
+    h+='<div class="chartbox"><div class="cap"><span>Verlauf über 12 Monate</span><span class="cleg">'+(k.p==="band"?'<span><i style="border-color:var(--soft);border-top-width:8px"></i>Zielband</span>':'<span><i style="border-color:var(--turq);border-top-style:dashed"></i>Ziel</span><span><i style="border-color:var(--warn);border-top-style:dashed"></i>kritische Grenze</span>')+'</span></div>'+chartTrend(k)+'</div>';}
+  h+='<div class="weight"><span class="pct num">'+k.wt+' %</span><div><p><b>Gewicht im Prozess.</b> '+esc(k.why)+'</p><small>Ermittelt per paarweisem Vergleich (AHP) der Kennzahlen dieses Prozesses. Die Gewichte eines Prozesses ergeben zusammen 100 %.</small></div></div>';
+  var g=p.groups.find(function(x){return x[0]===k.g});
+  h+='<dl class="spec">'+
+    '<div class="full"><dt>Formel</dt><dd class="f">'+esc(k.f)+'</dd></div>'+
+    '<div><dt>Einheit</dt><dd>'+esc(k.u==="×"?"Faktor":k.u)+'</dd></div>'+
+    '<div><dt>Messfrequenz</dt><dd>'+esc(k.fr)+'</dd></div>'+
+    '<div><dt>Richtung</dt><dd>'+(k.p==="hi"?"Höher ist besser":k.p==="lo"?"Niedriger ist besser":"Im Zielband halten")+'</dd></div>'+
+    '<div><dt>Zielwert · Grenze</dt><dd>'+esc(tgt(k))+' · '+esc(warnTxt(k))+'</dd></div>'+
+    '<div><dt>Datenquelle</dt><dd>'+esc(k.src)+'</dd></div>'+
+    '<div><dt>Verantwortlich</dt><dd>'+esc(p.owner)+'</dd></div>'+
+    '<div><dt>Prozessgruppe</dt><dd>'+k.g+' '+esc(g?g[1]:"")+'</dd></div>'+
+    '<div><dt>Strategische Perspektive</dt><dd>'+BSC[k.bsc]+'</dd></div>'+
+    '<div class="full"><dt>Messmethode</dt><dd>'+(k.ch==="spc"?"Einzelwerte je Messung, ausgewertet mit einer Regelkarte (x̄ ± 3σ aus der mittleren gleitenden Spannweite).":k.ch==="pareto"?"Monatliche Quote plus Klassifizierung jeder Reklamation nach Hauptursache für die Pareto-Analyse.":"Periodenwert "+esc(k.fr)+", Vergleich mit Ziel und kritischer Grenze, Trend über 12 Monate.")+'</dd></div>'+
+    '</dl>';
+  h+='<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">'+
+    (i>0?'<button class="btn ghost" data-nav="-1">← '+esc(p.k[i-1].n)+'</button>':'<span></span>')+
+    (i<p.k.length-1?'<button class="btn ghost" data-nav="1">'+esc(p.k[i+1].n)+' →</button>':'<button class="btn ghost" data-nav="0">Zurück zum Prozess</button>')+'</div>';
+  $("#dbody").innerHTML=h;
+  $$("#dbody [data-nav]").forEach(function(b){b.onclick=function(){var n=+b.getAttribute("data-nav");if(n===0)openProc(pid);else openKPI(pid,i+n);}});
+  showDrawer(trigger);
+}
+
+/* ---------- Strategieraum ---------- */
+var CRIT=["Kosten","Qualität","Liefertreue","Risiko"];
+var OPTS=["Lieferant A","Lieferant B","Lieferant C"];
+var NW={w:[30,30,25,15],s:[[8,6,9],[6,9,5],[7,8,6],[5,7,4]]};
+var PAIRS=[[0,1,1],[0,2,-1],[0,3,-2],[1,2,-2],[1,3,-3],[2,3,-1]];
+var tab="tows";
+
+function toolTOWS(){
+  return '<p class="lead">Die TOWS-Matrix kombiniert Stärken und Schwächen mit Chancen und Risiken. Jede Kombination ergibt eine andere Stoßrichtung. Beispiel eines fiktiven Logistikunternehmens am Bodensee.</p>'+
+  '<div class="tows">'+
+   '<div class="hd corner"><span class="tag">intern ↓ · extern →</span></div>'+
+   '<div class="hd"><b>Stärken (S)</b><ul><li>Hohe Liefertreue</li><li>Erfahrenes Logistikteam</li></ul></div>'+
+   '<div class="hd"><b>Schwächen (W)</b><ul><li>Geringer Digitalisierungsgrad</li><li>Lange Entwicklungszyklen</li></ul></div>'+
+   '<div class="hd"><b>Chancen (O)</b><ul><li>Nachfrage nach nachhaltiger Logistik</li><li>Neue Kunden in der Schweiz</li></ul></div>'+
+   '<div class="strat"><b>SO · AUSBAUEN</b>Liefertreue als Verkaufsargument für Neukunden in der Schweiz einsetzen.</div>'+
+   '<div class="strat"><b>WO · AUFHOLEN</b>Digitalisierung gezielt dort, wo neue Kunden Online-Bestellung und Sendungsverfolgung erwarten.</div>'+
+   '<div class="hd"><b>Risiken (T)</b><ul><li>Steigende Energie- und Materialkosten</li><li>Fachkräftemangel</li></ul></div>'+
+   '<div class="strat"><b>ST · ABSICHERN</b>Logistik-Know-how nutzen, um Transport- und Energiekosten je Sendung zu senken.</div>'+
+   '<div class="strat"><b>WT · VERMEIDEN</b>Entwicklungszyklen verkürzen, bevor der Kostendruck die Margen aufzehrt.</div>'+
+  '</div><p class="lead">Nächster Schritt: Die gewählte Stoßrichtung wird in der Strategy Map in konkrete Ziele und Kennzahlen übersetzt.</p>';
+}
+
+var OBJ=[
+ {r:0,x:420,t:"Profitabel wachsen",k:"3-1"},{r:0,x:760,t:"Liquidität sichern",k:"9-1"},
+ {r:1,x:420,t:"Zuverlässig liefern",k:"4-1"},{r:1,x:760,t:"Kunden begeistern",k:"6-1"},
+ {r:2,x:305,t:"Durchlaufzeit senken",k:"4-5"},{r:2,x:590,t:"Schneller innovieren",k:"2-1"},{r:2,x:858,t:"Qualität sichern",k:"13-2"},
+ {r:3,x:420,t:"Talente binden",k:"7-2"},{r:3,x:760,t:"Digitale Basis stärken",k:"8-1"}];
+var LINKS=[[7,4],[7,6],[8,4],[8,5],[4,2],[4,1],[6,3],[6,2],[5,3],[2,0],[3,0]];
+function toolMap(){
+  var W=990,H=470,RY=[30,140,250,360],NW_=236,NH=70,rows=["Finanzen","Kunden","Prozesse","Lernen und\nEntwicklung"];
+  var s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Strategy Map mit vier Perspektiven und Ursache-Wirkungs-Pfeilen">';
+  s+='<defs><marker id="sm-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="var(--muted)"/></marker></defs>';
+  rows.forEach(function(r,i){var y=RY[i];s+='<rect x="0" y="'+(y-12)+'" width="'+W+'" height="'+(NH+24)+'" fill="'+(i%2?"var(--panel2)":"var(--panel)")+'"/>';
+    r.split("\n").forEach(function(line,j){s+='<text x="16" y="'+(y+NH/2+4+j*16-(r.indexOf("\n")>0?8:0))+'" font-family="Bahnschrift,DIN Alternate,Arial Narrow,sans-serif" font-size="15" font-weight="600" fill="var(--ink)">'+line+'</text>';});});
+  LINKS.forEach(function(l){var a=OBJ[l[0]],b=OBJ[l[1]];var y1=RY[a.r],y2=RY[b.r]+NH;var mid=(y1+y2)/2;
+    s+='<path d="M'+a.x+' '+y1+' C'+a.x+' '+mid+' '+b.x+' '+mid+' '+b.x+' '+(y2+2)+'" fill="none" stroke="var(--muted)" stroke-width="1.4" marker-end="url(#sm-a)"/>';});
+  OBJ.forEach(function(o,i){var k=KMAP[o.k],st=status(k),y=RY[o.r];
+    s+='<g class="obj '+st+'" data-k="'+o.k+'" tabindex="0" role="button" aria-label="'+esc(o.t+": "+k.n+" "+uv(k,k.c)+", "+STXT[st])+'">'+
+      '<rect x="'+(o.x-NW_/2)+'" y="'+y+'" width="'+NW_+'" height="'+NH+'" rx="4"/>'+
+      '<text x="'+(o.x-NW_/2+12)+'" y="'+(y+24)+'" font-family="Bahnschrift,DIN Alternate,Arial Narrow,sans-serif" font-size="16" font-weight="600" fill="var(--ink)">'+esc(o.t)+'</text>'+
+      '<text x="'+(o.x-NW_/2+12)+'" y="'+(y+46)+'" font-size="12" fill="var(--muted)">'+esc(k.n.length>26?k.n.slice(0,25)+"…":k.n)+'</text>'+
+      '<text x="'+(o.x-NW_/2+12)+'" y="'+(y+62)+'" font-size="12" '+MONO+' fill="'+col(st)+'">'+esc(uv(k,k.c))+' · Ziel '+esc(tgt(k))+'</text></g>';});
+  s+='</svg>';
+  return '<p class="lead">Die Strategy Map verbindet die vier Perspektiven der Balanced Scorecard über Ursache-Wirkungs-Beziehungen: Befähiger unten, Ergebnisse oben. Jedes Ziel hängt an einer Kennzahl aus der Werkshalle. Ein Klick öffnet ihr Datenblatt.</p><div class="smap">'+s+'</div>';
+}
+
+function ahpCalc(){
+  var n=CRIT.length,A=[],i,j;for(i=0;i<n;i++){A.push([]);for(j=0;j<n;j++)A[i].push(1);}
+  PAIRS.forEach(function(pr){var a=pr[2]<0?1-pr[2]:1/(1+pr[2]);A[pr[0]][pr[1]]=a;A[pr[1]][pr[0]]=1/a;});
+  var w=A.map(function(r){return Math.pow(r.reduce(function(x,y){return x*y},1),1/n)}),sw=w.reduce(function(a,b){return a+b},0);w=w.map(function(x){return x/sw});
+  for(var it=0;it<60;it++){var nw=A.map(function(r){return r.reduce(function(a,x,j){return a+x*w[j]},0)}),s=nw.reduce(function(a,b){return a+b},0);w=nw.map(function(x){return x/s});}
+  var Aw=A.map(function(r){return r.reduce(function(a,x,j){return a+x*w[j]},0)}),lam=Aw.reduce(function(a,x,i){return a+x/w[i]},0)/n;
+  var CI=(lam-n)/(n-1),CR=CI/0.90;return {w:w,lam:lam,CR:CR};
+}
+function pairTxt(pr){var v=pr[2],a=CRIT[pr[0]],b=CRIT[pr[1]];if(v===0)return a+" und "+b+" sind gleich wichtig";var f=Math.abs(v)+1,words=f<=2?"etwas":f<=4?"deutlich":f<=6?"viel":"extrem";
+  return (v<0?a:b)+" ist "+words+" wichtiger ("+f+" : 1)";}
+function toolAHP(){
+  var h='<p class="lead">Der Analytische Hierarchieprozess (AHP) leitet Gewichte aus paarweisen Vergleichen ab. Statt „Kosten 30 %“ zu schätzen, beantworten Sie nur: Was ist wichtiger, und wie viel? Der Konsistenzwert zeigt, ob die Urteile zueinander passen. Beispiel: Kriterien für die Lieferantenauswahl.</p>';
+  h+='<div class="ahp"><div>'+PAIRS.map(function(pr,i){return '<div class="pair"><span>'+CRIT[pr[0]]+'</span><input type="range" id="ahp-'+i+'" min="-8" max="8" step="1" value="'+pr[2]+'" aria-label="'+CRIT[pr[0]]+' gegen '+CRIT[pr[1]]+'"><span>'+CRIT[pr[1]]+'</span><span class="v" id="ahpv-'+i+'">'+pairTxt(pr)+'</span></div>'}).join("")+'</div>';
+  h+='<div class="res" id="ahp-res"></div></div>';
+  return h;
+}
+function renderAHPres(){
+  var r=ahpCalc(),ok=r.CR<0.1;
+  $("#ahp-res").innerHTML='<span class="tag">Ergebnis · Gewichte</span>'+r.w.map(function(w,i){return '<div class="hbar"><b>'+CRIT[i]+'</b><span><i style="width:'+(w*100).toFixed(1)+'%"></i></span><em>'+fmt(w*100,1)+' %</em></div>'}).join("")+
+   '<div class="cr">'+sym(ok?"ok":"warn")+'<span>Konsistenzverhältnis CR = <b class="mono">'+fmt(r.CR,3)+'</b> · '+(ok?"konsistent (unter 0,10)":"inkonsistent: Vergleiche überprüfen")+'</span></div>'+
+   '<button class="btn" id="ahp-apply">Gewichte in Schritt 4 übernehmen →</button>';
+  $("#ahp-apply").onclick=function(){var w=ahpCalc().w.map(function(x){return Math.round(x*100)});NW.w=w;setTab("nwa");};
+}
+function nwaCalc(w){var sw=w.reduce(function(a,b){return a+b},0)||1;return OPTS.map(function(o,j){return NW.s.reduce(function(a,row,i){return a+w[i]/sw*row[j]},0)});}
+function winner(v){var m=0;v.forEach(function(x,i){if(x>v[m])m=i});return m;}
+function toolNWA(){
+  var h='<p class="lead">Die Nutzwertanalyse bewertet jede Option je Kriterium mit 1 bis 10 Punkten und gewichtet die Punkte. Die Robustheitsprüfung verschiebt jedes Gewicht um ±10 Prozentpunkte und zeigt, ob der Gewinner stabil bleibt. Werte sind änderbar.</p>';
+  h+='<div class="nwa"><div style="overflow-x:auto"><table class="nwt"><thead><tr><th>Kriterium</th><th style="min-width:130px">Gewicht</th>'+OPTS.map(function(o){return '<th>'+o+'</th>'}).join("")+'</tr></thead><tbody>'+
+    CRIT.map(function(c,i){return '<tr><td>'+c+'</td><td><input type="range" id="nw-w'+i+'" min="0" max="60" value="'+NW.w[i]+'" aria-label="Gewicht '+c+'"><span class="wv" id="nw-wv'+i+'"></span></td>'+
+      OPTS.map(function(o,j){return '<td><input type="number" min="1" max="10" id="nw-s'+i+'-'+j+'" value="'+NW.s[i][j]+'" aria-label="'+o+', '+c+'"></td>'}).join("")+'</tr>'}).join("")+
+    '</tbody><tfoot><tr><td colspan="2">Nutzwert</td>'+OPTS.map(function(o,j){return '<td id="nw-r'+j+'"></td>'}).join("")+'</tr></tfoot></table></div>';
+  h+='<div class="res" id="nw-res"></div></div>';
+  return h;
+}
+function renderNWA(){
+  var sw=NW.w.reduce(function(a,b){return a+b},0)||1;
+  NW.w.forEach(function(w,i){$("#nw-wv"+i).textContent=fmt(w/sw*100,0)+" %";});
+  var v=nwaCalc(NW.w),win=winner(v),mx=Math.max.apply(null,v);
+  v.forEach(function(x,j){var td=$("#nw-r"+j);td.textContent=fmt(x,2);td.className=j===win?"win":"";});
+  var sens=[];
+  CRIT.forEach(function(c,i){[-10,10].forEach(function(d){var w=NW.w.map(function(x){return x/sw*100});w[i]=Math.max(0,w[i]+d);if(winner(nwaCalc(w))!==win&&sens.indexOf(c)<0)sens.push(c);});});
+  $("#nw-res").innerHTML='<span class="tag">Ergebnis</span>'+v.map(function(x,j){return '<div class="hbar"><b>'+OPTS[j]+'</b><span><i style="width:'+(x/10*100).toFixed(1)+'%;'+(j===win?"":"background:var(--muted)")+'"></i></span><em>'+fmt(x,2)+'</em></div>'}).join("")+
+    '<div class="robust">'+(sens.length?sym("warn")+' <b>Sensitiv.</b> Verschiebt sich das Gewicht von '+sens.join(" oder ")+' um 10 Prozentpunkte, gewinnt eine andere Option. Diese Gewichtung vor der Entscheidung absichern.':sym("ok")+' <b>Robust.</b> '+OPTS[win]+' bleibt vorne, auch wenn ein einzelnes Gewicht um ±10 Prozentpunkte verschoben wird.')+'</div>';
+}
+function setTab(t){
+  tab=t;$$("#steps button").forEach(function(b){b.setAttribute("aria-selected",String(b.getAttribute("data-t")===t))});
+  var el=$("#tool");
+  if(t==="tows")el.innerHTML=toolTOWS();
+  if(t==="map"){el.innerHTML=toolMap();$$(".smap .obj").forEach(function(g){var go=function(){var k=KMAP[g.getAttribute("data-k")];openKPI(k.pid,k.i,g)};g.onclick=go;g.onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();go();}}});}
+  if(t==="ahp"){el.innerHTML=toolAHP();PAIRS.forEach(function(pr,i){$("#ahp-"+i).oninput=function(e){pr[2]=+e.target.value;$("#ahpv-"+i).textContent=pairTxt(pr);renderAHPres();}});renderAHPres();}
+  if(t==="nwa"){el.innerHTML=toolNWA();CRIT.forEach(function(c,i){$("#nw-w"+i).oninput=function(e){NW.w[i]=+e.target.value;renderNWA();};
+      OPTS.forEach(function(o,j){$("#nw-s"+i+"-"+j).oninput=function(e){var x=Math.max(1,Math.min(10,+e.target.value||1));NW.s[i][j]=x;renderNWA();}});});renderNWA();}
+}
+$$("#steps button").forEach(function(b){b.onclick=function(){setTab(b.getAttribute("data-t"))}});
+
+/* ---------- Atlas ---------- */
+var CELLS={"1":[[0,1],[1,1],[-1,1],[0,0]],"2":[[-6,5],[-5,5],[-7,5]],"3":[[-3,5],[-4,5],[-4,6],[-3,4],[-2,5]],"4":[[0,5],[1,5],[-1,5],[1,4]],"5":[[3,5],[4,5],[2,5]],"6":[[6,4],[5,4],[5,5],[7,4],[6,5]],"7":[[-6,10],[-5,10],[-5,9],[-6,9],[-7,10],[-6,11],[-7,11],[-8,11]],"8":[[-4,10],[-3,10],[-4,11],[-5,11],[-3,9],[-4,9],[-3,11]],"9":[[-1,9],[-2,9],[-1,8],[0,9],[0,8],[-1,10],[-2,10],[1,8],[1,9],[0,10],[-2,8]],"10":[[3,9],[4,9],[3,10],[2,10]],"11":[[5,-1],[6,-1],[4,-1],[5,0]],"12":[[7,-1],[8,-1],[7,0],[6,0],[8,-2]],"13":[[2,0],[1,0],[2,-1],[3,0],[3,-1],[2,1],[3,1],[4,0]]};
+var LBL={"1":["Vision &","Strategie"],"2":["Produkte","entwickeln"],"3":["Vermarkten","& Verkaufen"],"4":["Supply","Chain"],"5":["Leistung","erbringen"],"6":["Kunden-","service"],"7":["Personal"],"8":["IT"],"9":["Finanzen"],"10":["Anlagen"],"11":["Risiko &","Compliance"],"12":["Externe","Beziehungen"],"13":["Unternehmens-","fähigkeiten"]};
+var CONT={L:{n:"Führung",v:"steuern"},C:{n:"Wertschöpfung",v:"liefern"},S:{n:"Versorgung",v:"befähigen"}};
+var HR=26,S3=Math.sqrt(3),DY={L:-14,C:0,S:40};
+var DIRS=[[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]];
+var NS="http://www.w3.org/2000/svg";
+var REDUCE=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+function corner(x,y,i){var a=Math.PI/180*(60*i-30);return [x+HR*Math.cos(a),y+HR*Math.sin(a)];}
+function pt(p){return p[0].toFixed(1)+","+p[1].toFixed(1);}
+
+var HEX=[],HK={};
+PROC.forEach(function(p){var cs=CELLS[p.id];p.groups.forEach(function(g,i){var c=cs[i];
+  var h={key:c[0]+","+c[1],pid:p.id,p:p,g:g,q:c[0],r:c[1],x:HR*S3*(c[0]+c[1]/2),y:HR*1.5*c[1]+DY[p.zone],k:p.k.filter(function(k){return k.g===g[0]})};
+  HEX.push(h);HK[h.key]=h;});});
+function hexOf(pid){return HEX.filter(function(h){return h.pid===pid});}
+function bbox(list){var b=[1e9,1e9,-1e9,-1e9];list.forEach(function(h){b[0]=Math.min(b[0],h.x-HR);b[1]=Math.min(b[1],h.y-HR);b[2]=Math.max(b[2],h.x+HR);b[3]=Math.max(b[3],h.y+HR);});return b;}
+function worst(list){return list.indexOf("crit")>=0?"crit":list.indexOf("warn")>=0?"warn":"ok";}
+
+var layer="perf",sel=null,svg=$("#map"),VB0,vbCur;
+function hexFill(h){
+  if(layer==="perf"){if(!h.k.length)return "var(--land)";var s=worst(h.k.map(function(k){return status(k)}));return s==="ok"?"var(--land-k)":s==="warn"?"var(--warnF)":"var(--critF)";}
+  if(layer==="mat"){return "var(--m"+Math.round(matAvg(h.p))+")";}
+  if(layer==="wt"){var w=h.k.reduce(function(a,k){return a+k.wt},0);return w===0?"var(--land)":w<=15?"var(--m2)":w<=30?"var(--m3)":w<=45?"var(--m4)":"var(--m5)";}
+  if(!h.k.length)return "var(--land)";var top=h.k.slice().sort(function(a,b){return b.wt-a.wt})[0];return "color-mix(in srgb, var(--b"+top.bsc+") 58%, var(--land))";
+}
+
+function buildMap(){
+  var all=bbox(HEX);var L=all[0]-190,T=all[1]-40,W=all[2]-all[0]+340,H=all[3]-all[1]+82;
+  VBW=[L,T,W,H];VBN=[all[0]-18,all[1]-26,all[2]-all[0]+36,all[3]-all[1]+60];VB0=pickVB();
+  var s='<defs><marker id="cm" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="var(--turq)"/></marker></defs>';
+  s+='<rect id="ocean" x="'+(L-400)+'" y="'+(T-400)+'" width="'+(W+800)+'" height="'+(H+800)+'" fill="var(--sea)"/>';
+  // Gradnetz
+  var cx=L+W/2,cy=T+H/2;
+  for(var i=-3;i<=3;i++){var yy=cy+i*H/7;s+='<path class="grat" d="M'+(L-50)+' '+yy+' Q'+cx+' '+(yy+(i*14))+' '+(L+W+50)+' '+yy+'"/>';}
+  for(var j=-5;j<=5;j++){var xx=cx+j*W/11;s+='<path class="grat" d="M'+xx+' '+(T-50)+' Q'+(xx+j*18)+' '+cy+' '+xx+' '+(T+H+50)+'"/>';}
+  // Strömungen
+  var bL=bbox(HEX.filter(function(h){return h.p.zone==="L"})),bC=bbox(HEX.filter(function(h){return h.p.zone==="C"})),bS=bbox(HEX.filter(function(h){return h.p.zone==="S"}));
+  var gy1=(bL[3]+bC[1])/2,gy2=(bC[3]+bS[1])/2;
+  s+='<path class="cur" d="M'+(bL[0]-10)+' '+(bL[3]-6)+' C'+(bL[0]-60)+' '+(gy1-10)+' '+(bC[0]+40)+' '+(gy1+6)+' '+(bC[0]+150)+' '+(bC[1]+18)+'" marker-end="url(#cm)"/>';
+  s+='<text class="curl" x="'+(bC[0]+20)+'" y="'+(gy1-2)+'">Ziele · Vorgaben</text>';
+  s+='<path class="cur" d="M'+(bC[2]-60)+' '+(bC[1]+4)+' C'+(bC[2]-40)+' '+(gy1-4)+' '+(bL[2]+10)+' '+(gy1+10)+' '+(bL[2]-10)+' '+(bL[3]-4)+'" marker-end="url(#cm)"/>';
+  s+='<text class="curl" x="'+(bL[2]+14)+'" y="'+(gy1+4)+'">Kennzahlen · Rückmeldung</text>';
+  s+='<path class="cur" d="M'+(bS[0]+230)+' '+(bS[1]+10)+' C'+(bS[0]+240)+' '+(gy2+6)+' '+(bS[0]+270)+' '+(gy2-8)+' '+(bS[0]+280)+' '+(bC[3]-8)+'" marker-end="url(#cm)"/>';
+  s+='<text class="curl" x="'+(bS[0]+296)+'" y="'+(gy2+4)+'">Menschen · IT · Kapital · Anlagen</text>';
+  var cmid=(bC[1]+bC[3])/2;
+  s+='<path class="cur" d="M'+(bC[0]-120)+' '+cmid+' L'+(bC[0]-8)+' '+cmid+'" marker-end="url(#cm)"/>';
+  s+='<text class="curl" x="'+(bC[0]-122)+'" y="'+(cmid+16)+'">Kundenbedarf</text>';
+  s+='<path class="cur" d="M'+(bC[2]+8)+' '+cmid+' L'+(bC[2]+120)+' '+cmid+'" marker-end="url(#cm)"/>';
+  s+='<text class="curl" x="'+(bC[2]+12)+'" y="'+(cmid+16)+'">Kundennutzen</text>';
+  // Kontinentnamen
+  s+='<text class="cont" x="'+(bL[0]-14)+'" y="'+(bL[1]+30)+'" text-anchor="end">Führung</text><text class="cont-sub" x="'+(bL[0]-14)+'" y="'+(bL[1]+44)+'" text-anchor="end">Führungsprozesse · steuern</text>';
+  s+='<text class="cont" x="'+(bC[0]-132)+'" y="'+(cmid-30)+'" style="letter-spacing:.14em">Wertschöpfung</text><text class="cont-sub" x="'+(bC[0]-132)+'" y="'+(cmid-17)+'">Kernprozesse · liefern</text>';
+  var smid=(bS[1]+bS[3])/2;s+='<text class="cont" x="'+(bS[0]-14)+'" y="'+(smid-4)+'" text-anchor="end">Versorgung</text><text class="cont-sub" x="'+(bS[0]-14)+'" y="'+(smid+10)+'" text-anchor="end">Unterstützung · befähigen</text>';
+  // Küsten und Grenzen
+  var coast="",brd="";
+  HEX.forEach(function(h){DIRS.forEach(function(d,i){var n=HK[(h.q+d[0])+","+(h.r+d[1])];var a=corner(h.x,h.y,i),b=corner(h.x,h.y,(i+1)%6);
+    if(!n)coast+="M"+pt(a)+"L"+pt(b);else if(n.pid!==h.pid&&h.key<n.key)brd+="M"+pt(a)+"L"+pt(b);});});
+  s+='<path class="shore" d="'+coast+'"/>';
+  // Länder
+  PROC.forEach(function(p){
+    s+='<g class="country" data-p="'+p.id+'">';
+    var n=0;
+    hexOf(p.id).forEach(function(h){
+      var pts=[0,1,2,3,4,5].map(function(i){return pt(corner(h.x,h.y,i))}).join(" ");
+      s+='<polygon class="hex" data-key="'+h.key+'" points="'+pts+'" fill="'+hexFill(h)+'"/>';
+      s+='<text class="code" x="'+h.x+'" y="'+(h.y+(h.k.length?-7:3))+'" text-anchor="middle">'+h.g[0]+'</text>';
+    });
+    hexOf(p.id).forEach(function(h){var m=h.k.length;h.k.forEach(function(k,j){var px=h.x+(j-(m-1)/2)*11,py=h.y+(h.k.length?6:0);k._n=k.i+1;
+      s+='<g class="pin" data-k="'+k.id+'" transform="translate('+px.toFixed(1)+' '+py.toFixed(1)+')"><circle r="4" fill="'+col(status(k))+'"/><text y="2" text-anchor="middle">'+(k.i+1)+'</text></g>';});});
+    s+='</g>';
+  });
+  s+='<path class="brd" d="'+brd+'"/><path class="coast" d="'+coast+'"/>';
+  // Ländernamen
+  PROC.forEach(function(p){var hs=hexOf(p.id),x=0,y=0;hs.forEach(function(h){x+=h.x;y+=h.y});x/=hs.length;y/=hs.length;
+    var st=pStatus(pScore(p));
+    var lines=LBL[p.id],y0=y-(lines.length-1)*6;
+    s+='<text class="clab" data-p="'+p.id+'" x="'+x.toFixed(1)+'" y="'+y0.toFixed(1)+'" text-anchor="middle">'+lines.map(function(t,i){return '<tspan x="'+x.toFixed(1)+'" dy="'+(i?12:0)+'">'+(i===0&&st!=="ok"?'<tspan fill="'+col(st)+'">'+(st==="warn"?"▲ ":"■ ")+'</tspan>':'')+esc(t)+'</tspan>'}).join("")+'</text>';});
+  s+='<path class="hexhl" id="hexhl" d=""/>';
+  // Kompass und Maßstab
+  var kx=L+W-46,ky=T+H-54;
+  s+='<g class="compass" transform="translate('+kx+' '+ky+')"><circle r="16" fill="none" stroke="var(--muted)" stroke-width=".8"/><path d="M0 -20 L4 0 L0 20 L-4 0 Z" fill="var(--muted)" opacity=".5"/><path d="M0 -20 L4 0 L-4 0 Z" fill="var(--ink)"/><text y="-24" text-anchor="middle">N</text></g>';
+  s+='<g transform="translate('+(kx-140)+' '+(T+H-22)+')"><polygon points="'+[0,1,2,3,4,5].map(function(i){var a=Math.PI/180*(60*i-30);return (8*Math.cos(a)).toFixed(1)+","+(8*Math.sin(a)).toFixed(1)}).join(" ")+'" fill="var(--land-k)" stroke="var(--coast)" stroke-width=".8"/><text x="14" y="3" class="cont-sub" style="letter-spacing:.06em">1 Sechseck = 1 Prozessgruppe</text></g>';
+  svg.innerHTML=s;setVB(VB0.slice());
+}
+var VBW,VBN;
+function pickVB(){var n=$("#mapbox").clientWidth<640;svg.classList.toggle("narrow",n);return (n?VBN:VBW).slice();}
+window.addEventListener("resize",function(){var v=pickVB();if(v.join()!==VB0.join()){VB0=v;if(!sel)setVB(VB0.slice());}});
+function setVB(v){vbCur=v;svg.setAttribute("viewBox",v.map(function(x){return x.toFixed(1)}).join(" "));}
+function animVB(to){var from=vbCur.slice(),t0=null,dur=REDUCE?0:560;
+  function step(ts){if(t0===null)t0=ts;var p=dur?Math.min(1,(ts-t0)/dur):1,e=p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2;setVB(from.map(function(f,i){return f+(to[i]-f)*e}));if(p<1)requestAnimationFrame(step);}
+  requestAnimationFrame(step);}
+function refill(){$$("#map .hex").forEach(function(el){el.setAttribute("fill",hexFill(HK[el.getAttribute("data-key")]))});renderLegend();}
+
+/* Tooltip */
+var tip=$("#tip");
+function tipHTML(h,k){
+  var p=h?h.p:P(k.pid);
+  var s='<span class="path">'+CONT[p.zone].n+' › '+p.id+'.0</span><b class="c">'+esc(p.sh.replace(/­/g,""))+'</b>';
+  if(k){var st=status(k);s+='<span class="pv">Stadt '+(k.i+1)+' · Provinz '+k.g+'</span><ul><li>'+sym(st)+'<span>'+esc(k.n)+'</span><em>'+esc(uv(k,k.c))+'</em></li></ul><span class="hint">Ziel '+esc(tgt(k))+' · Klick öffnet das Datenblatt</span>';return s;}
+  s+='<span class="pv">Provinz '+h.g[0]+' · '+esc(h.g[1])+'</span>';
+  if(h.k.length)s+='<ul>'+h.k.map(function(k){return '<li>'+sym(status(k))+'<span>'+esc(k.n)+'</span><em>'+esc(uv(k,k.c))+'</em></li>'}).join("")+'</ul>';
+  else s+='<span class="pv">Keine eigene Kennzahl. Prozessleistung des Landes: '+fmt(pScore(p),0)+' / 100</span>';
+  if(sel!==p.id)s+='<span class="hint">Klicken zum Hineinzoomen</span>';
+  return s;
+}
+function showTip(e,html){var box=$("#mapbox").getBoundingClientRect();tip.innerHTML=html;tip.classList.add("on");
+  var x=e.clientX-box.left+16,y=e.clientY-box.top+14,tw=tip.offsetWidth,th=tip.offsetHeight;
+  if(x+tw>box.width-8)x=e.clientX-box.left-tw-16;if(y+th>box.height-8)y=Math.max(8,e.clientY-box.top-th-14);
+  tip.style.left=x+"px";tip.style.top=y+"px";}
+function hideTip(){tip.classList.remove("on");}
+function hlHex(h){$("#hexhl").setAttribute("d",h?"M"+[0,1,2,3,4,5].map(function(i){return pt(corner(h.x,h.y,i))}).join("L")+"Z":"");}
+
+svg.addEventListener("pointermove",function(e){
+  if(e.pointerType&&e.pointerType!=="mouse"){return;}
+  var pin=e.target.closest(".pin"),hx=e.target.closest(".hex");
+  if(pin&&sel&&KMAP[pin.getAttribute("data-k")].pid===sel){var k=KMAP[pin.getAttribute("data-k")];hlHex(null);showTip(e,tipHTML(null,k));return;}
+  if(hx){var h=HK[hx.getAttribute("data-key")];hlHex(h);showTip(e,tipHTML(h));return;}
+  hlHex(null);hideTip();
+});
+svg.addEventListener("pointerleave",function(){hlHex(null);hideTip();});
+svg.addEventListener("click",function(e){
+  var pin=e.target.closest(".pin"),hx=e.target.closest(".hex");
+  if(pin&&sel){var k=KMAP[pin.getAttribute("data-k")];if(k.pid===sel){hideTip();openKPI(k.pid,k.i,pin);return;}}
+  if(hx){var h=HK[hx.getAttribute("data-key")];if(sel!==h.pid)zoomTo(h.pid);else{hlHex(h);}return;}
+  if(sel)zoomOut();
+});
+
+function zoomTo(pid){
+  sel=pid;var p=P(pid),b=bbox(hexOf(pid)),pad=HR*1.6;b=[b[0]-pad,b[1]-pad,b[2]+pad,b[3]+pad];
+  var w=b[2]-b[0],h=b[3]-b[1],ar=VB0[2]/VB0[3];if(w<460){b[0]-=(460-w)/2;w=460;}if(w/h<ar){var nw=h*ar;b[0]-=(nw-w)/2;w=nw;}else{var nh=w/ar;b[1]-=(nh-h)/2;h=nh;}
+  svg.classList.add("zoomed");$$("#map .country").forEach(function(g){g.classList.toggle("sel",g.getAttribute("data-p")===pid)});
+  $$("#map .clab").forEach(function(t){t.classList.toggle("sel",t.getAttribute("data-p")===pid)});
+  animVB([b[0],b[1],w,h]);$("#back").hidden=false;hlHex(null);hideTip();renderCrumb();renderCountry(p);
+}
+function zoomOut(){sel=null;svg.classList.remove("zoomed");$$("#map .sel").forEach(function(g){g.classList.remove("sel")});animVB(VB0.slice());$("#back").hidden=true;hlHex(null);renderCrumb();renderWorld();}
+$("#back").onclick=zoomOut;
+function renderCrumb(){
+  var c=$("#mcrumb");
+  if(!sel){c.innerHTML='<span>Welt</span><span>·</span><span>'+{perf:"Ebene Leistung",mat:"Ebene Reifegrad",wt:"Ebene Gewichtung",bsc:"Ebene BSC-Perspektive"}[layer]+'</span>';return;}
+  var p=P(sel);c.innerHTML='<button id="cr-w">Welt</button><span>›</span><span>'+CONT[p.zone].n+'</span><span>›</span><span>'+p.id+'.0 '+esc(p.sh.replace(/­/g,""))+'</span>';
+  $("#cr-w").onclick=zoomOut;
+}
+
+/* Legende */
+function renderLegend(){
+  var h="";
+  if(layer==="perf")h='<span class="t">Ebene Leistung · Provinzfarbe = schlechteste Kennzahl</span><div class="r"><span><i class="sw" style="background:var(--land-k)"></i>Im Soll</span><span><i class="sw" style="background:var(--warnF)"></i>Warnung</span><span><i class="sw" style="background:var(--critF)"></i>Kritisch</span><span><i class="sw" style="background:var(--land)"></i>ohne eigene Kennzahl</span><span>'+sym("ok")+'Stadt = Kennzahl</span></div>';
+  if(layer==="mat")h='<span class="t">Ebene Reifegrad · Ø der vier PDCA-Dimensionen je Land</span><div class="r">'+[1,2,3,4,5].map(function(i){return '<span><i class="sw" style="background:var(--m'+i+')"></i>'+i+' '+MAT_LVL[i]+'</span>'}).join("")+'</div>';
+  if(layer==="wt")h='<span class="t">Ebene Gewichtung · Summe der KPI-Gewichte je Provinz</span><div class="r"><span><i class="sw" style="background:var(--land)"></i>0 %</span><span><i class="sw" style="background:var(--m2)"></i>bis 15 %</span><span><i class="sw" style="background:var(--m3)"></i>bis 30 %</span><span><i class="sw" style="background:var(--m4)"></i>bis 45 %</span><span><i class="sw" style="background:var(--m5)"></i>über 45 %</span></div>';
+  if(layer==="bsc")h='<span class="t">Ebene BSC · Perspektive der wichtigsten Kennzahl je Provinz</span><div class="r">'+["F","K","P","L"].map(function(b){return '<span><i class="sw" style="background:color-mix(in srgb, var(--b'+b+') 58%, var(--land))"></i>'+BSC[b]+'</span>'}).join("")+'<span><i class="sw" style="background:var(--land)"></i>ohne Kennzahl</span></div>';
+  $("#mlegend").innerHTML=h;
+}
+
+/* Seitenpanel */
+function renderWorld(){
+  var sc=PROC.map(pScore),avg=sc.reduce(function(a,b){return a+b},0)/sc.length,st=pStatus(avg),c=counts(sc.map(pStatus));
+  var kc=counts(Object.keys(KMAP).map(function(id){return status(KMAP[id])}));
+  var h='<div class="pcard"><div class="h"><h3>Weltlage</h3><span class="tag">Demo · Sep 2026</span></div><div class="b">'+
+    '<div class="world">'+gauge(avg,st)+'<div><span class="big num">'+fmt(avg,1)+'<small> / 100</small></span><div class="muted" style="font-size:12.5px">Ø Prozessleistung aller Länder</div></div></div>'+
+    '<div class="counts"><span>'+sym("ok")+'<b>'+c.ok+'</b> im Soll</span><span>'+sym("warn")+'<b>'+c.warn+'</b> Warnung</span><span>'+sym("crit")+'<b>'+c.crit+'</b> kritisch</span></div>'+
+    '<span class="muted" style="font-size:12.5px">Städte (Kennzahlen): '+kc.ok+' im Soll · '+kc.warn+' Warnung · '+kc.crit+' kritisch</span></div></div>';
+  h+='<div class="pcard"><div class="h"><h3>Kontinente und Länder</h3></div><div class="b conts">'+["L","C","S"].map(function(z){
+      var ps=PROC.filter(function(p){return p.zone===z}),a=ps.reduce(function(x,p){return x+pScore(p)},0)/ps.length,nprov=ps.reduce(function(x,p){return x+p.groups.length},0);
+      return '<div class="cr"><div class="hd"><b>'+CONT[z].n+'</b><span>'+ps.length+' Länder · '+nprov+' Provinzen · Ø '+fmt(a,0)+'</span></div><div class="chips">'+
+        ps.map(function(p){var s2=pStatus(pScore(p));return '<button class="'+(s2==="ok"?"":s2)+'" data-p="'+p.id+'">'+sym(s2)+'<span class="n">'+p.id+'.0</span>'+esc(p.sh.replace(/­/g,""))+'</button>'}).join("")+'</div></div>';}).join("")+'</div></div>';
+  var all=Object.keys(KMAP).map(function(id){return KMAP[id]}).filter(function(k){return score(k)<100});
+  all.sort(function(a,b){return (100-score(b))*b.wt-(100-score(a))*a.wt});
+  h+='<div class="pcard"><div class="h"><h3>Handlungsbedarf</h3><span class="tag">nach Wirkung</span></div><ul class="todo">'+all.slice(0,5).map(function(k){var p=P(k.pid);
+    return '<li><button data-k="'+k.id+'">'+sym(status(k))+'<span><b>'+esc(k.n)+'</b><small>'+p.id+'.0 '+esc(p.sh.replace(/­/g,""))+' · '+k.wt+' %</small></span><span class="v">'+esc(uv(k,k.c))+'<br><small>Ziel '+esc(tgt(k))+'</small></span></button></li>'}).join("")+'</ul></div>';
+  $("#panel").innerHTML=h;
+  $$("#panel .chips button").forEach(function(b){b.onclick=function(){zoomTo(b.getAttribute("data-p"))};
+    b.onmouseenter=function(){$$("#map .country").forEach(function(g){g.style.opacity=g.getAttribute("data-p")===b.getAttribute("data-p")?"":"0.45"})};
+    b.onmouseleave=function(){$$("#map .country").forEach(function(g){g.style.opacity=""})};});
+  $$("#panel .todo button").forEach(function(b){b.onclick=function(){var k=KMAP[b.getAttribute("data-k")];zoomTo(k.pid);openKPI(k.pid,k.i,b);}});
+}
+function renderCountry(p){
+  var sc=pScore(p),st=pStatus(sc),ma=matAvg(p);
+  var h='<div class="pcard cp"><div class="b"><span class="tag">'+CONT[p.zone].n+' · Land '+p.id+'.0</span><h2>'+esc(p.de)+'</h2><span class="en" lang="en">PCF '+p.id+'.0 · '+esc(p.en)+'</span><p>'+esc(p.purpose)+'</p><p class="muted">Prozesseigner: <b style="color:var(--ink)">'+esc(p.owner)+'</b></p>'+
+    '<div class="mini"><div><span class="tag">Leistung</span><b class="num">'+fmt(sc,0)+'</b><span class="statechip '+st+'" style="font-size:12px">'+sym(st)+STXT[st]+'</span></div><div><span class="tag">Reifegrad</span><b class="num">'+fmt(ma,1)+'</b><span class="muted" style="font-size:11.5px">'+MAT_LVL[Math.round(ma)]+'</span></div><div><span class="tag">Städte</span><b class="num">'+p.k.length+'</b><span class="muted" style="font-size:11.5px">Kennzahlen</span></div></div>'+
+    '<button class="btn" id="full">Vollständiger Steckbrief →</button></div></div>';
+  h+='<div class="pcard"><div class="h"><h3>Städte · Kennzahlen</h3><span class="tag">Nr. = Pin</span></div><div class="b"><ul class="klist">'+p.k.map(function(k,i){var s2=status(k);
+    return '<li><button data-i="'+i+'"><span class="num '+(s2==="ok"?"":s2)+'">'+(i+1)+'</span><span><b>'+esc(k.n)+'</b><small>Provinz '+k.g+' · Gewicht '+k.wt+' %</small></span><span class="v">'+esc(uv(k,k.c))+'<br><small>'+esc(tgt(k))+'</small></span></button></li>'}).join("")+'</ul></div></div>';
+  h+='<div class="pcard"><div class="h"><h3>Provinzen · Prozessgruppen</h3></div><div class="b provs">'+hexOf(p.id).map(function(x){return '<button data-key="'+x.key+'"><span>'+x.g[0]+'</span>'+esc(x.g[1])+'</button>'}).join("")+'</div></div>';
+  $("#panel").innerHTML=h;
+  $("#full").onclick=function(){openProc(p.id,$("#full"))};
+  $$("#panel .klist button").forEach(function(b){b.onclick=function(){openKPI(p.id,+b.getAttribute("data-i"),b)}});
+  $$("#panel .provs button").forEach(function(b){var hx=HK[b.getAttribute("data-key")];b.onmouseenter=function(){hlHex(hx)};b.onfocus=function(){hlHex(hx)};b.onmouseleave=function(){hlHex(null)};b.onclick=function(){hlHex(hx)};});
+}
+
+/* Ebenen und Tabs */
+$$("#layers button").forEach(function(b){b.onclick=function(){layer=b.getAttribute("data-l");$$("#layers button").forEach(function(x){x.setAttribute("aria-pressed",String(x===b))});refill();renderCrumb();}});
+function showView(v){$("#v-atlas").hidden=v!=="atlas";$("#v-room").hidden=v!=="room";$("#t-atlas").setAttribute("aria-selected",String(v==="atlas"));$("#t-room").setAttribute("aria-selected",String(v==="room"));$("#layers").style.visibility=v==="atlas"?"visible":"hidden";}
+$("#t-atlas").onclick=function(){showView("atlas")};$("#t-room").onclick=function(){showView("room")};
+
+/* ---------- Start ---------- */
+buildMap();renderLegend();renderCrumb();renderWorld();setTab("tows");
+
+function syncMap(pid){if(sel!==pid&&!$("#v-atlas").hidden)zoomTo(pid);}
+})();
+
+</script>
+<script src="/prozessatlas/site.js"></script><nav class="keyone-legal" aria-label="Rechtliche Informationen"><a data-legal-impressum href="/impressum/">Impressum</a><a data-legal-privacy href="/datenschutz/">Datenschutzerklärung</a></nav><script src="/legal.js"></script></body>
+</html>

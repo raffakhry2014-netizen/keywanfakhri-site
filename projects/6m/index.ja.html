@@ -1,0 +1,854 @@
+<!doctype html><html lang="ja" dir="ltr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>6Mスクリーナー</title>
+
+
+
+<style>
+/* Layout: eine Prüfstrecke von links nach rechts – Trichter-Hero, dann Stationen, dann eine Aktie im Durchlauf, dann Rangliste. */
+:root{
+  --bg:#F1F4F5; --surface:#FFFFFF; --sunk:#E7ECEE; --ink:#13212A; --muted:#566872; --line:#D3DCE0;
+  --accent:#0A6C76; --accent-soft:#D9EDEF; --accent-ink:#FFFFFF;
+  --pass:#1D7A4C; --pass-soft:#DDF0E5; --fail:#B2362E; --fail-soft:#F7E0DD; --warn:#A8700F; --warn-soft:#F6EAD2;
+  --f-display:"Archivo","Arial Narrow",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E161B; --surface:#152128; --sunk:#1B2A32; --ink:#E2EAEE; --muted:#93A5AF; --line:#293943;
+  --accent:#4DB4BE; --accent-soft:#143A3F; --accent-ink:#06191C;
+  --pass:#4CC48B; --pass-soft:#123326; --fail:#EF7C71; --fail-soft:#3A1916; --warn:#E3AE4C; --warn-soft:#3A2B10;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E161B; --surface:#152128; --sunk:#1B2A32; --ink:#E2EAEE; --muted:#93A5AF; --line:#293943;
+  --accent:#4DB4BE; --accent-soft:#143A3F; --accent-ink:#06191C;
+  --pass:#4CC48B; --pass-soft:#123326; --fail:#EF7C71; --fail-soft:#3A1916; --warn:#E3AE4C; --warn-soft:#3A2B10;
+  color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;padding-inline:20px;padding-block:0 40px}
+.wrap{max-width:1120px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-display);font-stretch:88%;text-wrap:balance;margin:0;line-height:1.12}
+h1{font-size:clamp(28px,4.6vw,48px);font-weight:750;letter-spacing:-.01em}
+h2{font-size:clamp(22px,3vw,30px);font-weight:700}
+h3{font-size:18px;font-weight:650}
+p{margin:0}
+.eyebrow{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--f-mono)}
+.num{font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* Top bar */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);margin-inline:-20px;padding:10px 20px}
+.top .wrap{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-family:var(--f-display);font-weight:800;font-stretch:75%;font-size:20px;letter-spacing:.01em;display:flex;align-items:center;gap:8px}
+.brand i{display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--accent);transform:rotate(45deg)}
+.pill{font-family:var(--f-mono);font-size:11px;padding:3px 8px;border-radius:99px;border:1px solid var(--warn);color:var(--warn);background:var(--warn-soft);white-space:nowrap}
+.spacer{flex:1}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:99px;padding:3px;background:var(--surface)}
+.seg button{border:0;background:transparent;padding:6px 14px;border-radius:99px;cursor:pointer;font-size:13px;font-weight:500;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+
+/* Hero */
+.hero{padding-block:44px 18px;display:grid;gap:14px}
+.hero .lead{font-size:17px;max-width:62ch;color:var(--muted)}
+.hero .lead b{color:var(--ink);font-weight:600}
+.flow{position:relative;margin-top:14px;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.flow canvas{display:block;width:100%;height:260px}
+.flow-note{position:absolute;right:12px;bottom:8px;font-family:var(--f-mono);font-size:10.5px;color:var(--muted)}
+
+/* Stepper */
+section{padding-block:40px 8px}
+.sec-head{display:grid;gap:8px;margin-bottom:20px}
+.sec-head p{color:var(--muted);max-width:66ch}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.step{position:relative;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:14px 14px 12px;cursor:pointer;display:grid;gap:6px;transition:border-color .15s,transform .15s}
+.step:hover{border-color:var(--accent)}
+.step[aria-selected="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset;background:linear-gradient(var(--accent-soft),var(--surface) 70%)}
+.step .n{font-family:var(--f-mono);font-size:11px;color:var(--accent);letter-spacing:.06em}
+.step .t{font-family:var(--f-display);font-weight:700;font-stretch:85%;font-size:17px}
+.step .q{font-size:13px;color:var(--muted);line-height:1.4}
+.step .c{font-family:var(--f-mono);font-size:11.5px;color:var(--muted);margin-top:4px}
+.step:not(:last-child)::after{content:"";position:absolute;right:-9px;top:50%;width:8px;height:8px;border-top:1.5px solid var(--muted);border-right:1.5px solid var(--muted);transform:translateY(-50%) rotate(45deg);opacity:.6}
+
+.panel{margin-top:14px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:24px;display:grid;gap:20px}
+.panel-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:start}
+.panel-head .q{font-size:17px;margin-top:6px}
+.panel-head .plain{color:var(--muted);margin-top:8px;max-width:64ch}
+.rules{display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+.chip{font-family:var(--f-mono);font-size:11.5px;padding:4px 9px;border-radius:6px;background:var(--sunk);white-space:nowrap}
+.chip.gate{background:var(--accent-soft);color:var(--accent);font-weight:500}
+
+.inds{display:grid;gap:8px}
+.ind{border:1px solid var(--line);border-radius:var(--r);background:var(--bg)}
+.ind>button{width:100%;border:0;background:transparent;cursor:pointer;text-align:left;padding:12px 14px;display:grid;grid-template-columns:minmax(0,1fr) 140px 18px;gap:14px;align-items:center}
+.ind .nm{font-weight:600}
+.ind .sm{font-size:13.5px;color:var(--muted);margin-top:2px}
+.ind .fx{font-family:var(--f-mono);font-size:12px;color:var(--accent);margin-top:4px}
+.wbar{display:grid;gap:4px}
+.wbar .lab{font-family:var(--f-mono);font-size:11px;color:var(--muted);display:flex;justify-content:space-between}
+.wbar .tr{height:6px;border-radius:3px;background:var(--sunk);overflow:hidden}
+.wbar .tr span{display:block;height:100%;background:var(--accent);border-radius:3px}
+.chev{width:9px;height:9px;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);transform:rotate(45deg);transition:transform .2s;justify-self:center}
+.ind.open .chev{transform:rotate(-135deg)}
+.ind .more{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 22px;padding:4px 14px 16px;border-top:1px dashed var(--line);margin-top:0}
+.ind .more>div{min-width:0;padding-top:12px}
+.ind .more h4{margin:0 0 4px;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.ind .more .src{grid-column:1/-1;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:10px}
+body:not(.expert) .ind .fx{display:none}
+
+/* Regime */
+.regime{display:grid;gap:14px;border-top:1px solid var(--line);padding-top:18px}
+.regime-top{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.lamp{display:inline-flex;align-items:center;gap:8px;font-family:var(--f-display);font-weight:700;font-size:18px}
+.lamp i{width:14px;height:14px;border-radius:50%;background:var(--pass);box-shadow:0 0 0 4px var(--pass-soft)}
+.lamp.gelb i{background:var(--warn);box-shadow:0 0 0 4px var(--warn-soft)}
+.lamp.rot i{background:var(--fail);box-shadow:0 0 0 4px var(--fail-soft)}
+.sig{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.sig div{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--bg);display:grid;gap:2px;min-width:0}
+.sig .k{font-size:12.5px;color:var(--muted)}
+.sig .v{font-family:var(--f-mono);font-size:15px;font-weight:500;display:flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;flex:none}
+.dot.g{background:var(--pass)}.dot.y{background:var(--warn)}.dot.r{background:var(--fail)}
+
+/* CRV diagram in stage 4 */
+.crv-demo{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:20px;border-top:1px solid var(--line);padding-top:18px;align-items:center}
+.ev{display:grid;gap:10px}
+.ev input[type=range]{width:100%;accent-color:var(--accent)}
+.ev .out{font-family:var(--f-mono);font-size:13px;display:grid;gap:4px}
+.ev .big{font-family:var(--f-display);font-size:30px;font-weight:750}
+
+/* Walkthrough */
+.picker{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.picker button{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 12px;cursor:pointer;display:grid;text-align:left;gap:1px;min-width:0}
+.picker button b{font-family:var(--f-display);font-stretch:85%;font-weight:700}
+.picker button small{font-size:11.5px;color:var(--muted)}
+.picker button[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 0 0 1px var(--ink) inset}
+.run{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:16px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;min-width:0}
+.gates{display:grid;gap:4px}
+.grow{border-radius:8px}
+.grow>button{width:100%;border:0;background:transparent;cursor:pointer;text-align:left;padding:10px 8px;display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:10px;align-items:center;border-radius:8px}
+.grow>button:hover{background:var(--bg)}
+.grow .no{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.grow .gn{font-weight:600;font-size:14px;display:flex;justify-content:space-between;gap:8px}
+.grow .gn .sc{font-family:var(--f-mono);font-weight:500}
+.meter{position:relative;height:8px;background:var(--sunk);border-radius:4px;margin-top:6px}
+.meter span{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:var(--muted);transition:width .5s ease}
+.meter em{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
+.stamp{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.06em;padding:3px 7px;border-radius:5px;border:1px solid currentColor;white-space:nowrap}
+.stamp.ok{color:var(--pass);background:var(--pass-soft)}
+.stamp.no{color:var(--fail);background:var(--fail-soft)}
+.stamp.na{color:var(--muted);background:transparent;border-style:dashed}
+.grow.ok .meter span{background:var(--pass)}
+.grow.no .meter span{background:var(--fail)}
+.grow.na{opacity:.5}
+.grow.pending{opacity:.35}
+.brk{padding:2px 8px 12px 40px;display:grid;gap:4px;font-size:13px}
+.brk div{display:grid;grid-template-columns:minmax(0,1fr) 70px 44px;gap:8px;align-items:baseline}
+.brk .rv{font-family:var(--f-mono);color:var(--muted);text-align:right}
+.brk .pt{font-family:var(--f-mono);text-align:right}
+.verdict{margin-top:14px;padding:12px 14px;border-radius:10px;background:var(--bg);font-size:14px}
+.verdict b{font-family:var(--f-display);font-size:16px}
+.btn{border:1px solid var(--ink);background:var(--ink);color:var(--bg);border-radius:8px;padding:9px 14px;cursor:pointer;font-weight:600;font-size:13.5px}
+.btn.ghost{background:transparent;color:var(--ink)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chart svg{width:100%;height:auto;display:block}
+.chart .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--muted);margin-top:8px}
+.chart .legend span{display:inline-flex;align-items:center;gap:6px}
+.chart .legend i{width:14px;height:3px;border-radius:2px;display:inline-block}
+.empty{display:grid;place-items:center;min-height:260px;text-align:center;color:var(--muted);padding:20px;border:1px dashed var(--line);border-radius:10px}
+
+/* Ranking */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:720px}
+th,td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:500;background:var(--bg)}
+th:first-child,td:first-child,th:nth-child(2),td:nth-child(2){text-align:left}
+td{font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:0}
+tr.out td{color:var(--muted)}
+td .s{font-family:var(--f-mono);font-size:11px}
+.cell-ok{color:var(--pass)} .cell-no{color:var(--fail)}
+.weights{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) minmax(0,1.2fr);gap:14px;margin-bottom:14px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.weights label{display:grid;gap:4px;font-size:13px}
+.weights label span{display:flex;justify-content:space-between}
+.weights input{accent-color:var(--accent);width:100%}
+.weights .note{font-size:12.5px;color:var(--muted);align-self:center}
+body:not(.expert) .expert-only{display:none}
+body.expert .novice-only{display:none}
+
+/* Limits & sources */
+.limits{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.limits div{border-top:2px solid var(--ink);padding-top:10px;display:grid;gap:4px;min-width:0}
+.limits b{font-family:var(--f-display);font-stretch:88%;font-size:16px}
+.limits p{font-size:13.5px;color:var(--muted)}
+.refs{columns:2;column-gap:32px;font-size:13px;color:var(--muted);padding-left:18px;margin:0}
+.refs li{break-inside:avoid;margin-bottom:6px}
+footer{margin-top:48px;padding-top:18px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between}
+
+@media (max-width:860px){
+  .steps{grid-template-columns:repeat(2,1fr)}
+  .step:nth-child(2)::after{display:none}
+  .run{grid-template-columns:1fr}
+  .crv-demo{grid-template-columns:1fr}
+  .limits{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .weights{grid-template-columns:1fr 1fr}
+}
+@media (max-width:560px){
+  body{padding-inline:16px}
+  .top{margin-inline:-16px;padding-inline:16px}
+  .steps{grid-template-columns:1fr}
+  .step::after{display:none}
+  .panel{padding:18px}
+  .panel-head{grid-template-columns:1fr}
+  .rules{align-items:flex-start;flex-direction:row;flex-wrap:wrap}
+  .ind>button{grid-template-columns:minmax(0,1fr) 18px}
+  .ind .wbar{grid-column:1/-1;grid-row:2}
+  .ind .more{grid-template-columns:1fr}
+  .sig{grid-template-columns:1fr 1fr}
+  .limits{grid-template-columns:1fr}
+  .refs{columns:1}
+  .weights{grid-template-columns:1fr}
+  .flow canvas{height:220px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+<link rel="stylesheet" href="/projects/6m/site.css"><link rel="stylesheet" href="/fonts/fonts.css"><link rel="stylesheet" href="/legal.css"></head><body><aside id="site-context"><a id="site-back" href="/?lang=ja#projects">KeyOne · プロジェクトに戻る</a><label for="demo-language">言語 <select id="demo-language"><option value="de" >Deutsch</option><option value="en" >English</option><option value="fa" >فارسی</option><option value="ar" >العربية</option><option value="tr" >Türkçe</option><option value="it" >Italiano</option><option value="fr" >Français</option><option value="ko" >한국어</option><option value="zh" >中文</option><option value="ja" selected>日本語</option><option value="es" >Español</option><option value="sq" >Shqip</option></select></label><p id="site-notice">企業と指標はすべて架空です。投資助言や売買推奨ではありません。</p></aside>
+
+<header class="top"><div class="wrap">
+  <div class="brand"><i></i>6Mスクリーナー</div>
+  <span class="pill">架空データ</span>
+  <div class="spacer"></div>
+  <div class="seg" role="group" aria-label="詳細度">
+    <button id="m-novice" aria-pressed="true">入門</button>
+    <button id="m-expert" aria-pressed="false">専門</button>
+  </div>
+</div></header>
+
+<main class="wrap">
+  <div class="hero">
+    <span class="eyebrow">6〜12か月のスクリーニング</span>
+    <h1>1,200銘柄から少数候補へ、4段階の審査</h1>
+    <p class="lead">すべての段階を通過する必要があります。他の高得点で不合格は補えません。最終リスクリワード比は3:1以上です。 <b></b> </p>
+    <div class="flow">
+      <canvas id="flow" aria-label="1,200 → 318 → 96 → 44 → 11"></canvas>
+      <span class="flow-note">件数は説明用</span>
+    </div>
+  </div>
+
+  <section id="stationen">
+    <div class="sec-head">
+      <span class="eyebrow">審査プロセス</span>
+      <h2>段階を選択</h2>
+      <p class="novice-only">指標を選ぶと定義、式、採点基準、出典を表示します。</p>
+      <p class="expert-only">各スコアは0〜100。通過基準は順位の重みとは独立です。</p>
+    </div>
+    <div class="steps" id="steps" role="tablist"></div>
+    <div class="panel" id="panel" role="tabpanel"></div>
+  </section>
+
+  <section id="durchlauf">
+    <div class="sec-head">
+      <span class="eyebrow">例</span>
+      <h2>1銘柄の審査過程</h2>
+      <p>架空8社の模擬指標です。企業を選択し審査を実行してください。</p>
+    </div>
+    <div class="picker" id="picker"></div>
+    <div class="run">
+      <div class="card">
+        <div class="row" style="justify-content:space-between;margin-bottom:10px">
+          <h3 id="run-title">デモ A</h3>
+          <button class="btn" id="play">審査を実行</button>
+        </div>
+        <div class="gates" id="gates"></div>
+        <div class="verdict" id="verdict"></div>
+      </div>
+      <div class="card chart">
+        <div class="row" style="justify-content:space-between;margin-bottom:8px">
+          <h3>取引プラン</h3>
+          <span class="eyebrow" id="chart-meta"></span>
+        </div>
+        <div id="chart"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="rangliste">
+    <div class="sec-head">
+      <span class="eyebrow">結果</span>
+      <h2>順位とポジション数量</h2>
+      <p class="novice-only">4基準を通過した企業だけが対象です。1取引のリスクは資産の最大1%。</p>
+      <p class="expert-only">重みは100%に正規化。数量 = 資産 × リスク予算 ÷（エントリー − ストップ）。緑1%、黄0.5%、赤0%。</p>
+    </div>
+    <div class="weights expert-only">
+      <label for="w-f"><span>ファンダメンタル <b class="mono" id="wv-f">40 %</b></span><input type="range" id="w-f" min="0" max="100" value="40"></label>
+      <label for="w-t"><span>テクニカル <b class="mono" id="wv-t">40 %</b></span><input type="range" id="w-t" min="0" max="100" value="40"></label>
+      <label for="w-r"><span>リスク <b class="mono" id="wv-r">20 %</b></span><input type="range" id="w-r" min="0" max="100" value="20"></label>
+      <p class="note">重みは順位のみ変更し、対象の可否は通過基準で決まります。</p>
+    </div>
+    <div class="tbl"><table>
+      <thead><tr><th>#</th><th>企業</th><th>ファンダメンタル</th><th>テクニカル</th><th>リスク</th><th>CRV</th><th>合計</th><th>株数（資産10,000ユーロ）</th></tr></thead>
+      <tbody id="rank"></tbody>
+    </table></div>
+  </section>
+
+  <section id="grenzen">
+    <div class="sec-head">
+      <span class="eyebrow">補足</span>
+      <h2>モデルの限界</h2>
+    </div>
+    <div class="limits">
+      <div><b>予測ではなくフィルター</b><p>すべての基準を通過しても値上がりを保証しません。</p></div>
+      <div><b>重みにはバックテストが必要</b><p>研究に基づく重みは実利用前に生存者バイアスのない過去データで検証が必要です。</p></div>
+      <div><b>簡略化した市場局面</b><p>4信号は経済分析の代替ではなく、不利な市場を除外する補助です。</p></div>
+      <div><b>リスクリワード比は入口の基準</b><p>3:1という比率は実際の目標到達確率を示しません。</p></div>
+    </div>
+    <div class="sec-head" style="margin-top:34px">
+      <span class="eyebrow">参考文献</span>
+    </div>
+    <ol class="refs">
+      <li>Jegadeesh, N. &amp; Titman, S. (1993). Returns to Buying Winners and Selling Losers. <i>Journal of Finance</i>, 48(1).</li>
+      <li>Bernard, V. &amp; Thomas, J. (1989). Post-Earnings-Announcement Drift. <i>Journal of Accounting Research</i>, 27.</li>
+      <li>Chan, L., Jegadeesh, N. &amp; Lakonishok, J. (1996). Momentum Strategies. <i>Journal of Finance</i>, 51(5).</li>
+      <li>Novy-Marx, R. (2013). The Other Side of Value: The Gross Profitability Premium. <i>Journal of Financial Economics</i>, 108(1).</li>
+      <li>Asness, C., Frazzini, A. &amp; Pedersen, L. (2019). Quality Minus Junk. <i>Review of Accounting Studies</i>, 24.</li>
+      <li>Fama, E. &amp; French, K. (1992). The Cross-Section of Expected Stock Returns. <i>Journal of Finance</i>, 47(2).</li>
+      <li>Campbell, J., Hilscher, J. &amp; Szilagyi, J. (2008). In Search of Distress Risk. <i>Journal of Finance</i>, 63(6).</li>
+      <li>George, T. &amp; Hwang, C. (2004). The 52-Week High and Momentum Investing. <i>Journal of Finance</i>, 59(5).</li>
+      <li>Lee, C. &amp; Swaminathan, B. (2000). Price Momentum and Trading Volume. <i>Journal of Finance</i>, 55(5).</li>
+      <li>Faber, M. (2007). A Quantitative Approach to Tactical Asset Allocation. <i>Journal of Wealth Management</i>, 9(4).</li>
+      <li>Ang, A., Hodrick, R., Xing, Y. &amp; Zhang, X. (2006). The Cross-Section of Volatility and Expected Returns. <i>Journal of Finance</i>, 61(1).</li>
+      <li>Frazzini, A. &amp; Pedersen, L. (2014). Betting Against Beta. <i>Journal of Financial Economics</i>, 111(1).</li>
+      <li>Amihud, Y. (2002). Illiquidity and Stock Returns. <i>Journal of Financial Markets</i>, 5(1).</li>
+      <li>Estrella, A. &amp; Mishkin, F. (1998). Predicting U.S. Recessions: Financial Variables as Leading Indicators. <i>Review of Economics and Statistics</i>, 80(1).</li>
+      <li>Daniel, K. &amp; Moskowitz, T. (2016). Momentum Crashes. <i>Journal of Financial Economics</i>, 122(2).</li>
+      <li>Wilder, J. W. (1978). <i>New Concepts in Technical Trading Systems</i>. Trend Research.</li>
+    </ol>
+  </section>
+
+  <footer>
+    <span>© 2026 Keywan Fakhri · ポートフォリオ作品</span>
+    <span>企業と指標はすべて架空です。投資助言や売買推奨ではありません。</span>
+  </footer>
+</main>
+
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s);
+const fmt=(v,d=1)=>v.toLocaleString("ja-JP",{minimumFractionDigits:d,maximumFractionDigits:d});
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const lin=(v,lo,hi)=>clamp((v-lo)/(hi-lo),0,1)*100;
+
+/* ---------- Kennzahlen ---------- */
+const STAGES=[
+ {id:"F",n:"段階 1",t:"ファンダメンタル",gate:60,share:"40 %",count:318,
+  q:"収益性があり、期待は改善していますか？",
+  plain:"第1段階では収益性と利益予想の上方修正を確認します。修正が価格に反映されるまで時間がかかる場合があります。",
+  ind:[
+   {k:"rev",nm:"利益予想の修正",w:30,u:"%",sc:v=>lin(v,-10,10),
+    sm:"アナリストが利益予想を引き上げています。",
+    easy:"改善した予想は数か月かけて価格に織り込まれる場合があります。",
+    fx:"Δ EPS(NTM, 3m) %",
+    why:"改善した予想は数か月かけて価格に織り込まれる場合があります。",
+    scale:"−10% → 0; +10% → 100",
+    src:"Chan, Jegadeesh & Lakonishok (1996), Journal of Finance"},
+   {k:"sue",nm:"利益サプライズ（SUE）",w:20,u:"σ",sc:v=>lin(v,-2,3),
+    sm:"公表利益が予想を上回ります。",
+    easy:"正のサプライズ後に価格のドリフトが続くことがあり、過去の変動性で標準化します。",
+    fx:"(EPS − EPSₑ) / σ",
+    why:"正のサプライズ後に価格のドリフトが続くことがあり、過去の変動性で標準化します。",
+    scale:"−2σ → 0; +3σ → 100",
+    src:"Bernard & Thomas (1989), Journal of Accounting Research"},
+   {k:"roic",nm:"投下資本利益率（ROIC）",w:25,u:"%",sc:v=>lin(v,0,25),
+    sm:"営業利益の投下資本に対する割合。",
+    easy:"同じ投入でより多く生産する機械のように、高い収益性は企業の質を示します。",
+    fx:"NOPAT / IC",
+    why:"同じ投入でより多く生産する機械のように、高い収益性は企業の質を示します。",
+    scale:"0% → 0; 25% → 100",
+    src:"Novy-Marx (2013), Journal of Financial Economics; Asness, Frazzini & Pedersen (2019)"},
+   {k:"val",nm:"業種対比バリュエーション",w:15,u:"×",sc:v=>lin(v,2.0,0.6),
+    sm:"類似企業と比較した評価。",
+    easy:"業種中央値より低いEV/EBITは割安です。この期間では意図的に小さい重みです。",
+    fx:"(EV/EBIT) / med(EV/EBIT)",
+    why:"業種中央値より低いEV/EBITは割安です。この期間では意図的に小さい重みです。",
+    scale:"2.0× → 0; 0.6× → 100",
+    src:"Fama & French (1992), Journal of Finance"},
+   {k:"debt",nm:"負債",w:10,u:"×",sc:v=>lin(v,4,0),
+    sm:"純負債を賄うために必要なEBITDA年数。",
+    easy:"負債が少ないほど困難な時期の余地が増え、高負債は財務危機リスクを高めます。",
+    fx:"ND / EBITDA",
+    why:"負債が少ないほど困難な時期の余地が増え、高負債は財務危機リスクを高めます。",
+    scale:"4.0× → 0; 0× → 100",
+    src:"Campbell, Hilscher & Szilagyi (2008), Journal of Finance"}
+  ]},
+ {id:"T",n:"段階 2",t:"テクニカル",gate:60,share:"40 %",count:96,
+  q:"価格トレンドは企業の見通しを裏付けますか？",
+  plain:"企業の質だけでは不十分です。上昇傾向と市場に対する強さも確認します。",
+  ind:[
+   {k:"mom",nm:"モメンタム12–1",w:30,u:"%",sc:v=>lin(v,-20,60),
+    sm:"直近1か月を除く12か月の値動き。",
+    easy:"過去の勝者が優位を続けることがあります。短期反転の影響を抑えるため直近月を除きます。",
+    fx:"P(t−1m) / P(t−12m) − 1",
+    why:"過去の勝者が優位を続けることがあります。短期反転の影響を抑えるため直近月を除きます。",
+    scale:"−20% → 0; +60% → 100",
+    src:"Jegadeesh & Titman (1993), Journal of Finance"},
+   {k:"rs",nm:"相対的な強さ",w:20,u:"pp",sc:v=>lin(v,-15,25),
+    sm:"市場に対する6か月の超過リターン。",
+    easy:"企業固有の強さと市場全体の上昇を分けます。",
+    fx:"r(6m) − rᵢ(6m)",
+    why:"企業固有の強さと市場全体の上昇を分けます。",
+    scale:"−15pp → 0; +25pp → 100",
+    src:"Levy (1967), Journal of Finance; Jegadeesh & Titman (1993)"},
+   {k:"trend",nm:"200日線を上回るトレンド",w:25,u:"%",sc:(v,c)=>trendScore(v,c.g),
+    sm:"価格と200日移動平均の比較。",
+    easy:"上昇を評価し、過度な乖離を減点。SMA50がSMA200を上回らない場合も減点します。",
+    fx:"P / SMA200 − 1; SMA50 > SMA200",
+    why:"上昇を評価し、過度な乖離を減点。SMA50がSMA200を上回らない場合も減点します。",
+    scale:"−10% → 0; 0–20% → 60–100; >20% ↘",
+    src:"Faber (2007), Journal of Wealth Management; Brock, Lakonishok & LeBaron (1992)"},
+   {k:"hi52",nm:"52週高値への近さ",w:15,u:"",sc:v=>lin(v,0.7,1.0),
+    sm:"現在価格を52週高値で割った値。",
+    easy:"年間高値は心理的基準になり得ます。近傍の強さはシグナルであり保証ではありません。",
+    fx:"P / max(P, 52w)",
+    why:"年間高値は心理的基準になり得ます。近傍の強さはシグナルであり保証ではありません。",
+    scale:"0.70 → 0; 1.00 → 100",
+    src:"George & Hwang (2004), Journal of Finance"},
+   {k:"acc",nm:"出来高の蓄積",w:10,u:"×",sc:v=>lin(v,0.8,1.5),
+    sm:"上昇日の出来高と下落日の比較。",
+    easy:"上昇日の高出来高は価格シグナルや買い需要を裏付ける場合があります。",
+    fx:"Σ V(+,50d) / Σ V(−,50d)",
+    why:"上昇日の高出来高は価格シグナルや買い需要を裏付ける場合があります。",
+    scale:"0.8× → 0; 1.5× → 100",
+    src:"Lee & Swaminathan (2000), Journal of Finance"}
+  ]},
+ {id:"R",n:"段階 3",t:"リスクと市場局面",gate:50,share:"20 %",count:44,
+  q:"リスクは許容でき、市場は参入を認めますか？",
+  plain:"変動率、流動性、決算日と市場局面を評価します。赤の局面では新規ポジションを禁止します。",
+  ind:[
+   {k:"atr",nm:"変動率（ATR）",w:35,u:"%",sc:v=>lin(v,6,1.5),
+    sm:"通常の日中値幅と価格の比率。",
+    easy:"同じリスク予算なら高変動ほど広いストップと小さい数量が必要です。",
+    fx:"ATR(14d) / P",
+    why:"同じリスク予算なら高変動ほど広いストップと小さい数量が必要です。",
+    scale:"6% → 0; 1.5% → 100",
+    src:"Ang, Hodrick, Xing & Zhang (2006); Wilder (1978)"},
+   {k:"beta",nm:"市場感応度（ベータ）",w:20,u:"",sc:v=>lin(v,2.0,0.6),
+    sm:"市場全体の動きへの感応度。",
+    easy:"ベータ1.5は平均的感応度が市場の約1.5倍という意味で、日々の予測ではありません。",
+    fx:"Cov(P,I) / Var(I); 2y, 1w",
+    why:"ベータ1.5は平均的感応度が市場の約1.5倍という意味で、日々の予測ではありません。",
+    scale:"2.0 → 0; 0.6 → 100",
+    src:"Frazzini & Pedersen (2014), Journal of Financial Economics"},
+   {k:"liq",nm:"流動性",w:25,u:"百万ユーロ",sc:v=>clamp(Math.log(Math.max(v,1))/Math.log(50),0,1)*100,
+    sm:"1日平均売買代金。",
+    easy:"低流動性は費用と価格ギャップを増やします。ストップ執行には相手方が必要です。",
+    fx:"Ø (V × P, 3m)",
+    why:"低流動性は費用と価格ギャップを増やします。ストップ執行には相手方が必要です。",
+    scale:"€1m → 0; €50m → 100; log",
+    src:"Amihud (2002), Journal of Financial Markets"},
+   {k:"evt",nm:"決算までの日数",w:20,u:"T",sc:v=>v<10?20:v>=30?100:20+(v-10)/20*80,
+    sm:"次の報告までの取引日数。",
+    easy:"決算はストップを飛び越すギャップを生む場合があります。近い決算日は低く評価します。",
+    fx:"d",
+    why:"決算はストップを飛び越すギャップを生む場合があります。近い決算日は低く評価します。",
+    scale:"<10d → 20; ≥30d → 100",
+    src:"Beaver (1968), Journal of Accounting Research"}
+  ]},
+ {id:"C",n:"段階 4",t:"リスクリワード",gate:3,share:"Veto",count:11,
+  q:"潜在利益は潜在損失の3倍以上ですか？",
+  plain:"ストップと保守的目標が計画を定めます。目標までの距離はストップ距離の3倍以上が必要です。",
+  ind:[
+   {k:"stop",nm:"ストップ",w:null,
+    sm:"取引の仮説が崩れる価格。",
+    easy:"エントリーより2.5 ATR低いストップは日常ノイズを許容し、変動に適応します。",
+    fx:"S = E − 2.5 × ATR",
+    why:"エントリーより2.5 ATR低いストップは日常ノイズを許容し、変動に適応します。",
+    scale:"R = E − S",
+    src:"Wilder (1978); Kaufman, Trading Systems and Methods"},
+   {k:"ziel",nm:"目標価格",w:null,
+    sm:"抵抗水準と評価目標の低い方。",
+    easy:"低い予想を採ることで楽観的目標による比率の過大評価を防ぎます。",
+    fx:"T = min(T₁, T₂)",
+    why:"低い予想を採ることで楽観的目標による比率の過大評価を防ぎます。",
+    scale:"T − E",
+    src:"本モデル独自のルール"},
+   {k:"crv",nm:"リスクリワード比",w:null,
+    sm:"潜在利益をリスクで割り、3以上。",
+    easy:"3:1で目標かストップで決済する前提なら、費用前では勝率25%で損益均衡です。",
+    fx:"CRV = (T − E) / (E − S) ≥ 3",
+    why:"3:1で目標かストップで決済する前提なら、費用前では勝率25%で損益均衡です。",
+    scale:"CRV < 3 → ×",
+    src:"期待値 E = p × CRV − (1 − p)"}
+  ]}
+];
+
+function trendScore(d,g){
+  let s;
+  if(d<=-10) s=0;
+  else if(d<0) s=(d+10)/10*40;
+  else if(d<=20) s=60+d/20*40;
+  else if(d<=40) s=100-(d-20)/20*30;
+  else s=50;
+  if(!g) s-=20;
+  return clamp(s,0,100);
+}
+
+/* ---------- Demo-Unternehmen (erfunden) ---------- */
+const CO=[
+ {id:"A",sector:"産業自動化",rev:6,sue:2.1,roic:19,val:1.0,debt:0.8, mom:38,rs:14,trend:12,g:true,hi52:0.95,acc:1.3, atr:2.2,beta:1.1,liq:22,evt:45, px:84.0,res:102,fair:110,seed:3},
+ {id:"B",sector:"医療技術",rev:4,sue:1.4,roic:22,val:1.1,debt:0.3, mom:24,rs:8,trend:8,g:true,hi52:0.92,acc:1.2, atr:1.8,beta:0.8,liq:35,evt:38, px:142.0,res:165,fair:168,seed:7},
+ {id:"C",sector:"半導体供給企業",rev:9,sue:2.6,roic:17,val:1.4,debt:1.2, mom:72,rs:30,trend:34,g:true,hi52:0.98,acc:1.4, atr:4.8,beta:1.8,liq:18,evt:12, px:61.0,res:80,fair:74,seed:11},
+ {id:"D",sector:"消費財",rev:-4,sue:-0.5,roic:14,val:0.9,debt:2.2, mom:-3,rs:-6,trend:-2,g:false,hi52:0.81,acc:0.95, atr:1.6,beta:0.7,liq:40,evt:25, px:47.0,res:52,fair:55,seed:5},
+ {id:"E",sector:"企業向けソフト",rev:3,sue:0.9,roic:21,val:1.3,debt:0, mom:-8,rs:-12,trend:-6,g:false,hi52:0.74,acc:0.9, atr:2.9,beta:1.3,liq:30,evt:40, px:118.0,res:140,fair:150,seed:9},
+ {id:"F",sector:"契約物流",rev:5,sue:1.1,roic:15,val:0.8,debt:1.5, mom:26,rs:6,trend:7,g:true,hi52:0.9,acc:1.15, atr:2.0,beta:0.9,liq:12,evt:50, px:58.0,res:64,fair:66,seed:13},
+ {id:"G",sector:"エネルギー設備",rev:7,sue:1.8,roic:13,val:0.85,debt:2.0, mom:31,rs:11,trend:10,g:true,hi52:0.96,acc:1.35, atr:2.4,beta:0.95,liq:28,evt:33, px:36.5,res:44.0,fair:43.5,seed:17},
+ {id:"H",sector:"特殊化学",rev:-7,sue:-1.2,roic:7,val:0.7,debt:3.6, mom:-15,rs:-10,trend:-9,g:false,hi52:0.72,acc:0.85, atr:2.6,beta:1.2,liq:15,evt:20, px:29.0,res:33,fair:35,seed:19}
+];
+
+function stageScore(st,c){
+  let s=0; st.ind.forEach(i=>{s+=i.sc(c[i.k],c)*i.w/100}); return s;
+}
+function evaluate(c){
+  const F=stageScore(STAGES[0],c), T=stageScore(STAGES[1],c), R=stageScore(STAGES[2],c);
+  const atrAbs=c.atr/100*c.px, stop=c.px-2.5*atrAbs, target=Math.min(c.res,c.fair);
+  const crv=(target-c.px)/(c.px-stop);
+  const reg=regimeState();
+  const pass=[F>=60, T>=60, R>=50 && reg.level!=="rot", crv>=3];
+  let failAt=pass.findIndex(p=>!p); if(failAt<0) failAt=4;
+  return {F,T,R,crv,stop,target,atrAbs,pass,failAt,reg};
+}
+
+/* ---------- Marktregime ---------- */
+const SCEN={
+  demo:{lab:"デモ基準",curve:0.42,vix:16.8,breadth:57,idx:4.1},
+  nervoes:{lab:"不安定",curve:0.10,vix:24.5,breadth:45,idx:1.5},
+  stress:{lab:"ストレス",curve:-0.6,vix:34.0,breadth:31,idx:-8.0}
+};
+let scen="demo";
+function light(v,g,y){return v>=g?"g":v>=y?"y":"r"}
+function regimeState(){
+  const s=SCEN[scen];
+  const L={curve:light(s.curve,0,-0.5), vix:light(-s.vix,-20,-30), breadth:light(s.breadth,60,40), idx:light(s.idx,0,-5)};
+  const vals=Object.values(L), r=vals.filter(x=>x==="r").length, y=vals.filter(x=>x==="y").length;
+  const level=r>=2?"rot":(r>=1||y>=2)?"gelb":"gruen";
+  return {s,L,level,risk:level==="gruen"?1:level==="gelb"?0.5:0};
+}
+
+/* ---------- Modus ---------- */
+function setMode(expert){
+  document.body.classList.toggle("expert",expert);
+  $("#m-novice").setAttribute("aria-pressed",String(!expert));
+  $("#m-expert").setAttribute("aria-pressed",String(expert));
+  try{localStorage.setItem("6m-mode",expert?"x":"n")}catch(e){}
+}
+$("#m-novice").onclick=()=>setMode(false);
+$("#m-expert").onclick=()=>setMode(true);
+try{ if(localStorage.getItem("6m-mode")==="x") setMode(true) }catch(e){}
+
+/* ---------- Stationen ---------- */
+let active=0;
+function renderSteps(){
+  $("#steps").innerHTML=STAGES.map((s,i)=>`<button class="step" role="tab" aria-selected="${i===active}" data-i="${i}">
+    <span class="n">${s.n.toUpperCase()}</span><span class="t">${s.t}</span><span class="q">${s.q}</span>
+    <span class="c num">${s.count.toLocaleString("ja-JP")} 通過</span></button>`).join("");
+  document.querySelectorAll(".step").forEach(b=>b.onclick=()=>{active=+b.dataset.i;renderSteps();renderPanel()});
+}
+function indHTML(i,idx){
+  const w=i.w!=null?`<div class="wbar"><div class="lab"><span>重み</span><span>${i.w} %</span></div><div class="tr"><span style="width:${Math.min(100,i.w/35*100)}%"></span></div></div>`:`<div class="wbar"><div class="lab"><span>ルール</span><span>固定</span></div><div class="tr"><span style="width:100%"></span></div></div>`;
+  return `<div class="ind" data-idx="${idx}"><button aria-expanded="false">
+    <div style="min-width:0"><div class="nm">${i.nm}</div><div class="sm">${i.sm}</div><div class="fx">${i.fx}</div></div>
+    ${w}<span class="chev"></span></button>
+    <div class="more" hidden>
+      <div><h4>簡単な説明</h4><p>${i.easy}</p></div>
+      <div><h4>計算方法</h4><p class="mono" style="font-size:13px">${i.fx}</p></div>
+      <div><h4>根拠</h4><p>${i.why}</p></div>
+      <div><h4>採点基準</h4><p class="mono" style="font-size:13px">${i.scale}</p></div>
+      <p class="src">出典: ${i.src}</p>
+    </div></div>`;
+}
+function renderPanel(){
+  const s=STAGES[active];
+  const gate=s.id==="C"?"通過基準 CRV 3 : 1":`通過基準 ${s.gate} 点／100点`;
+  const share=s.id==="C"?"拒否条件のみ、得点なし":`総合点の割合 ${s.share}`;
+  let extra="";
+  if(s.id==="R") extra=regimeHTML();
+  if(s.id==="C") extra=crvDemoHTML();
+  $("#panel").innerHTML=`<div class="panel-head"><div><span class="eyebrow">${s.n}</span><h2 style="margin-top:4px">${s.t}</h2>
+    <p class="q">${s.q}</p><p class="plain">${s.plain}</p></div>
+    <div class="rules"><span class="chip gate">${gate}</span><span class="chip">${share}</span></div></div>
+    <div class="inds">${s.ind.map(indHTML).join("")}</div>${extra}`;
+  document.querySelectorAll(".ind>button").forEach(b=>b.onclick=()=>{
+    const box=b.parentElement, more=box.querySelector(".more"), open=more.hidden;
+    more.hidden=!open; box.classList.toggle("open",open); b.setAttribute("aria-expanded",String(open));
+  });
+  if(s.id==="R") bindRegime();
+  if(s.id==="C") bindEV();
+}
+function regimeHTML(){
+  const r=regimeState(), s=r.s;
+  const name={gruen:"緑 – 参入可、通常数量",gelb:"黄 – 参入可、半分の数量",rot:"赤 – 新規ポジションなし"}[r.level];
+  const cell=(k,v,l,expl)=>`<div><span class="k">${k}</span><span class="v"><i class="dot ${l}"></i>${v}</span><span class="k" style="font-size:11.5px">${expl}</span></div>`;
+  return `<div class="regime"><div class="regime-top"><h3>市場局面</h3>
+    <span class="lamp ${r.level}"><i></i>${name}</span><span class="spacer"></span>
+    <div class="seg" role="group" aria-label="シナリオ">${Object.keys(SCEN).map(k=>`<button data-s="${k}" aria-pressed="${k===scen}">${SCEN[k].lab}</button>`).join("")}</div></div>
+    <p class="novice-only" style="color:var(--muted);font-size:14px">4つの市場信号。ストレス時には全企業がこの段階で不合格になります。</p>
+    <p class="expert-only" style="color:var(--muted);font-size:14px">ルール：赤2個以上→赤、赤1個または黄2個以上→黄、それ以外→緑。暴落後の反発でモメンタムが損失を受ける場合があり、利回り曲線は景気後退の指標です（Daniel & Moskowitz 2016; Estrella & Mishkin 1998）。</p>
+    <div class="sig">
+      ${cell("利回り曲線10年−2年",(s.curve>0?"+":"")+fmt(s.curve,2)+" pp",r.L.curve,"逆転＝景気後退警告")}
+      ${cell("変動率指数VIX",fmt(s.vix,1),r.L.vix,"30超＝市場の恐怖")}
+      ${cell("市場の広がり",fmt(s.breadth,0)+" %",r.L.breadth,"SMA200超の割合")}
+      ${cell("指数対SMA200",(s.idx>0?"+":"")+fmt(s.idx,1)+" %",r.L.idx,"市場全体のトレンド")}
+    </div></div>`;
+}
+function bindRegime(){
+  document.querySelectorAll('.regime [data-s]').forEach(b=>b.onclick=()=>{scen=b.dataset.s;renderPanel();renderRun(false);renderRank();});
+}
+function crvDemoHTML(){
+  return `<div class="crv-demo"><div id="mini"></div>
+    <div class="ev"><h3>なぜ3:1？</h3>
+      <label for="hit" style="font-size:14px">想定勝率： <b class="mono" id="hitv">35 %</b></label>
+      <input type="range" id="hit" min="10" max="70" value="35">
+      <div class="out"><span>3:1での1取引の期待値</span><span class="big num" id="evv"></span>
+      <span style="color:var(--muted)" id="evtxt"></span></div></div></div>`;
+}
+function bindEV(){
+  const upd=()=>{const p=+$("#hit").value/100, ev=p*3-(1-p);
+    $("#hitv").textContent=Math.round(p*100)+" %";
+    $("#evv").textContent=(ev>=0?"+":"")+fmt(ev,2)+" R";
+    $("#evv").style.color=ev>=0?"var(--pass)":"var(--fail)";
+    $("#evtxt").textContent=`10取引中、 ${fmt(p*10,1)} 件成功、 ${fmt((1-p)*10,1)} 件失敗。Rは1取引のリスク金額です。損益均衡は25%。`;};
+  $("#hit").oninput=upd; upd();
+  // Mini-Schema
+  $("#mini").innerHTML=`<svg viewBox="0 0 360 200" role="img" aria-label="参入、1単位下のストップ、3単位上の目標">
+    <rect x="70" y="40" width="200" height="105" fill="var(--pass-soft)"/>
+    <rect x="70" y="145" width="200" height="35" fill="var(--fail-soft)"/>
+    <line x1="70" y1="40" x2="270" y2="40" stroke="var(--pass)" stroke-width="2"/>
+    <line x1="70" y1="145" x2="270" y2="145" stroke="var(--ink)" stroke-width="2"/>
+    <line x1="70" y1="180" x2="270" y2="180" stroke="var(--fail)" stroke-width="2"/>
+    <text x="62" y="44" text-anchor="end" font-size="12" fill="var(--pass)" font-family="IBM Plex Mono,monospace">目標</text>
+    <text x="62" y="149" text-anchor="end" font-size="12" fill="var(--ink)" font-family="IBM Plex Mono,monospace">参入</text>
+    <text x="62" y="184" text-anchor="end" font-size="12" fill="var(--fail)" font-family="IBM Plex Mono,monospace">ストップ</text>
+    <text x="282" y="96" font-size="13" fill="var(--pass)" font-family="IBM Plex Mono,monospace">利益 3 R</text>
+    <text x="282" y="167" font-size="13" fill="var(--fail)" font-family="IBM Plex Mono,monospace">リスク 1 R</text>
+    <text x="170" y="100" text-anchor="middle" font-size="12" fill="var(--muted)" font-family="IBM Plex Sans,sans-serif">3倍の距離</text>
+  </svg>`;
+}
+
+/* ---------- Durchlauf ---------- */
+let cur=0, shown=4, timer=null;
+function renderPicker(){
+  $("#picker").innerHTML=CO.map((c,i)=>`<button aria-pressed="${i===cur}" data-i="${i}"><b>デモ ${c.id}</b><small>${c.sector}</small></button>`).join("");
+  document.querySelectorAll("#picker button").forEach(b=>b.onclick=()=>{cur=+b.dataset.i;renderPicker();play();});
+}
+function breakdown(st,c){
+  return `<div class="brk" hidden>${st.ind.map(i=>{const raw=c[i.k];const u=i.u?(" "+i.u):"";
+    const rv=i.k==="trend"?(raw>0?"+":"")+fmt(raw,0)+" %":(i.k==="hi52"?fmt(raw,2):((raw>0&&["rev","sue","mom","rs"].includes(i.k)?"+":"")+fmt(raw,raw%1?1:0)+u));
+    return `<div><span>${i.nm} <span style="color:var(--muted)">· ${i.w} %</span></span><span class="rv">${rv}</span><span class="pt">${fmt(i.sc(raw,c),0)}</span></div>`}).join("")}
+    <div style="border-top:1px solid var(--line);padding-top:4px"><span style="color:var(--muted)">元の値・点数（0–100）</span><span></span><span></span></div></div>`;
+}
+function renderRun(anim){
+  const c=CO[cur], e=evaluate(c);
+  $("#run-title").textContent=`デモ ${c.id} · ${c.sector}`;
+  const rows=[
+    {nm:"ファンダメンタル",v:e.F,max:100,g:60,txt:fmt(e.F,0)+" / 100",st:STAGES[0]},
+    {nm:"テクニカル",v:e.T,max:100,g:60,txt:fmt(e.T,0)+" / 100",st:STAGES[1]},
+    {nm:"リスクと局面",v:e.R,max:100,g:50,txt:fmt(e.R,0)+" / 100"+(e.reg.level==="rot"?" · 赤の局面":""),st:STAGES[2]},
+    {nm:"リスクリワード",v:e.crv,max:6,g:3,txt:"CRV "+fmt(e.crv,1)+" : 1",st:null}
+  ];
+  $("#gates").innerHTML=rows.map((r,i)=>{
+    let cls,stamp;
+    if(i>=shown){cls="pending";stamp='<span class="stamp na">…</span>';}
+    else if(i>e.failAt){cls="na";stamp="<span class=\"stamp na\">未到達</span>";}
+    else if(e.pass[i]){cls="ok";stamp="<span class=\"stamp ok\">通過</span>";}
+    else {cls="no";stamp="<span class=\"stamp no\">不合格</span>";}
+    const w=i>=shown?0:clamp(r.v/r.max,0,1)*100;
+    return `<div class="grow ${cls}"><button data-i="${i}" aria-expanded="false">
+      <span class="no">${i+1}</span>
+      <div style="min-width:0"><div class="gn"><span>${r.nm}</span><span class="sc">${i<shown?r.txt:""}</span></div>
+      <div class="meter"><span style="width:${w}%"></span><em style="left:${r.g/r.max*100}%"></em></div></div>
+      ${stamp}</button>${r.st?breakdown(r.st,c):`<div class="brk" hidden><div><span>参入</span><span class="rv">${fmt(c.px,2)}</span><span></span></div><div><span>ストップ (−2,5 × ATR)</span><span class="rv">${fmt(e.stop,2)}</span><span></span></div><div><span>抵抗線／評価目標</span><span class="rv">${fmt(c.res,1)} / ${fmt(c.fair,1)}</span><span></span></div><div><span>目標（最低）</span><span class="rv">${fmt(e.target,2)}</span><span></span></div></div>`}</div>`;
+  }).join("");
+  document.querySelectorAll(".grow>button").forEach(b=>b.onclick=()=>{
+    const brk=b.parentElement.querySelector(".brk"); brk.hidden=!brk.hidden; b.setAttribute("aria-expanded",String(!brk.hidden));
+  });
+  const v=$("#verdict");
+  if(shown<4){v.innerHTML=`<span style="color:var(--muted)">審査中…</span>`;}
+  else if(e.failAt===4){v.innerHTML=`<b style="color:var(--pass)">候補。</b> 4段階すべて通過。 利益 ${fmt(e.target-c.px,2)} 対 リスク ${fmt(c.px-e.stop,2)} 1株あたり。`;}
+  else{
+    const why=["基礎スコアが基準未満。予想または収益性が不足しています。",
+      "企業の基礎条件にかかわらずテクニカル点が基準未満です。",
+      e.reg.level==="rot"?"市場局面が赤です。企業の指標が良好でも新規参入しません。":"リスク点が基準未満。変動率、ベータ、流動性または決算時期に問題があります。",
+      "目標が近すぎ、リスクリワード比が3:1未満です。"][e.failAt];
+    v.innerHTML=`<b style="color:var(--fail)">除外段階 ${e.failAt+1}.</b> ${why}`;
+  }
+  renderChart(c,e);
+}
+function play(){
+  clearInterval(timer);
+  const reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(reduce){shown=4;renderRun();return;}
+  shown=0; renderRun();
+  timer=setInterval(()=>{shown++;renderRun();if(shown>=4)clearInterval(timer);},450);
+}
+$("#play").onclick=play;
+
+/* ---------- Chart ---------- */
+function rng(seed){let s=seed*9301+49297;return()=>{s=(s*9301+49297)%233280;return s/233280}}
+function series(c){
+  const N=240, r=rng(c.seed), start=c.px/(1+c.mom/100*1.02), vol=c.atr/100*0.9;
+  const w=[0]; for(let i=1;i<=N;i++){const u=r()+r()+r()-1.5; w.push(w[i-1]+u*vol);}
+  const lg=Math.log(c.px/start), out=[];
+  for(let i=0;i<=N;i++) out.push(start*Math.exp(lg*i/N + w[i]-w[N]*i/N));
+  return out;
+}
+function renderChart(c,e){
+  const box=$("#chart");
+  $("#chart-meta").textContent=`参入 ${fmt(c.px,2)}`;
+  if(shown<4){box.innerHTML=`<div class="empty">審査終了後にプランを表示します。</div>`;return;}
+  if(e.failAt<3){box.innerHTML=`<div class="empty"><div><b style="font-family:var(--f-display);font-size:17px;color:var(--ink)">取引プランなし</b><br>除外段階 ${e.failAt+1} 。<br>第4段階に到達した銘柄のみストップと目標を計算します。</div></div>`;return;}
+  const p=series(c), N=p.length-1, W=640, H=300, L=46, Rm=118, T=18, B=34;
+  const lo=Math.min(e.stop,...p)*0.97, hi=Math.max(e.target,...p)*1.03;
+  const x=i=>L+i/N*(W-L-Rm), y=v=>T+(hi-v)/(hi-lo)*(H-T-B);
+  const sma=[]; for(let i=0;i<=N;i++){const a=Math.max(0,i-199),sl=p.slice(a,i+1);sma.push(sl.reduce((s,v)=>s+v,0)/sl.length);}
+  const path=arr=>arr.map((v,i)=>(i?"L":"M")+x(i).toFixed(1)+","+y(v).toFixed(1)).join("");
+  const ticks=[]; const step=(hi-lo)/4; for(let k=0;k<=4;k++) ticks.push(lo+step*k);
+  const months=["10月","1月","4月","7月","9月"];
+  const x0=x(N), x1=W-Rm+70;
+  const ok=e.crv>=3;
+  box.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="参入、ストップ、目標を含む価格推移 ${fmt(c.px,2)} / ストップ ${fmt(e.stop,2)} / 目標 ${fmt(e.target,2)}">
+    ${ticks.map(t=>`<line x1="${L}" x2="${W-Rm+70}" y1="${y(t)}" y2="${y(t)}" stroke="var(--line)" stroke-width="1"/><text x="${L-8}" y="${y(t)+4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="IBM Plex Mono,monospace">${fmt(t,t<100?1:0)}</text>`).join("")}
+    ${months.map((m,i)=>`<text x="${x(i/(months.length-1)*N)}" y="${H-12}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="IBM Plex Mono,monospace">${m}</text>`).join("")}
+    <rect x="${x0}" y="${y(e.target)}" width="${x1-x0}" height="${y(c.px)-y(e.target)}" fill="${ok?"var(--pass-soft)":"var(--warn-soft)"}"/>
+    <rect x="${x0}" y="${y(c.px)}" width="${x1-x0}" height="${y(e.stop)-y(c.px)}" fill="var(--fail-soft)"/>
+    <path d="${path(sma)}" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/>
+    <path d="${path(p)}" fill="none" stroke="var(--accent)" stroke-width="2"/>
+    <line x1="${x0}" x2="${x1}" y1="${y(e.target)}" y2="${y(e.target)}" stroke="${ok?"var(--pass)":"var(--warn)"}" stroke-width="2"/>
+    <line x1="${x0}" x2="${x1}" y1="${y(c.px)}" y2="${y(c.px)}" stroke="var(--ink)" stroke-width="2"/>
+    <line x1="${x0}" x2="${x1}" y1="${y(e.stop)}" y2="${y(e.stop)}" stroke="var(--fail)" stroke-width="2"/>
+    <circle cx="${x0}" cy="${y(c.px)}" r="4.5" fill="var(--ink)"/>
+    <text x="${x1+6}" y="${y(e.target)+4}" font-size="11.5" fill="${ok?"var(--pass)":"var(--warn)"}" font-family="IBM Plex Mono,monospace">${fmt(e.target,1)}</text>
+    <text x="${x1+6}" y="${y(c.px)+4}" font-size="11.5" fill="var(--ink)" font-family="IBM Plex Mono,monospace">${fmt(c.px,1)}</text>
+    <text x="${x1+6}" y="${y(e.stop)+4}" font-size="11.5" fill="var(--fail)" font-family="IBM Plex Mono,monospace">${fmt(e.stop,1)}</text>
+    <text x="${(x0+x1)/2}" y="${(y(e.target)+y(c.px))/2+5}" text-anchor="middle" font-size="15" font-weight="600" fill="${ok?"var(--pass)":"var(--warn)"}" font-family="Archivo,sans-serif">${fmt(e.crv,1)} : 1</text>
+  </svg>
+  <div class="legend"><span><i style="background:var(--accent)"></i>価格（デモ）</span><span><i style="background:var(--muted)"></i>200日移動平均</span><span><i style="background:var(--pass)"></i>目標</span><span><i style="background:var(--fail)"></i>ストップ</span></div>`;
+}
+
+/* ---------- Rangliste ---------- */
+function weights(){
+  const f=+$("#w-f").value,t=+$("#w-t").value,r=+$("#w-r").value,s=f+t+r||1;
+  return {f:f/s,t:t/s,r:r/s};
+}
+function renderRank(){
+  const w=weights();
+  $("#wv-f").textContent=Math.round(w.f*100)+" %";$("#wv-t").textContent=Math.round(w.t*100)+" %";$("#wv-r").textContent=Math.round(w.r*100)+" %";
+  const rows=CO.map(c=>{const e=evaluate(c);return {c,e,tot:w.f*e.F+w.t*e.T+w.r*e.R}});
+  rows.sort((a,b)=>(b.e.failAt===4)-(a.e.failAt===4)||b.tot-a.tot);
+  const cell=(v,g,st,d)=>`<td class="${v>=g?"cell-ok":"cell-no"}">${fmt(v,d)}</td>`;
+  let rank=0;
+  $("#rank").innerHTML=rows.map(o=>{const c=o.c,e=o.e,inn=e.failAt===4;
+    const risk=e.reg.risk/100*10000, n=inn?Math.floor(risk/(c.px-e.stop)):0;
+    return `<tr class="${inn?"":"out"}"><td>${inn?++rank:"–"}</td>
+      <td><b>デモ ${c.id}</b> <span style="color:var(--muted)">${c.sector}</span>${inn?"":` <span class="s cell-no">· 除外段階 ${e.failAt+1}</span>`}</td>
+      ${cell(e.F,60,0,0)}${cell(e.T,60,0,0)}${e.reg.level==="rot"?`<td class="cell-no">${fmt(e.R,0)} · 赤</td>`:cell(e.R,50,0,0)}${cell(e.crv,3,0,1)}
+      <td><b>${inn?fmt(o.tot,1):"–"}</b></td>
+      <td>${inn?`${n} 株 <span class="s" style="color:var(--muted)">· リスク ${fmt(risk,0)} €</span>`:"–"}</td></tr>`}).join("");
+}
+["#w-f","#w-t","#w-r"].forEach(s=>$(s).oninput=renderRank);
+
+/* ---------- Hero-Trichter (Canvas) ---------- */
+const cv=$("#flow"), ctx=cv.getContext("2d");
+const GATES=[{l:"対象全体",s:"開始",n:1200},{l:"ファンダメンタル",s:"1",n:318},{l:"テクニカル",s:"2",n:96},{l:"リスクと局面",s:"3",n:44},{l:"CRV ≥ 3",s:"4",n:11}];
+const SURV=[318/1200,96/318,44/96,11/44];
+let col={}, Wc=0, Hc=0, parts=[], raf=0, last=0;
+function readCols(){const cs=getComputedStyle(document.documentElement);["--ink","--muted","--line","--accent","--pass","--fail","--accent-soft","--surface","--sunk"].forEach(k=>col[k]=cs.getPropertyValue(k).trim());}
+function size(){const r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1;Wc=r.width;Hc=r.height;cv.width=Wc*d;cv.height=Hc*d;ctx.setTransform(d,0,0,d,0,0);}
+const gx=i=>{const pad=Math.min(70,Wc*0.08);return pad+i*(Wc-2*pad)/5};
+const bandH=n=>Math.max(10,Math.sqrt(n/1200)*(Hc*0.52));
+const cy=()=>Hc*0.5;
+function spawn(){
+  let fail=4; for(let k=0;k<4;k++){ if(Math.random()>SURV[k]){fail=k;break;} }
+  const h=bandH(1200);
+  parts.push({x:gx(0)-10,off:(Math.random()-.5),y:0,v:0.9+Math.random()*0.6,fail,dead:false,a:1,vy:0});
+}
+function drawStatic(){
+  ctx.clearRect(0,0,Wc,Hc);
+  // Trichterfläche
+  ctx.beginPath();
+  const pts=GATES.map((g,i)=>[gx(i),bandH(g.n)/2]);
+  pts.push([gx(5),bandH(11)/2]);
+  ctx.moveTo(pts[0][0],cy()-pts[0][1]);
+  for(let i=1;i<pts.length;i++){ctx.lineTo(pts[i][0],cy()-pts[i-1][1]);ctx.lineTo(pts[i][0],cy()-pts[i][1]);}
+  for(let i=pts.length-1;i>0;i--){ctx.lineTo(pts[i][0],cy()+pts[i][1]);ctx.lineTo(pts[i][0],cy()+pts[i-1][1]);}
+  ctx.lineTo(pts[0][0],cy()+pts[0][1]);ctx.closePath();
+  ctx.fillStyle=col["--accent-soft"];ctx.fill();
+  const narrow=Wc<600;
+  for(let i=1;i<=5;i++){
+    const x=gx(i);
+    if(i<5){ctx.strokeStyle=col["--ink"];ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x,cy()-bandH(GATES[i-1].n)/2-6);ctx.lineTo(x,cy()+bandH(GATES[i-1].n)/2+6);ctx.stroke();}
+  }
+  ctx.textAlign="center";
+  for(let i=0;i<=5;i++){
+    const x=i===0?gx(0)+ (narrow?14:30):gx(i);
+    const label=i===5?(narrow?"目標":"候補"):(narrow?GATES[i].s:GATES[i].l);
+    const n=i===5?11:(i===0?1200:GATES[i].n);
+    ctx.fillStyle=col["--muted"];ctx.font=`500 ${narrow?10:11}px "IBM Plex Mono", monospace`;
+    ctx.fillText((i>0&&i<5&&!narrow?("段階 "+i):"").toUpperCase(),x,20);
+    ctx.fillStyle=col["--ink"];ctx.font=`700 ${narrow?12:14}px Archivo, sans-serif`;
+    ctx.fillText(i===0?(narrow?"開始":"対象全体"):label,x,narrow?22:38);
+    ctx.fillStyle=i===5?col["--pass"]:col["--ink"];ctx.font=`500 ${narrow?12:14}px "IBM Plex Mono", monospace`;
+    ctx.fillText(n.toLocaleString("ja-JP"),x,Hc-14);
+  }
+}
+function frame(t){
+  const dt=Math.min(40,t-(last||t))/16.7; last=t;
+  drawStatic();
+  if(Math.random()<0.9*dt) spawn(); if(Math.random()<0.5*dt) spawn();
+  for(const p of parts){
+    // Zielbreite des Bandes am aktuellen x
+    let seg=0; for(let i=1;i<=5;i++) if(p.x>=gx(i)) seg=i;
+    const n=seg===0?1200:(seg===5?11:GATES[seg].n);
+    if(!p.dead){
+      p.x+=p.v*1.6*dt;
+      const target=cy()+p.off*bandH(n)*0.9;
+      p.y=p.y?p.y+(target-p.y)*0.08*dt:target;
+      const gi=p.fail+1;
+      if(p.fail<4 && p.x>=gx(gi)-2){p.dead=true;p.vy=0.6+Math.random()*0.6;}
+    } else {
+      p.y+=p.vy*dt; p.vy+=0.06*dt; p.a-=0.018*dt; p.x+=0.3*dt;
+    }
+    if(p.x>gx(5)+10) p.a=0;
+    ctx.globalAlpha=Math.max(0,p.a);
+    ctx.fillStyle=p.dead?col["--fail"]:(p.x>gx(4)?col["--pass"]:col["--accent"]);
+    ctx.beginPath();ctx.arc(p.x,p.y,p.dead?1.8:2.2,0,Math.PI*2);ctx.fill();
+  }
+  ctx.globalAlpha=1;
+  parts=parts.filter(p=>p.a>0);
+  raf=requestAnimationFrame(frame);
+}
+function startFlow(){
+  cancelAnimationFrame(raf); readCols(); size();
+  const reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(reduce){drawStatic();return;}
+  parts=[];
+  // Vorlauf, damit das erste Bild schon gefüllt ist
+  for(let k=0;k<420;k++){ if(Math.random()<0.9) spawn(); if(Math.random()<0.5) spawn();
+    for(const p of parts){let seg=0;for(let i=1;i<=5;i++) if(p.x>=gx(i)) seg=i;const n=seg===0?1200:(seg===5?11:GATES[seg].n);
+      if(!p.dead){p.x+=p.v*1.6;const tg=cy()+p.off*bandH(n)*0.9;p.y=p.y?p.y+(tg-p.y)*0.08:tg;if(p.fail<4&&p.x>=gx(p.fail+1)-2){p.dead=true;p.vy=0.6+Math.random()*0.6;}}
+      else{p.y+=p.vy;p.vy+=0.06;p.a-=0.018;p.x+=0.3;} if(p.x>gx(5)+10)p.a=0;}
+    parts=parts.filter(p=>p.a>0);}
+  last=0; raf=requestAnimationFrame(frame);
+}
+window.addEventListener("resize",()=>{size();});
+if(window.matchMedia) matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{readCols();});
+new MutationObserver(()=>readCols()).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+
+/* ---------- Start ---------- */
+renderSteps(); renderPanel(); renderPicker(); shown=4; renderRun(); renderRank();
+if(document.fonts&&document.fonts.ready) document.fonts.ready.then(startFlow); else startFlow();
+})();
+</script>
+<script src="/projects/6m/site.js"></script><nav class="keyone-legal" aria-label="Rechtliche Informationen"><a data-legal-impressum href="/impressum/">Impressum</a><a data-legal-privacy href="/datenschutz/">Datenschutzerklärung</a></nav><script src="/legal.js"></script></body></html>

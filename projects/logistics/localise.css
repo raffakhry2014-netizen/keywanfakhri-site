@@ -1,0 +1,19 @@
+/* Only host framing and language layout; original charts and dashboard styles are retained. */
+body{display:flex;flex-direction:column}
+body>.app{flex:1;min-height:0;height:auto}
+.demo-context{flex:none;display:flex;align-items:center;gap:20px;padding:12px 20px;border-bottom:1px solid var(--edge);background:var(--rail);font-size:14px}
+.demo-context a{color:var(--cyan);text-decoration:none;white-space:nowrap}
+.demo-context>div{flex:1}.demo-context strong{font-size:16px;color:var(--ink)}
+.demo-context p{margin:3px 0 0;color:var(--ink-2);line-height:1.5}
+.demo-context label{display:flex;align-items:center;gap:8px}
+.demo-context select{font:inherit;background:var(--card-flat);color:var(--ink);border:1px solid var(--edge-2);border-radius:7px;padding:8px;max-width:140px}
+[dir=rtl] .nav span,[dir=rtl] h1,[dir=rtl] h2,[dir=rtl] h3,[dir=rtl] h4,[dir=rtl] .pill{letter-spacing:normal;line-height:1.6}
+[dir=rtl] .side{border-right:0;border-left:1px solid var(--edge)}
+[dir=rtl] table.gloss td,[dir=rtl] table.gloss th{text-align:right!important}
+.plot,.mini,.t-spark,.t-seg,.inbar,svg{direction:ltr}svg text{direction:ltr;unicode-bidi:plaintext}
+.num,.t-val,.area-lead .v{direction:ltr;unicode-bidi:isolate}
+@media(max-width:780px){.demo-context{align-items:flex-start;flex-wrap:wrap;gap:10px;padding:12px}.demo-context>div{order:3;flex-basis:100%}.demo-context label{margin-inline-start:auto}.demo-context a{padding-top:8px}body>.app{flex:auto}.side{position:static}}
+html:not([lang=de]) .nav span{font-size:10px;white-space:normal;line-height:1.35;max-width:68px;letter-spacing:0}
+html:not([lang=de]) .nav{width:72px;min-height:58px;height:auto;padding:6px 2px}
+html:not([lang=de]) .app{grid-template-columns:90px 1fr}
+@media(max-width:780px){html:not([lang=de]) .app{grid-template-columns:1fr}html:not([lang=de]) .nav{min-width:72px}}

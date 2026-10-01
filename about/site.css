@@ -1,0 +1,22 @@
+.about-sitebar{max-width:1180px;margin:auto;display:flex;align-items:center;gap:24px;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.about-brand{display:block;margin-inline-end:auto;background:white;border-radius:4px;line-height:0}
+.about-brand img{width:140px;height:70px;object-fit:contain}
+.about-language{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.about-language select,.about-language button{font:inherit;color:var(--ink);background:var(--sheet);border:1px solid var(--line);border-radius:4px;padding:10px;min-height:44px;max-width:100%}
+.about-language select{min-width:130px}
+.tag,.sub,.spec dt,.rail .l small,.titleblock span,.stage .no{font-size:12px}
+.flow .cols span,.titleblock,.spec,.route .d{font-size:14px}
+h2,h3,.role,.spec dd,.flow .cols b,.route b{overflow-wrap:anywhere}
+:root[dir=rtl]{--f-body:'Vazirmatn',Tahoma,system-ui,sans-serif;--f-tech:'Vazirmatn',Tahoma,system-ui,sans-serif;--f-mono:'Vazirmatn',Tahoma,system-ui,sans-serif}
+[dir=rtl] .tag,[dir=rtl] .sub,[dir=rtl] .titleblock span,[dir=rtl] .spec dt,[dir=rtl] .rail .l small{letter-spacing:0}
+[dir=rtl] h1,[dir=rtl] h2,[dir=rtl] h3{line-height:1.35;letter-spacing:0}
+[dir=rtl] .hero h1{direction:ltr;text-align:right;line-height:1; font-family:'Bahnschrift',system-ui,sans-serif}
+svg{direction:ltr}svg text{direction:ltr;unicode-bidi:plaintext;letter-spacing:normal}
+[dir=rtl] .rail ol::before,[dir=rtl] .rail .fill{left:auto;right:11px}
+[dir=rtl] .quote{border-left:0;border-right:3px solid var(--signal);padding:6px 22px 6px 0}
+[dir=rtl] .titleblock div{border-right:0;border-left:1px solid var(--line)}
+[dir=rtl] .titleblock div:last-child{border-left:0}
+.keyone-legal{max-width:1180px;margin:24px auto 0!important}
+@media(max-width:900px){.chain{grid-template-columns:repeat(2,minmax(0,1fr))}.stage:nth-child(3){border-left:0}.stage:nth-child(n+3){border-top:1px solid var(--line)}[dir=rtl] .rail ol::before,[dir=rtl] .rail .fill{display:none}}
+@media(max-width:640px){.about-sitebar{gap:12px}.about-language{width:100%}.about-language select{flex:1}.hero{padding-top:32px}.chain{grid-template-columns:1fr}.tag{letter-spacing:.03em}.titleblock div{padding:8px}.sheet h2{font-size:clamp(26px,7vw,38px)}[dir=rtl] .route{direction:ltr}[dir=rtl] .route li{direction:rtl;text-align:right;padding-right:0}}
+@media(prefers-reduced-motion:reduce){svg animate,svg animateMotion{display:none}}

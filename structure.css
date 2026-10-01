@@ -1,0 +1,33 @@
+/* Project-first homepage; restaurant catalogue lives on its dedicated page. */
+.project-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.project-mark.restaurant-mark{font-size:clamp(27px,3vw,42px);line-height:1.15;letter-spacing:-1px;margin-block:30px;direction:ltr}
+.custom-offer{display:flex;align-items:center;justify-content:space-between;gap:32px;padding:30px 0 45px;border-top:1px solid var(--line)}
+.custom-offer h2{font-size:25px;margin:12px 0}.custom-offer p{font-size:16px;line-height:1.7;color:var(--muted);max-width:650px}.custom-offer>a{flex-shrink:0}
+.lab-section{padding-block:35px}.lab-grid .project-card{padding:22px}.lab-grid .project-mark{font-size:36px;margin-block:18px}.lab-grid .project-card h3{font-size:19px}.lab-grid .project-card p{font-size:14px}
+.service-groups{display:block}.service-group{margin-bottom:40px}.service-group>h2{font-size:26px;margin:0 0 18px}.service-group .cards{grid-template-columns:repeat(3,minmax(0,1fr))}.service-group .inline-link{margin-top:20px}
+body[data-page=restaurant] #headline{font-size:clamp(36px,5vw,62px);line-height:1.2}
+@media(max-width:900px){.project-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.service-group .cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.project-grid,.service-group .cards{grid-template-columns:1fr}.custom-offer{align-items:flex-start;flex-direction:column;gap:10px}.lab-grid .project-mark{font-size:30px}.service-group>h2{font-size:23px}}
+
+body[data-page=home] .heritage-banner{height:160px;background:#f9fcfb url('/heritage-banner.png') center 60% / cover no-repeat;border-bottom:1px solid #edf3f1}
+body[data-page=home] .personal-hero{grid-template-columns:1fr;min-height:0;padding:48px 0 58px;gap:0}
+body[data-page=home] .personal-copy{max-width:850px}
+body[data-page=home] .personal-copy h1{max-width:850px}
+body[data-page=home] .personal-copy .lead{max-width:760px}
+body[data-page=home] .project-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:600px){body[data-page=home] .heritage-banner{height:110px;background-size:100% auto}body[data-page=home] .personal-hero{padding:32px 0 42px}body[data-page=home] .project-grid{grid-template-columns:1fr}}
+
+/* One illustrated header surface behind the real brand and navigation. */
+body[data-page=home] .heritage-header{height:210px;background:#f6fbfc url('/heritage-header.png') center top / 100% 320px no-repeat}
+body[data-page=home] .heritage-header header{min-height:90px;border:0;align-items:center;background:transparent}
+body[data-page=home] .heritage-header .brand img{mix-blend-mode:multiply}
+body[data-page=home] .heritage-header .site-nav a{color:#102a2c;text-shadow:0 1px 8px #fff}
+body[data-page=home] .heritage-header .language-nav select{background:#ffffffd9}
+@media(max-width:780px){body[data-page=home] .heritage-header{height:200px;background-size:auto 310px}body[data-page=home] .heritage-header header{background:#ffffff80}body[data-page=home] .heritage-header .site-nav{border-color:#d9e5e7}}
+@media(max-width:500px){body[data-page=home] .heritage-header{height:195px;background-size:100% 295px}}
+/* Dedicated contact page */
+.contact-page{max-width:1180px;margin:auto;padding:32px 24px 0}
+.contact-page .contact-section{margin-top:0}
+.contact-page h1{font-size:clamp(32px,5vw,56px);line-height:1.2;margin:0 0 24px}
+.contact-page .message-section{margin-top:40px}
+@media(max-width:640px){.contact-page{padding:24px 16px 0}}
