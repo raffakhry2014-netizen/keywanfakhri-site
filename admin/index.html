@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>پنل KeyOne</title>
+<link rel="stylesheet" href="/fonts/fonts.css">
+<style>
+:root{--accent:#087e7c;--accent-d:#065f5e;--ink:#162d2e;--muted:#5b6b6c;--line:#dce5e4;--pale:#eef7f5;--bg:#f6f8f8;--card:#fff;--warn:#b45309;--bad:#b42318;--good:#15803d;--c2:#d97706}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.7 Vazirmatn,system-ui,Arial,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.hidden{display:none!important}
+/* login */
+#login{min-height:100vh;display:grid;place-items:center;padding:16px}
+#login form{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:32px;width:100%;max-width:380px;box-shadow:0 10px 40px #0b2b2a14}
+#login h1{margin:0 0 4px;font-size:22px}
+#login p{margin:0 0 20px;color:var(--muted);font-size:14px}
+label.f{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+input[type=password],input[type=text],input[type=search],select,textarea{width:100%;border:1px solid #c5d4d2;border-radius:8px;padding:10px 12px;background:#fff}
+textarea{resize:vertical;min-height:44px}
+.btn{border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:8px;padding:9px 16px;font-weight:600;white-space:nowrap}
+.btn:hover{background:var(--accent-d)}
+.btn.ghost{background:#fff;color:var(--accent)}
+.btn.ghost:hover{background:var(--pale)}
+.btn.warn{background:var(--warn);border-color:var(--warn)}
+.btn:disabled{opacity:.5;cursor:default}
+.err{color:var(--bad);font-size:14px;min-height:22px;margin-top:10px}
+/* layout */
+header.top{position:sticky;top:0;z-index:20;background:#123c3c;color:#fff;display:flex;align-items:center;gap:20px;padding:0 20px;height:58px}
+header.top b{font-size:17px;letter-spacing:.3px}
+header.top nav{display:flex;gap:4px;flex:1;overflow-x:auto}
+header.top nav button{background:none;border:0;color:#b9d6d2;padding:8px 14px;border-radius:8px;font-weight:500}
+header.top nav button[aria-selected=true]{background:#ffffff1f;color:#fff}
+header.top .right{display:flex;gap:10px;align-items:center}
+header.top .right a,header.top .right button{color:#cfe5e1;background:none;border:0;font-size:13px;text-decoration:none}
+main{max-width:1240px;margin:0 auto;padding:24px 20px 80px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px}
+.card h2{font-size:16px;margin:0 0 14px}
+.grid{display:grid;gap:16px}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:900px){.g4{grid-template-columns:repeat(2,minmax(0,1fr))}.g2{grid-template-columns:1fr}}
+.notice{background:#fff7ed;border:1px solid #fed7aa;color:#7c2d12;border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:14px}
+.notice code{background:#fff;border:1px solid #fed7aa;border-radius:4px;padding:0 5px;direction:ltr;display:inline-block}
+/* stats */
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:#fff}
+.seg button{border:0;background:none;padding:7px 14px;color:var(--muted)}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff}
+.tile{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.tile span{display:block;color:var(--muted);font-size:13px}
+.tile b{display:block;font-size:28px;font-weight:700;margin-top:2px;font-variant-numeric:tabular-nums}
+.tile small{color:var(--muted);font-size:12px}
+.chart{width:100%;height:220px;display:block}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:6px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-inline-end:6px;vertical-align:-1px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{font-weight:500;color:var(--muted);text-align:start;padding:6px 8px;border-bottom:1px solid var(--line);font-size:13px}
+td{padding:7px 8px;border-bottom:1px solid #eef2f2;vertical-align:middle}
+td.num{text-align:end;font-variant-numeric:tabular-nums;white-space:nowrap;width:1%}
+td.l{direction:ltr;text-align:right;word-break:break-all}
+.bar{height:6px;background:var(--pale);border-radius:4px;margin-top:4px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:4px}
+.empty{color:var(--muted);font-size:14px;padding:10px 0}
+/* editor */
+.editor{display:grid;grid-template-columns:240px minmax(0,1fr);gap:20px;align-items:start}
+@media(max-width:900px){.editor{grid-template-columns:1fr}}
+.side{position:sticky;top:78px}
+.side button{display:block;width:100%;text-align:start;background:none;border:0;border-radius:8px;padding:9px 12px;color:var(--ink)}
+.side button[aria-current=true]{background:var(--pale);color:var(--accent);font-weight:600}
+.langs{position:sticky;top:58px;z-index:5;background:var(--bg);padding:8px 0;display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.langs button{border:1px solid var(--line);background:#fff;border-radius:20px;padding:4px 12px;font-size:13px}
+.langs button[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.field{margin-bottom:16px}
+.field>label{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:var(--muted);margin-bottom:5px}
+.field>label code{font-size:11px;color:#94a3a3;direction:ltr}
+.ref{font-size:12.5px;color:#7a8b8b;margin-top:4px;direction:ltr;text-align:left;border-inline-start:2px solid var(--line);padding-inline-start:8px;white-space:pre-wrap}
+.group{border:1px solid var(--line);border-radius:10px;padding:14px 16px 4px;margin-bottom:16px;background:#fcfdfd}
+.group>legend{font-weight:600;font-size:14px;padding:0 6px}
+.changed textarea,.changed input{border-color:var(--c2);background:#fffbeb}
+.savebar{position:sticky;bottom:0;z-index:15;background:#fff;border-top:1px solid var(--line);margin:0 -20px -80px;padding:12px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;box-shadow:0 -6px 20px #0b2b2a0d}
+.savebar .msg{flex:1;color:var(--muted);font-size:14px;min-width:200px}
+.small-btn{border:1px solid var(--line);background:#fff;border-radius:7px;padding:3px 10px;font-size:12.5px;color:var(--muted)}
+.small-btn:hover{color:var(--bad);border-color:var(--bad)}
+/* files */
+.files{display:grid;grid-template-columns:300px minmax(0,1fr);gap:20px}
+@media(max-width:900px){.files{grid-template-columns:1fr}}
+.flist{max-height:70vh;overflow:auto;direction:ltr;text-align:left;font-size:13px}
+.flist button{display:block;width:100%;text-align:left;background:none;border:0;padding:5px 8px;border-radius:6px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;color:var(--ink)}
+.flist button:hover,.flist button[aria-current=true]{background:var(--pale);color:var(--accent)}
+#fileText{direction:ltr;text-align:left;font:12.5px/1.55 ui-monospace,Menlo,Consolas,monospace;min-height:60vh;white-space:pre;tab-size:2}
+.hist li{padding:8px 0;border-bottom:1px solid #eef2f2;list-style:none}
+.hist{padding:0;margin:0}
+.hist small{color:var(--muted);margin-inline-start:8px}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 20px;border-radius:30px;z-index:50;font-size:14px;box-shadow:0 8px 24px #0003}
+</style>
+</head>
+<body>
+
+<section id="login" class="hidden">
+  <form id="loginForm">
+    <h1>پنل مدیریت KeyOne</h1>
+    <p>برای ویرایش سایت و دیدن آمار وارد شوید.</p>
+    <label class="f" for="pw">رمز عبور</label>
+    <input id="pw" type="password" autocomplete="current-password" required>
+    <div class="err" id="loginErr"></div>
+    <button class="btn" style="width:100%">ورود</button>
+  </form>
+</section>
+
+<div id="app" class="hidden">
+  <header class="top">
+    <b>KeyOne · پنل</b>
+    <nav role="tablist">
+      <button role="tab" data-tab="stats" aria-selected="true">آمار</button>
+      <button role="tab" data-tab="content" aria-selected="false">ویرایش متن‌ها</button>
+      <button role="tab" data-tab="files" aria-selected="false">فایل‌ها (پیشرفته)</button>
+      <button role="tab" data-tab="history" aria-selected="false">تاریخچه</button>
+    </nav>
+    <div class="right"><a href="/" target="_blank" rel="noopener">مشاهده سایت ↗</a><button id="logout">خروج</button></div>
+  </header>
+
+  <main>
+    <div id="setupNotice"></div>
+
+    <!-- STATS -->
+    <section data-panel="stats">
+      <div class="toolbar">
+        <div class="seg" id="range">
+          <button data-days="1" aria-pressed="false">امروز</button>
+          <button data-days="7" aria-pressed="false">۷ روز</button>
+          <button data-days="30" aria-pressed="true">۳۰ روز</button>
+          <button data-days="90" aria-pressed="false">۹۰ روز</button>
+          <button data-days="365" aria-pressed="false">یک سال</button>
+        </div>
+        <button class="btn ghost" id="reloadStats">بروزرسانی</button>
+      </div>
+      <div class="grid g4" style="margin-bottom:16px">
+        <div class="tile"><span>بازدید صفحات</span><b id="tViews">–</b><small id="tViewsSub"></small></div>
+        <div class="tile"><span>کلیک‌ها</span><b id="tClicks">–</b><small id="tClicksSub"></small></div>
+        <div class="tile"><span>پربازدیدترین پروژه</span><b id="tProject" style="font-size:20px">–</b><small id="tProjectSub"></small></div>
+        <div class="tile"><span>بیشترین ورودی از</span><b id="tRef" style="font-size:20px">–</b><small id="tRefSub"></small></div>
+      </div>
+      <div class="card" style="margin-bottom:16px">
+        <h2>روند روزانه</h2>
+        <svg class="chart" id="chart" role="img" aria-label="نمودار بازدید و کلیک روزانه"></svg>
+        <div class="legend"><span><i style="background:var(--accent)"></i>بازدید</span><span><i style="background:var(--c2)"></i>کلیک</span></div>
+      </div>
+      <div class="grid g2">
+        <div class="card"><h2>پروژه‌ها</h2><div id="sProjects"></div></div>
+        <div class="card"><h2>بیشترین کلیک‌ها</h2><div id="sClicks"></div></div>
+        <div class="card"><h2>صفحات</h2><div id="sPages"></div></div>
+        <div class="card"><h2>زبان‌ها</h2><div id="sLangs"></div></div>
+        <div class="card"><h2>از کجا آمده‌اند (سایت‌های ارجاع‌دهنده)</h2><div id="sRefs"></div></div>
+        <div class="card"><h2>کشورها</h2><div id="sCountries"></div></div>
+      </div>
+      <p style="color:var(--muted);font-size:13px;margin-top:16px">آمار بدون کوکی و بدون ذخیره‌ی IP جمع می‌شود (فقط شمارش روزانه). ربات‌ها و بازدیدهای خود پنل حساب نمی‌شوند.</p>
+    </section>
+
+    <!-- CONTENT -->
+    <section data-panel="content" class="hidden">
+      <div class="editor">
+        <div class="side card" id="sections"></div>
+        <div>
+          <div class="langs" id="langs"></div>
+          <div id="form" class="card"></div>
+        </div>
+      </div>
+      <div class="savebar">
+        <span class="msg" id="saveMsg">تغییری ثبت نشده.</span>
+        <button class="btn ghost" id="discard" disabled>لغو تغییرات</button>
+        <button class="btn ghost" id="preview">پیش‌نمایش</button>
+        <button class="btn" id="publish" disabled>انتشار در سایت</button>
+      </div>
+    </section>
+
+    <!-- FILES -->
+    <section data-panel="files" class="hidden">
+      <div class="notice">این بخش فایل‌های خود سایت (HTML، CSS، JS) را مستقیم تغییر می‌دهد. با احتیاط ویرایش کنید؛ هر ذخیره در «تاریخچه» ثبت می‌شود و قابل برگشت است.</div>
+      <div class="files">
+        <div class="card"><input type="search" id="fileFilter" placeholder="جستجوی فایل…" style="margin-bottom:10px"><div class="flist" id="fileList"></div></div>
+        <div class="card">
+          <div class="toolbar" style="justify-content:space-between"><b id="fileName" style="direction:ltr">یک فایل انتخاب کنید</b><button class="btn" id="fileSave" disabled>ذخیره و انتشار</button></div>
+          <textarea id="fileText" spellcheck="false" disabled></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- HISTORY -->
+    <section data-panel="history" class="hidden">
+      <div class="card"><h2>آخرین تغییرات سایت</h2><p style="color:var(--muted);font-size:14px;margin-top:-6px">هر تغییر حدود ۱ تا ۲ دقیقه بعد روی سایت دیده می‌شود. برای برگرداندن یک تغییر، روی آن کلیک کنید و در GitHub گزینه‌ی Revert را بزنید.</p><ul class="hist" id="hist"></ul></div>
+    </section>
+  </main>
+</div>
+
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt=n=>Number(n||0).toLocaleString("fa-IR");
+const LANGS=[["de","Deutsch"],["en","English"],["fa","فارسی"],["ar","العربية"],["tr","Türkçe"],["it","Italiano"],["fr","Français"],["es","Español"],["sq","Shqip"],["ko","한국어"],["zh","中文"],["ja","日本語"]];
+const LANGNAME=Object.fromEntries(LANGS);
+let ME=null;
+
+function toast(t){const d=document.createElement("div");d.className="toast";d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),3200);}
+async function api(path,opt={}){
+  const r=await fetch("/api/admin/"+path,{credentials:"same-origin",...opt,headers:opt.body?{"content-type":"application/json"}:{}});
+  let d={};try{d=await r.json();}catch(e){}
+  if(r.status===401&&path!=="login"){showLogin();throw new Error("unauthorized");}
+  if(!r.ok)throw Object.assign(new Error(d.error||("HTTP "+r.status)),{status:r.status,data:d});
+  return d;
+}
+
+// ---------- auth ----------
+function showLogin(){$("#app").classList.add("hidden");$("#login").classList.remove("hidden");$("#pw").focus();}
+$("#loginForm").addEventListener("submit",async e=>{
+  e.preventDefault();$("#loginErr").textContent="";
+  try{await api("login",{method:"POST",body:JSON.stringify({password:$("#pw").value})});$("#pw").value="";start();}
+  catch(err){$("#loginErr").textContent=err.message==="wrong-password"?"رمز اشتباه است.":err.data&&err.data.missing?"پنل هنوز راه‌اندازی نشده (رمز در Cloudflare تعریف نشده).":"ورود ممکن نشد.";}
+});
+$("#logout").onclick=async()=>{await api("logout",{method:"POST"}).catch(()=>{});location.reload();};
+
+async function start(){
+  try{ME=await api("me");}catch(e){if(e.data&&e.data.missing){$("#login").classList.remove("hidden");$("#loginErr").textContent="پنل هنوز راه‌اندازی نشده (ADMIN_PASSWORD در Cloudflare تعریف نشده).";}else showLogin();return;}
+  $("#login").classList.add("hidden");$("#app").classList.remove("hidden");
+  const miss=[];if(!ME.db)miss.push("اتصال دیتابیس آمار (<code>DB</code>) — بدون آن آماری ثبت نمی‌شود");if(!ME.github)miss.push("توکن GitHub (<code>GITHUB_TOKEN</code>) — بدون آن ویرایش ذخیره نمی‌شود");
+  $("#setupNotice").innerHTML=miss.length?`<div class="notice"><b>راه‌اندازی کامل نیست:</b><br>${miss.join("<br>")}</div>`:"";
+  openTab(location.hash.slice(1)||"stats");
+}
+
+// ---------- tabs ----------
+const loaded={};
+function openTab(t){
+  if(!$(`[data-panel="${t}"]`))t="stats";
+  $$("[data-tab]").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===t));
+  $$("[data-panel]").forEach(p=>p.classList.toggle("hidden",p.dataset.panel!==t));
+  history.replaceState(null,"","#"+t);
+  if(!loaded[t]){loaded[t]=true;({stats:loadStats,content:loadContent,files:loadFiles,history:loadHistory})[t]();}
+}
+$$("[data-tab]").forEach(b=>b.onclick=()=>openTab(b.dataset.tab));
+
+// ---------- stats ----------
+let days=30, projectNames={};
+$$("#range button").forEach(b=>b.onclick=()=>{days=+b.dataset.days;$$("#range button").forEach(x=>x.setAttribute("aria-pressed",x===b));loadStats();});
+$("#reloadStats").onclick=()=>loadStats();
+function list(el,rows,{label=r=>r.k,ltr=false,max=12}={}){
+  rows=rows.slice(0,max);
+  if(!rows.length){el.innerHTML='<div class="empty">هنوز داده‌ای نیست.</div>';return;}
+  const top=Math.max(...rows.map(r=>r.n));
+  el.innerHTML=`<table><tbody>${rows.map(r=>`<tr><td${ltr?' class="l"':''}>${label(r)}<div class="bar"><i style="width:${Math.max(2,r.n/top*100)}%"></i></div></td><td class="num">${fmt(r.n)}</td></tr>`).join("")}</tbody></table>`;
+}
+function pageName(p){
+  const m={"/":"صفحه اصلی","/about/":"درباره من","/contact/":"تماس","/impressum/":"Impressum","/datenschutz/":"Datenschutz"};
+  if(m[p])return m[p];const pm=p.match(/^\/projects\/([^/]+)/);if(pm)return "پروژه: "+(projectNames[pm[1]]||pm[1]);return p;
+}
+function clickName(t){
+  const m=t.match(/^project:([^ ]+) · (\w+)/);
+  if(m)return `${esc(projectNames[m[1]]||m[1])} <small style="color:var(--muted)">(${m[2]==="demo"?"دکمه دمو":"جزئیات"})</small>`;
+  if(t==="mailto")return "ایمیل";if(t==="tel")return "تلفن";
+  if(t.startsWith("lang → "))return "تغییر زبان به "+esc(LANGNAME[t.slice(7)]||t.slice(7));
+  return `<span style="direction:ltr;unicode-bidi:isolate">${esc(t)}</span>`;
+}
+async function ensureProjectNames(){
+  if(Object.keys(projectNames).length)return;
+  try{const d=await fetch("/cms/content.json",{cache:"no-store"}).then(r=>r.json());const s=d.snapshot;
+    s.projects.forEach(p=>{projectNames[p.id]=s.projectCopy.fa?.[p.copy]?.[0]||s.projectCopy.de[p.copy][0];});
+    projectNames.restaurant=projectNames.gastlyo||"Gastlyo";}catch(e){}
+}
+async function loadStats(){
+  await ensureProjectNames();
+  let s;try{s=await api("stats?days="+days);}catch(e){return;}
+  if(!s.configured){$("#tViews").textContent="–";["#sProjects","#sClicks","#sPages","#sLangs","#sRefs","#sCountries"].forEach(id=>$(id).innerHTML='<div class="empty">دیتابیس آمار هنوز وصل نشده.</div>');return;}
+  const sum=t=>s.daily.filter(d=>d.type===t).reduce((a,d)=>a+d.n,0);
+  $("#tViews").textContent=fmt(sum("view"));$("#tClicks").textContent=fmt(sum("click"));
+  $("#tViewsSub").textContent=`از ${new Date(s.since).toLocaleDateString("fa-IR")}`;
+  const vp=sum("view");$("#tClicksSub").textContent=vp?`${fmt(Math.round(sum("click")/vp*100))}٪ نسبت به بازدید`:"";
+  // projects
+  const pr={};const P=id=>pr[id]||(pr[id]={id,views:0,details:0,demo:0});
+  s.pages.forEach(r=>{const m=r.path.match(/^\/projects\/([^/]+)/);if(m)P(m[1]).views+=r.n;});
+  s.clicks.forEach(r=>{const m=r.target.match(/^project:([^ ]+) · (\w+)/);if(m)P(m[1])[m[2]==="demo"?"demo":"details"]+=r.n;});
+  if(pr.restaurant){const g=P("gastlyo");g.views+=pr.restaurant.views;g.details+=pr.restaurant.details;g.demo+=pr.restaurant.demo;delete pr.restaurant;}
+  const prows=Object.values(pr).map(p=>({...p,n:p.views+p.details+p.demo})).sort((a,b)=>b.n-a.n);
+  if(prows.length){$("#tProject").textContent=projectNames[prows[0].id]||prows[0].id;$("#tProjectSub").textContent=`${fmt(prows[0].views)} بازدید، ${fmt(prows[0].details+prows[0].demo)} کلیک`;}else{$("#tProject").textContent="–";$("#tProjectSub").textContent="";}
+  if(s.refs.length){$("#tRef").textContent=s.refs[0].k;$("#tRefSub").textContent=fmt(s.refs[0].n)+" بازدید";}else{$("#tRef").textContent="مستقیم";$("#tRefSub").textContent="";}
+  $("#sProjects").innerHTML=prows.length?`<table><thead><tr><th>پروژه</th><th>بازدید صفحه</th><th>کلیک جزئیات</th><th>کلیک دمو</th></tr></thead><tbody>${prows.map(p=>`<tr><td>${esc(projectNames[p.id]||p.id)}<div class="bar"><i style="width:${Math.max(2,p.n/prows[0].n*100)}%"></i></div></td><td class="num">${fmt(p.views)}</td><td class="num">${fmt(p.details)}</td><td class="num">${fmt(p.demo)}</td></tr>`).join("")}</tbody></table>`:'<div class="empty">هنوز داده‌ای نیست.</div>';
+  const cl={};s.clicks.forEach(r=>{cl[r.target]=(cl[r.target]||0)+r.n;});
+  list($("#sClicks"),Object.entries(cl).map(([k,n])=>({k,n})).sort((a,b)=>b.n-a.n),{label:r=>clickName(r.k),max:15});
+  list($("#sPages"),s.pages.map(r=>({k:r.path,n:r.n})),{label:r=>esc(pageName(r.k)),max:15});
+  list($("#sLangs"),s.langs,{label:r=>esc(LANGNAME[r.k]||r.k||"نامشخص")});
+  list($("#sRefs"),s.refs,{label:r=>esc(r.k),ltr:true});
+  let dn;try{dn=new Intl.DisplayNames(["fa"],{type:"region"});}catch(e){}
+  list($("#sCountries"),s.countries,{label:r=>esc(r.k?(dn?dn.of(r.k):r.k):"نامشخص")});
+  drawChart(s);
+}
+function drawChart(s){
+  const svg=$("#chart"),W=svg.clientWidth||800,H=220,pad={l:36,r:10,t:10,b:26};
+  const daysArr=[];const start=new Date(s.since+"T00:00:00Z");for(let i=0;i<s.days;i++){daysArr.push(new Date(start.getTime()+i*864e5).toISOString().slice(0,10));}
+  const v={},c={};s.daily.forEach(d=>{(d.type==="view"?v:c)[d.day]=d.n;});
+  const raw=Math.max(4,...daysArr.map(d=>Math.max(v[d]||0,c[d]||0)));const unit=Math.pow(10,Math.floor(Math.log10(raw/4)));const stepv=[1,2,5,10].map(m=>m*unit).find(s=>s*4>=raw);const max=stepv*4;
+  const x=i=>pad.l+(W-pad.l-pad.r)*(daysArr.length===1?.5:i/(daysArr.length-1)), y=n=>H-pad.b-(H-pad.t-pad.b)*n/max;
+  const bw=Math.max(2,Math.min(18,(W-pad.l-pad.r)/daysArr.length*.6));
+  let g="";for(let k=0;k<=4;k++){const val=stepv*k;g+=`<line x1="${pad.l}" x2="${W-pad.r}" y1="${y(val)}" y2="${y(val)}" stroke="#e8eeee"/><text x="${pad.l-6}" y="${y(val)+4}" font-size="11" fill="#8a9a9a" text-anchor="end">${fmt(val)}</text>`;}
+  const bars=daysArr.map((d,i)=>`<rect x="${x(i)-bw/2}" y="${y(v[d]||0)}" width="${bw}" height="${H-pad.b-y(v[d]||0)}" rx="2" fill="#087e7c"><title>${new Date(d).toLocaleDateString("fa-IR")}: ${fmt(v[d]||0)} بازدید، ${fmt(c[d]||0)} کلیک</title></rect>`).join("");
+  const line=daysArr.length>1?`<polyline fill="none" stroke="#d97706" stroke-width="2" points="${daysArr.map((d,i)=>x(i)+","+y(c[d]||0)).join(" ")}"/>`:"";
+  const step=Math.ceil(daysArr.length/8);const labels=daysArr.map((d,i)=>i%step===0||i===daysArr.length-1?`<text x="${x(i)}" y="${H-6}" font-size="11" fill="#8a9a9a" text-anchor="middle">${new Date(d).toLocaleDateString("fa-IR",{month:"short",day:"numeric"})}</text>`:"").join("");
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`);svg.innerHTML=g+bars+line+labels;
+}
+addEventListener("resize",()=>{if(!$('[data-panel="stats"]').classList.contains("hidden")&&loaded.stats)loadStats();});
+
+// ---------- content editor ----------
+const PLABEL={skip:"لینک «رفتن به محتوا» (برای کیبورد)",projectsNav:"منو: پروژه‌ها",servicesNav:"منو: خدمات",aboutNav:"منو: درباره من",contactNav:"منو: تماس",heroLabel:"برچسب کوچک بالای عنوان",heroTitle:"عنوان اصلی صفحه",heroText:"متن زیر عنوان",explore:"دکمه‌ی «مشاهده پروژه‌ها»",talk:"دکمه‌ی «گفتگو درباره ایده»",location:"محل",brandNote:"جمله‌ی برند",projectsLabel:"برچسب بخش پروژه‌ها",projectsTitle:"عنوان بخش پروژه‌ها",projectsIntro:"توضیح بخش پروژه‌ها",labLabel:"برچسب بخش ایده‌ها",labTitle:"عنوان بخش ایده‌ها",labIntro:"توضیح بخش ایده‌ها",aboutText:"متن درباره من",brandStory:"داستان برند",demo:"برچسب «دمو»",development:"وضعیت «در حال توسعه»",idea:"وضعیت «ایده»",details:"لینک «جزئیات»",coming:"متن «به‌زودی»",members:"متن اعضا",nodemo:"متن «دمو ندارد»",discuss:"دکمه‌ی گفتگو",available:"وضعیت «در دسترس»",overview:"«نمای کلی»",planned:"وضعیت «برنامه‌ریزی‌شده»",external:"متن لینک خارجی",
+eyebrow:"برچسب بالای عنوان",headline:"عنوان اصلی (HTML مجاز)",subhead:"متن زیر عنوان",edition:"خط پایین",caption:"زیرنویس عکس",catalogTitle:"عنوان فهرست خدمات",catalogNote:"توضیح فهرست",askLabel:"برچسب بخش سؤال",askTitle:"عنوان بخش سؤال",askSub:"توضیح بخش سؤال",askButton:"دکمه‌ی سؤال‌ها",footer:"پاورقی",tag:"برچسب خدمت",how:"«چطور کار می‌کند»",condition:"«پیش‌نیاز»",services:"خدمات",faqTitle:"عنوان سؤالات متداول",faqNotice:"توضیح سؤالات",faqs:"سؤالات متداول",
+email:"ایمیل",phone:"تلفن (با کد کشور)",linkedin:"لینک LinkedIn",id:"شناسه (تغییر ندهید)",copy:"شماره متن",status:"وضعیت (available / development / idea / planned)",area:"بخش (projects یا lab)",type:"نوع",demo_url:"لینک دمو",visible:"نمایش در سایت",url:"لینک",title:"عنوان",body:"متن",label:"متن دکمه"};
+const SECTIONS=[
+  {id:"portfolio",name:"صفحه اصلی و منو",perLang:true},
+  {id:"projectCopy",name:"متن پروژه‌ها",perLang:true},
+  {id:"projects",name:"تنظیمات پروژه‌ها",perLang:false},
+  {id:"sections",name:"بخش‌های اضافه",perLang:false},
+  {id:"content",name:"بروشور رستوران (Gastlyo)",perLang:true},
+  {id:"contact",name:"اطلاعات تماس",perLang:false}
+];
+let doc=null, orig=null, sha=null, curSec="portfolio", curLang="fa";
+const clone=o=>JSON.parse(JSON.stringify(o));
+const S=()=>doc.data.snapshot;
+function dirty(){return JSON.stringify(doc.data)!==orig;}
+function updateBar(){const d=dirty();$("#publish").disabled=!d;$("#discard").disabled=!d;$("#saveMsg").textContent=d?"تغییرات ذخیره‌نشده دارید — برای دیدن روی سایت «انتشار» را بزنید.":"تغییری ثبت نشده.";}
+addEventListener("beforeunload",e=>{if(doc&&dirty()){e.preventDefault();e.returnValue="";}});
+
+async function loadContent(){
+  $("#form").innerHTML='<div class="empty">در حال بارگذاری…</div>';
+  try{const d=await api("content");doc={data:d.data};sha=d.sha;orig=JSON.stringify(d.data);}
+  catch(e){
+    if(e.data&&e.data.missing){const d=await fetch("/cms/content.json",{cache:"no-store"}).then(r=>r.json());doc={data:d};orig=JSON.stringify(d);sha=null;toast("فقط مشاهده — توکن GitHub تنظیم نشده");}
+    else{$("#form").innerHTML='<div class="err">بارگذاری متن‌ها ممکن نشد: '+esc(e.message)+'</div>';loaded.content=false;return;}
+  }
+  $("#sections").innerHTML=SECTIONS.map(s=>`<button data-sec="${s.id}">${s.name}</button>`).join("");
+  $$("#sections button").forEach(b=>b.onclick=()=>{curSec=b.dataset.sec;renderForm();});
+  $("#langs").innerHTML=LANGS.map(([k,n])=>`<button data-lang="${k}">${n}</button>`).join("");
+  $$("#langs button").forEach(b=>b.onclick=()=>{curLang=b.dataset.lang;renderForm();});
+  renderForm();updateBar();
+}
+function projectTitle(i){const p=S().projects.find(p=>p.copy===i);const t=S().projectCopy.fa?.[i]?.[0]||S().projectCopy.de[i][0];return t+(p?` (${p.id})`:"");}
+function renderForm(){
+  const sec=SECTIONS.find(s=>s.id===curSec);
+  $$("#sections button").forEach(b=>b.setAttribute("aria-current",b.dataset.sec===curSec));
+  $("#langs").classList.toggle("hidden",!sec.perLang);
+  $$("#langs button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===curLang));
+  const form=$("#form");form.innerHTML="";
+  form.dir=["fa","ar"].includes(curLang)&&sec.perLang?"rtl":"auto";
+  const origS=JSON.parse(orig).snapshot;
+  if(sec.perLang){
+    const obj=S()[curSec][curLang], ref=curLang==="de"?null:S()[curSec].de, o=origS[curSec][curLang];
+    if(curSec==="projectCopy"){
+      obj.forEach((arr,i)=>{const fs=group(projectTitle(i));["عنوان","توضیح کوتاه (روی کارت)","توضیح کامل (در پنجره جزئیات)"].forEach((lab,j)=>{if(j<arr.length)fs.appendChild(field(lab,arr,j,ref&&ref[i][j],o[i]&&o[i][j]));});form.appendChild(fs);});
+    }else build(form,obj,ref,o,curSec);
+  }else if(curSec==="projects"){
+    form.insertAdjacentHTML("beforeend",'<p style="color:var(--muted);font-size:14px;margin-top:0">متن هر پروژه در بخش «متن پروژه‌ها» است. اینجا وضعیت، بخش و لینک دمو را تنظیم کنید.</p>');
+    S().projects.forEach((p,i)=>{const fs=group(projectTitle(p.copy));["status","area","demo"].forEach(k=>fs.appendChild(field(k==="demo"?"لینک دمو (خالی = بدون دمو)":PLABEL[k],p,k,null,origS.projects[i]&&origS.projects[i][k],k==="status"?["available","development","idea","planned"]:k==="area"?["projects","lab"]:null)));form.appendChild(fs);});
+  }else if(curSec==="contact"){
+    const fs=group("اطلاعات تماس");["email","phone","linkedin"].forEach(k=>fs.appendChild(field(PLABEL[k],S().contact,k,null,origS.contact[k])));form.appendChild(fs);
+  }else if(curSec==="sections"){
+    form.insertAdjacentHTML("beforeend",'<p style="color:var(--muted);font-size:14px;margin-top:0">بخش‌های متنی دلخواه که زیر بخش خدمات در صفحه اصلی نمایش داده می‌شوند.</p>');
+    S().sections.forEach((x,i)=>{
+      const fs=group(x.copy.de.title||x.id);
+      fs.appendChild(field("نمایش در سایت",x,"visible",null,null,["true","false"]));
+      fs.appendChild(field("لینک (اختیاری)",x,"url",null,null));
+      LANGS.forEach(([lk,ln])=>{const sub=group(ln);sub.dir=["fa","ar"].includes(lk)?"rtl":"auto";["title","body","label"].forEach(k=>sub.appendChild(field(PLABEL[k],x.copy[lk],k,null,null)));fs.appendChild(sub);});
+      const del=document.createElement("button");del.className="small-btn";del.textContent="حذف این بخش";del.style.margin="0 0 12px";del.onclick=()=>{if(confirm("این بخش حذف شود؟")){S().sections.splice(i,1);renderForm();updateBar();}};fs.appendChild(del);
+      form.appendChild(fs);
+    });
+    const add=document.createElement("button");add.className="btn ghost";add.textContent="+ افزودن بخش جدید";
+    add.onclick=()=>{const copy={};LANGS.forEach(([k])=>copy[k]={title:"",body:"",label:""});S().sections.push({id:"section-"+Date.now().toString(36),visible:false,url:"",copy});renderForm();updateBar();};
+    form.appendChild(add);
+  }
+}
+function group(title){const fs=document.createElement("fieldset");fs.className="group";const lg=document.createElement("legend");lg.textContent=title;fs.appendChild(lg);return fs;}
+function build(parent,obj,ref,o,path){
+  Object.keys(obj).forEach(k=>{
+    const v=obj[k],r=ref&&ref[k],ov=o&&o[k];
+    const lab=PLABEL[k]||(/^\d+$/.test(k)?"مورد "+(+k+1):k);
+    if(typeof v==="string")parent.appendChild(field(lab,obj,k,r,ov));
+    else if(Array.isArray(v)||typeof v==="object"&&v){
+      const fs=group(lab+(Array.isArray(v)&&typeof v[0]!=="string"?"":""));
+      if(Array.isArray(v)&&v.every(x=>typeof x==="string")&&path.endsWith("list")){/* plain list */}
+      build(fs,v,r,ov,path+"."+k);
+      if(Array.isArray(v)&&v.every(x=>typeof x==="string")&&v.length>1&&isBulletList(path,k)){addListButtons(fs,v);}
+      parent.appendChild(fs);
+    }
+  });
+}
+function isBulletList(path,k){return /services\.\d+$/.test(path)&&k==="3";}
+function addListButtons(fs,arr){
+  const b=document.createElement("button");b.className="small-btn";b.textContent="+ مورد جدید (فقط این زبان)";b.style.margin="0 0 12px";
+  b.onclick=()=>{arr.push("");renderForm();updateBar();};fs.appendChild(b);
+}
+function field(label,obj,key,ref,origVal,options){
+  const wrap=document.createElement("div");wrap.className="field";
+  const val=obj[key]==null?"":String(obj[key]);
+  wrap.innerHTML=`<label><span>${esc(label)}</span></label>`;
+  let input;
+  if(options){input=document.createElement("select");input.innerHTML=options.map(o=>`<option ${String(o)===val?"selected":""}>${o}</option>`).join("");}
+  else{input=document.createElement("textarea");input.rows=Math.min(10,Math.max(1,Math.ceil(val.length/80)+(val.split("\n").length-1)));input.value=val;}
+  const sync=()=>{let nv=input.value;if(options&&key==="visible")nv=nv==="true";if(key==="demo"&&!nv){delete obj[key];}else obj[key]=nv;wrap.classList.toggle("changed",origVal!==undefined&&String(nv)!==String(origVal==null?"":origVal));updateBar();};
+  input.addEventListener("input",sync);input.addEventListener("change",sync);
+  if(origVal!==undefined&&origVal!==null&&String(origVal)!==val)wrap.classList.add("changed");
+  wrap.appendChild(input);
+  if(ref!=null&&ref!==""){const r=document.createElement("div");r.className="ref";r.textContent="DE: "+ref;wrap.appendChild(r);}
+  return wrap;
+}
+$("#discard").onclick=()=>{if(!confirm("همه‌ی تغییرات ذخیره‌نشده پاک شوند؟"))return;doc.data=JSON.parse(orig);renderForm();updateBar();};
+$("#preview").onclick=()=>{try{localStorage.setItem("keyone-preview",JSON.stringify(doc.data));}catch(e){toast("پیش‌نمایش در این مرورگر ممکن نیست");return;}const sec=SECTIONS.find(s=>s.id===curSec);window.open("/?preview=1&lang="+curLang,"_blank");};
+$("#publish").onclick=async()=>{
+  if(!sha){toast("توکن GitHub تنظیم نشده؛ ذخیره ممکن نیست.");return;}
+  const msg=prompt("توضیح کوتاه برای این تغییر (اختیاری):","")
+  if(msg===null)return;
+  $("#publish").disabled=true;$("#saveMsg").textContent="در حال انتشار…";
+  try{const r=await api("content",{method:"PUT",body:JSON.stringify({data:doc.data,sha,message:"Panel: "+(msg||"Texte aktualisiert")})});sha=r.sha;orig=JSON.stringify(doc.data);renderForm();updateBar();$("#saveMsg").textContent="منتشر شد ✓ — حدود ۱ تا ۲ دقیقه دیگر روی سایت دیده می‌شود.";loaded.history=false;}
+  catch(e){$("#publish").disabled=false;$("#saveMsg").textContent=e.status===409?"فایل در این فاصله جای دیگری تغییر کرده؛ صفحه را دوباره باز کنید.":"انتشار ناموفق بود: "+e.message;}
+};
+
+// ---------- files ----------
+let files=[],curFile=null;
+async function loadFiles(){
+  try{files=await api("files");}catch(e){$("#fileList").innerHTML='<div class="err">'+(e.data&&e.data.missing?"توکن GitHub تنظیم نشده.":esc(e.message))+'</div>';loaded.files=false;return;}
+  renderFiles();
+}
+function renderFiles(){
+  const q=$("#fileFilter").value.toLowerCase();
+  $("#fileList").innerHTML=files.filter(f=>f.path.toLowerCase().includes(q)).map(f=>`<button data-path="${esc(f.path)}" aria-current="${curFile&&curFile.path===f.path}">${esc(f.path)}</button>`).join("");
+  $$("#fileList button").forEach(b=>b.onclick=()=>openFile(b.dataset.path));
+}
+$("#fileFilter").oninput=renderFiles;
+async function openFile(path){
+  if(curFile&&$("#fileText").value!==curFile.text&&!confirm("تغییرات این فایل ذخیره نشده. ادامه می‌دهید؟"))return;
+  $("#fileName").textContent=path;$("#fileText").disabled=true;$("#fileText").value="در حال بارگذاری…";
+  const f=await api("file?path="+encodeURIComponent(path));curFile={path,sha:f.sha,text:f.text};
+  $("#fileText").value=f.text;$("#fileText").disabled=false;$("#fileSave").disabled=true;renderFiles();
+}
+$("#fileText").oninput=()=>{$("#fileSave").disabled=!curFile||$("#fileText").value===curFile.text;};
+$("#fileSave").onclick=async()=>{
+  const text=$("#fileText").value;
+  if(curFile.path.endsWith(".json")){try{JSON.parse(text);}catch(e){alert("JSON نامعتبر است: "+e.message);return;}}
+  if(!confirm("این فایل روی سایت منتشر شود؟"))return;
+  $("#fileSave").disabled=true;
+  try{const r=await api("file",{method:"PUT",body:JSON.stringify({path:curFile.path,text,sha:curFile.sha,message:"Panel: "+curFile.path+" bearbeitet"})});curFile.sha=r.sha;curFile.text=text;toast("ذخیره و منتشر شد ✓");loaded.history=false;}
+  catch(e){$("#fileSave").disabled=false;alert(e.status===409?"فایل در این فاصله تغییر کرده؛ دوباره بازش کنید.":"ذخیره ناموفق: "+e.message);}
+};
+
+// ---------- history ----------
+async function loadHistory(){
+  $("#hist").innerHTML='<li class="empty">در حال بارگذاری…</li>';
+  try{const h=await api("history");$("#hist").innerHTML=h.map(c=>`<li><a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.message)}</a><small>${new Date(c.date).toLocaleString("fa-IR")}</small></li>`).join("");}
+  catch(e){$("#hist").innerHTML='<li class="err">'+(e.data&&e.data.missing?"توکن GitHub تنظیم نشده.":esc(e.message))+'</li>';loaded.history=false;}
+}
+
+start();
+})();
+</script>
+</body>
+</html>
