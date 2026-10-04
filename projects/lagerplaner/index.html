@@ -1,0 +1,931 @@
+<!doctype html>
+<html lang="de" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lagerplaner 2D/3D – Lagerlayout online planen | KeyOne</title>
+<meta name="description" content="Kostenloser Lagerplaner: Artikel eingeben und Lagertechnik, Fläche, Personal, Stapler und Ausstattung berechnen – mit 2D-Plan und 3D-Modell.">
+<meta name="theme-color" content="#0E8585">
+<link rel="canonical" href="https://keywanfakhri.com/projects/lagerplaner/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230E8585'/%3E%3Cpath d='M7 25V11h4v14M14 25V7h4v18M21 25V14h4v11' stroke='%23fff' stroke-width='2' fill='none'/%3E%3Crect x='5' y='25' width='22' height='2' fill='%23E0B000'/%3E%3C/svg%3E">
+<style>
+/* ---------- Schriften (lokal gehostet, keine Verbindung zu Google) ---------- */
+@font-face{font-family:"Barlow";font-weight:400;font-display:swap;src:url(fonts/barlow-latin-400-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Barlow";font-weight:400;font-display:swap;src:url(fonts/barlow-latin-ext-400-normal.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+1E00-1E9F,U+20A0-20AB,U+20AD-20C0,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Barlow";font-weight:500;font-display:swap;src:url(fonts/barlow-latin-500-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Barlow";font-weight:500;font-display:swap;src:url(fonts/barlow-latin-ext-500-normal.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+1E00-1E9F,U+20A0-20AB,U+20AD-20C0,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Barlow";font-weight:600 700;font-display:swap;src:url(fonts/barlow-latin-600-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Barlow";font-weight:600 700;font-display:swap;src:url(fonts/barlow-latin-ext-600-normal.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+1E00-1E9F,U+20A0-20AB,U+20AD-20C0,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Barlow Condensed";font-weight:600;font-display:swap;src:url(fonts/barlow-condensed-latin-600-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Barlow Condensed";font-weight:600;font-display:swap;src:url(fonts/barlow-condensed-latin-ext-600-normal.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+1E00-1E9F,U+20A0-20AB,U+20AD-20C0,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Barlow Condensed";font-weight:700;font-display:swap;src:url(fonts/barlow-condensed-latin-700-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Barlow Condensed";font-weight:700;font-display:swap;src:url(fonts/barlow-condensed-latin-ext-700-normal.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+1E00-1E9F,U+20A0-20AB,U+20AD-20C0,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"JetBrains Mono";font-weight:400;font-display:swap;src:url(fonts/jetbrains-mono-latin-400-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"JetBrains Mono";font-weight:400;font-display:swap;src:url(fonts/jetbrains-mono-latin-ext-400-normal.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+1E00-1E9F,U+20A0-20AB,U+20AD-20C0,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"JetBrains Mono";font-weight:500;font-display:swap;src:url(fonts/jetbrains-mono-latin-500-normal.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"JetBrains Mono";font-weight:500;font-display:swap;src:url(fonts/jetbrains-mono-latin-ext-500-normal.woff2) format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+1E00-1E9F,U+20A0-20AB,U+20AD-20C0,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Vazirmatn";font-weight:100 900;font-display:swap;src:url(fonts/vazirmatn-arabic-wght-normal.woff2) format("woff2");unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC}
+
+/* Layout: Werkzeug-Seite – Eingaben oben, Kennzahlen, Plan/3D, dann Detailtabellen. Hallenboden-Grau, Isfahan-Türkis als Akzent, Bodenmarkierungs-Gelb für Verkehrswege. */
+:root{
+  --bg:#EEF2F2; --panel:#FFFFFF; --panel-2:#F6F8F8; --ink:#11262B; --muted:#5A6E73; --line:#D3DDDE;
+  --accent:#0E8585; --accent-ink:#FFFFFF; --accent-soft:#DCEFEE; --mark:#E0B000;
+  --ok:#2F7D4F; --warn:#B7791F; --crit:#B83A2E;
+  --plan-bg:#F7F9F9; --plan-floor:#E6EBEB; --plan-rack:#46606A; --plan-text:#11262B; --hof:#D9DEDE;
+  --f-display:"Barlow Condensed","Vazirmatn","Arial Narrow",Arial,sans-serif;
+  --f-body:"Barlow","Vazirmatn",system-ui,-apple-system,"Segoe UI","PingFang SC","Hiragino Sans","Apple SD Gothic Neo","Microsoft YaHei","Yu Gothic","Malgun Gothic","Noto Sans CJK SC",sans-serif;
+  --f-mono:"JetBrains Mono","Vazirmatn",ui-monospace,Menlo,Consolas,monospace;
+  --r:6px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0C1618; --panel:#132126; --panel-2:#172a30; --ink:#E2ECEC; --muted:#8CA3A7; --line:#27403F;
+  --accent:#3CC4BF; --accent-ink:#06201F; --accent-soft:#16383A; --mark:#E8C23A;
+  --ok:#5CC08A; --warn:#E0A84A; --crit:#EF7A6C;
+  --plan-bg:#101D21; --plan-floor:#1A2B30; --plan-rack:#9DB3B9; --plan-text:#E2ECEC; --hof:#1B2629;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0C1618; --panel:#132126; --panel-2:#172a30; --ink:#E2ECEC; --muted:#8CA3A7; --line:#27403F;
+  --accent:#3CC4BF; --accent-ink:#06201F; --accent-soft:#16383A; --mark:#E8C23A;
+  --ok:#5CC08A; --warn:#E0A84A; --crit:#EF7A6C;
+  --plan-bg:#101D21; --plan-floor:#1A2B30; --plan-rack:#9DB3B9; --plan-text:#E2ECEC; --hof:#1B2629;
+  color-scheme:dark}
+:root[dir="rtl"]{--f-display:"Vazirmatn","Barlow Condensed",Tahoma,sans-serif;--f-body:"Vazirmatn","Barlow",Tahoma,sans-serif}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+a{color:var(--accent)}
+.wrap{max-width:1280px;margin:0 auto;padding-inline:16px;padding-block:20px 40px;display:flex;flex-direction:column;gap:22px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.topbar a.home{font-family:var(--f-mono);font-size:.8rem;text-decoration:none;color:var(--muted)}
+.topbar a.home:hover{color:var(--accent)}
+.lang{display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--muted)}
+.lang select{width:auto;min-width:150px}
+h1,h2,h3{font-family:var(--f-display);font-weight:700;letter-spacing:.01em;text-wrap:balance;margin:0}
+:root[dir="rtl"] h1,:root[dir="rtl"] h2,:root[dir="rtl"] h3{letter-spacing:0}
+h1{font-size:clamp(2rem,4.5vw,3rem);line-height:1.08}
+h2{font-size:1.45rem}
+h3{font-size:1.1rem}
+.eyebrow{font-family:var(--f-mono);font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.lead{color:var(--muted);max-width:72ch;margin:.4rem 0 0}
+.badge{display:inline-flex;align-items:center;gap:8px;margin-top:8px;font-size:.82rem;color:var(--ok);background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:4px 12px;align-self:flex-start}
+.badge svg{flex:none}
+header.top{display:flex;flex-direction:column;gap:6px;border-bottom:3px solid var(--mark);padding-bottom:18px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px;min-width:0}
+.card-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.card-head p{margin:0;color:var(--muted);font-size:.9rem}
+.params{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px 16px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:.8rem;color:var(--muted);font-weight:500}
+label.f span.u{font-family:var(--f-mono);font-size:.72rem}
+input,select{font:inherit;color:var(--ink);background:var(--panel-2);border:1px solid var(--line);border-radius:4px;padding:6px 8px;min-width:0;width:100%}
+input[type=number]{direction:ltr}
+input:focus-visible,select:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+label.chk{flex-direction:row;align-items:center;gap:8px;color:var(--ink);font-size:.9rem;padding-top:18px}
+label.chk input{width:auto}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:4px}
+table{border-collapse:collapse;width:100%;font-size:.88rem}
+th,td{text-align:start;padding:7px 9px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-family:var(--f-mono);font-weight:500;font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--panel-2);white-space:nowrap}
+:root[dir="rtl"] th{letter-spacing:0;font-size:.78rem}
+td.num,th.num{text-align:end;font-variant-numeric:tabular-nums;font-family:var(--f-mono);font-size:.82rem}
+tr:last-child td{border-bottom:0}
+#prodTbl td{padding:4px 5px}
+#prodTbl input{padding:5px 6px;font-size:.85rem}
+#prodTbl input[type=number]{text-align:right;font-family:var(--f-mono);font-size:.8rem;width:84px}
+#prodTbl input.name{min-width:190px}
+#prodTbl select{min-width:200px;font-size:.84rem;padding:5px 4px}
+.sw{display:inline-block;width:12px;height:12px;border-radius:2px;vertical-align:middle;flex:none}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+button{font:inherit;font-weight:600;font-size:.88rem;border-radius:4px;border:1px solid var(--line);background:var(--panel-2);color:var(--ink);padding:7px 12px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+button.del{padding:3px 8px;font-size:.8rem;color:var(--muted)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.kpi{background:var(--panel);padding:14px 16px;display:flex;flex-direction:column;gap:2px}
+.kpi b{font-family:var(--f-display);font-size:1.9rem;line-height:1.1;font-variant-numeric:tabular-nums}
+.kpi small{color:var(--muted);font-size:.78rem}
+.kpi .k{font-family:var(--f-mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+:root[dir="rtl"] .kpi .k{letter-spacing:0;font-size:.78rem}
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--line);margin-bottom:12px;flex-wrap:wrap}
+.tab{border:0;border-bottom:3px solid transparent;border-radius:0;background:none;padding:8px 14px;font-family:var(--f-display);font-size:1.1rem;letter-spacing:.03em;color:var(--muted)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+#view2d{overflow:auto;background:var(--plan-bg);border:1px solid var(--line);border-radius:4px}
+#view2d svg{display:block;width:100%;height:720px}
+@media (max-width:640px){#view2d svg{height:480px}}
+#view3d{position:relative;height:560px;background:var(--plan-bg);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+#view3d canvas{display:block}
+.hint{position:absolute;inset-inline-start:10px;bottom:8px;font-size:.75rem;color:var(--muted);background:var(--panel);padding:3px 8px;border-radius:3px;border:1px solid var(--line)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;font-size:.82rem}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr));gap:22px}
+.pill{display:inline-block;font-family:var(--f-mono);font-size:.68rem;letter-spacing:.05em;padding:2px 7px;border-radius:10px;border:1px solid currentColor;white-space:nowrap}
+.pill.P{color:var(--crit)} .pill.C{color:var(--warn)} .pill.E{color:var(--ok)}
+.abc{font-family:var(--f-mono);font-weight:500;padding:1px 6px;border-radius:3px;background:var(--accent-soft);color:var(--ink)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{padding:4px 10px;border-radius:14px;font-size:.8rem}
+.chip[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.warnbox{border-inline-start:3px solid var(--warn);background:var(--panel-2);padding:8px 12px;font-size:.86rem;margin:0}
+.warnbox:empty{display:none}
+details{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:12px 18px}
+details summary{cursor:pointer;font-family:var(--f-display);font-size:1.2rem;font-weight:700}
+details ul{margin:.6rem 0 0;padding-inline-start:1.1rem;color:var(--muted);font-size:.88rem;max-width:90ch}
+details li{margin:.25rem 0}
+.legal{max-width:90ch;font-size:.9rem;line-height:1.65}
+.legal h3{margin:1.3rem 0 .3rem;font-size:1.05rem}
+.legal p{margin:.3rem 0}
+.legal address{font-style:normal}
+.legal .note{color:var(--muted);font-style:italic}
+.legal .stand{color:var(--muted);margin:.2rem 0 .6rem}
+footer{color:var(--muted);font-size:.8rem;border-top:1px solid var(--line);padding-top:12px;display:flex;flex-direction:column;gap:6px}
+footer nav{display:flex;gap:14px;flex-wrap:wrap}
+footer nav a{color:var(--muted)}
+.muted{color:var(--muted)}
+.ltr{direction:ltr;unicode-bidi:isolate}
+@media (max-width:640px){#view3d{height:400px}.kpi b{font-size:1.55rem}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <a class="home" href="/" data-i="back_home">← keywanfakhri.com</a>
+    <label class="lang"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.7 5.6 3.7 9s-1.2 6.4-3.7 9c-2.5-2.6-3.7-5.6-3.7-9S9.5 5.6 12 3z"/></svg><span data-i="lang_label">Sprache</span>
+      <select id="langSel"></select></label>
+  </div>
+
+  <header class="top">
+    <div class="eyebrow" data-i="eyebrow">KeyOne · Lagerplanung</div>
+    <h1 data-i="h1">Lagerplaner 2D/3D</h1>
+    <p class="lead" data-i="lead"></p>
+    <p class="badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg><span data-i="privacy_badge"></span></p>
+  </header>
+
+  <section class="card" aria-labelledby="h-par">
+    <div class="card-head"><h2 id="h-par" data-i="h_par"></h2><p data-i="p_par"></p></div>
+    <div class="params">
+      <label class="f"><span><span data-i="f_hallH"></span> <span class="u">m</span></span><input id="s-hallH" type="number" min="4" max="20" step="0.5"></label>
+      <label class="f"><span><span data-i="f_hrlH"></span> <span class="u">m</span></span><input id="s-hrlH" type="number" min="15" max="45" step="1"></label>
+      <label class="f chk"><input id="s-hrl" type="checkbox"> <span data-i="f_hrl"></span></label>
+      <label class="f"><span data-i="f_palTech"></span>
+        <select id="s-palTech">
+          <option value="auto" data-i="opt_auto"></option>
+          <option value="front" data-i="opt_front"></option>
+          <option value="schubmast" data-i="opt_schubmast"></option>
+          <option value="schmal" data-i="opt_schmal"></option>
+          <option value="hrl" data-i="opt_hrl"></option>
+        </select></label>
+      <label class="f"><span data-i="f_pal"></span>
+        <select id="s-pal"><option value="eur" data-i="opt_eur"></option><option value="ind" data-i="opt_ind"></option></select></label>
+      <label class="f"><span><span data-i="f_maxLoadH"></span> <span class="u">mm</span></span><input id="s-maxLoadH" type="number" min="600" max="2400" step="50"></label>
+      <label class="f"><span><span data-i="f_maxKg"></span> <span class="u">kg</span></span><input id="s-maxKg" type="number" min="100" max="2000" step="50"></label>
+      <label class="f"><span><span data-i="f_util"></span> <span class="u">%</span></span><input id="s-util" type="number" min="50" max="100" step="1"></label>
+      <label class="f"><span data-i="f_shifts"></span><select id="s-shifts"><option value="1" data-i="shift_1"></option><option value="2" data-i="shift_2"></option><option value="3" data-i="shift_3"></option></select></label>
+      <label class="f"><span><span data-i="f_upl"></span> <span class="u" data-i="u_pcs"></span></span><input id="s-upl" type="number" min="1" max="500" step="1"></label>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="h-art">
+    <div class="card-head"><h2 id="h-art" data-i="h_art"></h2>
+      <div class="btns"><button id="addRow" type="button" data-i="btn_add"></button><button id="resetRows" type="button" data-i="btn_reset"></button></div></div>
+    <div class="tbl-wrap"><table id="prodTbl">
+      <thead><tr><th></th><th data-i="th_item"></th><th data-i="th_cat"></th><th class="num" data-i="th_l"></th><th class="num" data-i="th_b"></th><th class="num" data-i="th_h"></th><th class="num" data-i="th_kg"></th><th class="num" data-i="th_qty"></th><th class="num" data-i="th_out"></th><th></th></tr></thead>
+      <tbody></tbody></table></div>
+  </section>
+
+  <section class="kpis" id="kpis"></section>
+  <p class="warnbox" id="warns"></p>
+
+  <section class="card" aria-labelledby="h-view">
+    <div class="card-head"><h2 id="h-view" data-i="h_view"></h2><p id="dimsLine" class="muted"></p></div>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="tab2d" aria-selected="true" aria-controls="view2d" data-i="tab_2d"></button>
+      <button class="tab" role="tab" id="tab3d" aria-selected="false" aria-controls="view3d" data-i="tab_3d"></button>
+    </div>
+    <div id="view2d" role="tabpanel" aria-labelledby="tab2d"></div>
+    <div id="view3d" role="tabpanel" aria-labelledby="tab3d" hidden><span class="hint" data-i="hint_3d"></span></div>
+    <div class="legend" id="legend"></div>
+  </section>
+
+  <div class="grid2">
+    <section class="card" aria-labelledby="h-zones">
+      <div class="card-head"><h2 id="h-zones" data-i="h_zones"></h2><p data-i="p_zones"></p></div>
+      <div class="tbl-wrap"><table id="zoneTbl"></table></div>
+    </section>
+    <section class="card" aria-labelledby="h-res">
+      <div class="card-head"><h2 id="h-res" data-i="h_res"></h2><p data-i="p_res"></p></div>
+      <div class="tbl-wrap"><table id="resTbl"></table></div>
+    </section>
+  </div>
+
+  <section class="card" aria-labelledby="h-req">
+    <div class="card-head"><h2 id="h-req" data-i="h_req"></h2>
+      <div class="chips" role="group" id="chips">
+        <button class="chip" data-f="all" aria-pressed="true" data-i="chip_all"></button>
+        <button class="chip" data-f="P" aria-pressed="false" data-i="lv_P"></button>
+        <button class="chip" data-f="C" aria-pressed="false" data-i="lv_C"></button>
+        <button class="chip" data-f="E" aria-pressed="false" data-i="lv_E"></button>
+      </div></div>
+    <div class="tbl-wrap"><table id="reqTbl"></table></div>
+  </section>
+
+  <details>
+    <summary data-i="h_assume"></summary>
+    <ul>
+      <li data-i="as_1"></li><li data-i="as_2"></li><li data-i="as_3"></li><li data-i="as_4"></li>
+      <li data-i="as_5"></li><li data-i="as_6"></li><li data-i="as_7"></li>
+    </ul>
+  </details>
+
+  <!-- ===================== Datenschutz ===================== -->
+  <details id="datenschutz">
+    <summary data-i="dp_h"></summary>
+    <div class="legal">
+      <p class="stand" data-i="dp_stand"></p>
+      <p class="note" data-i="legal_note"></p>
+      <h3 data-i="dp_1h"></h3>
+      <address>
+        Rahmatallah Fakhri Fakhrabadi (KeyOne)<br>
+        Heinrich-von-Tettingen-Straße 17, 78465 Konstanz, <span data-i="im_country"></span><br>
+        <span data-i="im_email"></span>: <a href="mailto:keywanfakhri1@gmail.com" class="ltr">keywanfakhri1@gmail.com</a><br>
+        <span data-i="im_phone"></span>: <a href="tel:+4915563667849" class="ltr">+49 155 63667849</a>
+      </address>
+      <h3 data-i="dp_2h"></h3><p data-i="dp_2p"></p>
+      <h3 data-i="dp_3h"></h3><p data-i="dp_3p"></p>
+      <h3 data-i="dp_4h"></h3><p data-i="dp_4p"></p>
+      <h3 data-i="dp_5h"></h3><p data-i="dp_5p"></p>
+      <h3 data-i="dp_6h"></h3><p data-i="dp_6p"></p>
+      <h3 data-i="dp_7h"></h3><p data-i="dp_7p"></p>
+      <h3 data-i="dp_8h"></h3><p data-i="dp_8p"></p>
+    </div>
+  </details>
+
+  <!-- ===================== Impressum ===================== -->
+  <details id="impressum">
+    <summary data-i="im_h"></summary>
+    <div class="legal">
+      <p class="stand" data-i="im_sub"></p>
+      <p class="note" data-i="legal_note"></p>
+      <h3 data-i="im_provider"></h3>
+      <address>
+        Rahmatallah Fakhri Fakhrabadi<br>
+        <span data-i="im_brand"></span><br>
+        Heinrich-von-Tettingen-Straße 17<br>
+        78465 Konstanz<br>
+        <span data-i="im_country"></span>
+      </address>
+      <h3 data-i="im_contact"></h3>
+      <p><span data-i="im_phone"></span>: <a href="tel:+4915563667849" class="ltr">+49 155 63667849</a><br>
+        <span data-i="im_email"></span>: <a href="mailto:keywanfakhri1@gmail.com" class="ltr">keywanfakhri1@gmail.com</a><br>
+        Web: <a href="https://keywanfakhri.com" class="ltr">keywanfakhri.com</a></p>
+      <h3 data-i="im_resp"></h3><p data-i="im_resp_p"></p>
+      <h3 data-i="im_liab"></h3><p data-i="im_liab_p"></p>
+      <h3 data-i="im_dispute"></h3><p data-i="im_dispute_p"></p>
+      <h3 data-i="im_copy"></h3><p data-i="im_copy_p"></p>
+    </div>
+  </details>
+
+  <footer>
+    <span data-i="disclaimer"></span>
+    <nav><span>© 2026 KeyOne · Rahmatallah Fakhri Fakhrabadi</span><a href="#impressum" data-i="foot_imprint"></a><a href="#datenschutz" data-i="foot_privacy"></a></nav>
+  </footer>
+</div>
+
+<script src="vendor/three.min.js"></script>
+<script src="vendor/OrbitControls.js"></script>
+<script src="i18n.js"></script>
+
+<script id="i18n-core">
+/* ---------- Sprachen ---------- */
+const LANGS=[
+ {code:'de',name:'Deutsch',loc:'de-DE'},
+ {code:'en',name:'English',loc:'en-GB'},
+ {code:'fa',name:'فارسی',loc:'fa-IR-u-nu-latn',rtl:true},
+ {code:'ar',name:'العربية',loc:'ar-u-nu-latn',rtl:true},
+ {code:'tr',name:'Türkçe',loc:'tr-TR'},
+ {code:'it',name:'Italiano',loc:'it-IT'},
+ {code:'fr',name:'Français',loc:'fr-FR'},
+ {code:'ko',name:'한국어',loc:'ko-KR'},
+ {code:'zh',name:'中文（简体）',loc:'zh-CN'},
+ {code:'ja',name:'日本語',loc:'ja-JP'},
+ {code:'es',name:'Español',loc:'es-ES'},
+ {code:'sq',name:'Shqip',loc:'sq-AL'}
+];
+let LANG='de', LOC='de-DE', RTL=false;
+function T(k,p){let s=(LP_I18N[LANG]&&LP_I18N[LANG][k]);if(s==null)s=LP_I18N.de[k];if(s==null)s=k;
+  if(p)s=s.replace(/\{(\w+)\}/g,(m,x)=>p[x]!=null?p[x]:m);return RTL&&s.indexOf('<')<0?iso(s):s;}
+/* RTL: Zahlen mit Einheit (z. B. "64,6 × 55,4 m", "−18 °C") als LTR-Block isolieren */
+const NUMRE=/(?<![A-Za-z\d.,])[−-]?\d[\d.,]*(?:\s*[×+\/–]\s*[−-]?\d[\d.,]*)*(?:\s*(?:m²|mm|m|kg|°C|lx|%))?(?![A-Za-z\d])/g;
+function iso(s){return RTL?String(s).replace(NUMRE,x=>'\u2066'+x+'\u2069'):s;}
+function pickLang(){
+  let saved=null;try{saved=localStorage.getItem('keyone-language');}catch(e){}
+  const q=new URLSearchParams(location.search).get('lang');
+  const ok=c=>LANGS.some(l=>l.code===c);
+  if(q&&ok(q))return q; if(saved&&ok(saved))return saved;
+  for(const n of (navigator.languages||[navigator.language||'de'])){const b=String(n).toLowerCase().split('-')[0];if(ok(b))return b;}
+  return 'de';
+}
+</script>
+
+<script id="engine">
+const PAL={eur:{L:1.2,B:0.8},ind:{L:1.2,B:1.0}};
+const DEFAULT_S={hallH:12,hrlH:30,hrl:true,palTech:'auto',pal:'eur',maxLoadH:1650,maxKg:1000,util:85,shifts:2,upl:4};
+const DEFAULT_P=[
+ {nk:'prod_1',cat:'normal',l:600,b:600,h:850,kg:70,qty:2400,out:120},
+ {nk:'prod_2',cat:'normal',l:420,b:300,h:250,kg:12.5,qty:60000,out:3000},
+ {nk:'prod_3',cat:'normal',l:600,b:400,h:120,kg:25,qty:30000,out:1500},
+ {nk:'prod_4',cat:'normal',l:6000,b:60,h:60,kg:25,qty:4000,out:200},
+ {nk:'prod_5',cat:'normal',l:150,b:100,h:60,kg:1.2,qty:50000,out:2500},
+ {nk:'prod_6',cat:'wert',l:400,b:300,h:200,kg:8,qty:5000,out:250},
+ {nk:'prod_7',cat:'tk',l:400,b:300,h:200,kg:6,qty:20000,out:1200},
+ {nk:'prod_8',cat:'lgk3',l:300,b:200,h:350,kg:9,qty:3000,out:150},
+ {nk:'prod_9',cat:'lgk2b',l:300,b:200,h:200,kg:5,qty:8000,out:400},
+ {nk:'prod_10',cat:'lgk8',l:400,b:300,h:300,kg:25,qty:2000,out:80}
+];
+const pname=p=>p.name!=null?p.name:T(p.nk||'new_item');
+const TECH={
+ front:{aisle:3.8,lift:6.0,crossF:4.0,crossR:1.2,rate:20,kind:'pal'},
+ schubmast:{aisle:2.9,lift:10.5,crossF:4.0,crossR:1.2,rate:18,kind:'pal'},
+ schmal:{aisle:1.8,lift:14,crossF:5.0,crossR:1.2,rate:22,kind:'pal'},
+ hrl:{aisle:1.6,lift:45,crossF:10.0,crossR:1.5,rate:35,kind:'pal'},
+ verschiebe:{aisle:2.9,lift:10.5,crossF:3.5,crossR:1.0,rate:14,kind:'pal',mobile:true},
+ fach:{aisle:1.2,crossF:2.0,crossR:1.0,rate:0,kind:'fach'},
+ krag:{aisle:2.4,crossF:4.0,crossR:1.2,rate:12,kind:'krag'}
+};
+/* Übersetzte Namen werden bei jedem Sprachwechsel gesetzt */
+function localizeEngine(){
+  Object.entries(TECH).forEach(([k,t])=>{t.name=T('tech_'+k);t.short=T('tech_'+k+'_s');t.veh=T('veh_'+k);});
+  Object.entries(ENV).forEach(([k,e])=>{e.label=T('env_'+k);e.zone=T('env_'+k+'_z');});
+}
+const ENV={
+ normal:{color:'#0F8A8A'},
+ kuehl:{color:'#3B82C4',cold:true},
+ tk:{color:'#5561D6',cold:true},
+ wert:{color:'#8A5CC2'},
+ lgk3:{color:'#D64933',haz:true,ex:true},
+ lgk2b:{color:'#E07A1F',haz:true,ex:true},
+ lgk8:{color:'#B8336A',haz:true},
+ lgk51:{color:'#B08A0A',haz:true}
+};
+const PCOL=['#2A9D8F','#E76F51','#3D5A80','#E9C46A','#8AB17D','#9B5DE5','#F4A261','#4895EF','#C1666B','#8D6A4B','#43AA8B','#F28482','#577590','#B5838D','#90BE6D'];
+const pcol=i=>i<PCOL.length?PCOL[i]:`hsl(${(i*47)%360} 55% 52%)`;
+const FRONT_D=15,MAIN_AISLE=4.5,TRUCK_PAL=33,EFF_H=6.5,PICK_RATE=80,HOF_D=35;
+const fmt=(v,d=0)=>(+v).toLocaleString(LOC,{minimumFractionDigits:d,maximumFractionDigits:d});
+
+const fit2=(A,B,a,b)=>Math.floor(A/a)*Math.floor(B/b);
+function palletFit(p,S){
+  const pal=PAL[S.pal],A=pal.L*1000,B=pal.B*1000;
+  let perLayer=Math.max(fit2(A,B,p.l,p.b),fit2(A,B,p.b,p.l)),over=false,heavy=false;
+  if(perLayer<1){perLayer=1;over=true;}
+  let layers=Math.floor((S.maxLoadH-144)/p.h); if(layers<1){layers=1;over=true;}
+  let per=perLayer*layers; const byW=Math.floor(S.maxKg/p.kg);
+  if(byW<1){per=1;heavy=true;} else per=Math.min(per,byW);
+  const used=Math.ceil(per/perLayer);
+  return {per,perLayer,layers:used,loadH:used*p.h+144,weight:per*p.kg,over,heavy};
+}
+function binFit(p){
+  const C=[950,480,380],d=[p.l,p.b,p.h],P=[[0,1,2],[0,2,1],[1,0,2],[1,2,0],[2,0,1],[2,1,0]];let best=0;
+  for(const q of P){const n=Math.floor(C[0]/d[q[0]])*Math.floor(C[1]/d[q[1]])*Math.floor(C[2]/d[q[2]]);if(n>best)best=n;}
+  return Math.max(1,Math.min(best,Math.floor(100/p.kg)));
+}
+function kragFit(p){const s=[p.l,p.b,p.h].sort((a,b)=>a-b);return Math.max(1,Math.min(Math.floor(1100/s[1])*Math.floor(450/s[0]),Math.floor(1500/p.kg)));}
+
+function LE(a){const t=[[50,6],[100,9],[200,12],[300,15],[400,18],[500,21],[600,24],[700,27],[800,30],[900,33],[1000,36]];for(const [m,le] of t)if(a<=m)return le;return 36+Math.ceil((a-1000)/250)*6;}
+
+function buildZone(z,S){
+  const util=S.util/100,pal=PAL[S.pal];
+  const slots=z.items.reduce((s,i)=>s+i.slots,0), lu=z.items.reduce((s,i)=>s+i.lu,0);
+  let tech;
+  if(z.group==='fach')tech='fach'; else if(z.group==='krag')tech='krag';
+  else if(z.env==='normal') tech=S.palTech!=='auto'?S.palTech:(S.hrl&&slots>=2500&&S.hrlH>=15)?'hrl':(slots>=1200&&S.hallH>=9)?'schmal':(S.hallH>=6.5?'schubmast':'front');
+  else if(ENV[z.env].cold) tech=slots>=150?'verschiebe':(S.hallH>=6.5?'schubmast':'front');
+  else tech=S.hallH>=6.5?'schubmast':'front';
+  const T_=TECH[tech], zoneH=tech==='hrl'?S.hrlH:S.hallH;
+  let perBay,bayW,single,dbl,loadD,loadW,levels,pitch,rackH,maxLoad=0;
+  if(T_.kind==='pal'){
+    perBay=pal.B<=0.8?3:2; bayW=perBay*pal.B+(perBay+1)*0.075+0.1; single=pal.L-0.1; dbl=2*single+0.2; loadD=pal.L; loadW=pal.B;
+    maxLoad=Math.max(...z.items.map(i=>i.pal.loadH))/1000; pitch=maxLoad+0.25;
+    levels=Math.max(1,Math.floor(Math.min(zoneH-1.0,T_.lift+maxLoad)/pitch)); rackH=levels*pitch;
+  } else if(T_.kind==='fach'){
+    perBay=1;bayW=1.0;single=0.5;dbl=1.05;loadD=0.45;loadW=0.9;levels=6;pitch=2.5/6;rackH=2.5;
+  } else {
+    const maxLen=Math.max(...z.items.map(i=>i.maxDim))/1000;
+    perBay=1;bayW=maxLen+0.6;single=1.2;dbl=2.7;loadD=1.1;loadW=maxLen;pitch=0.6;levels=Math.max(1,Math.floor(Math.min(zoneH-1,6)/pitch));rackH=levels*pitch+0.3;
+  }
+  const capFace=perBay*levels, bays=Math.max(1,Math.ceil(slots/capFace));
+  const target=tech==='hrl'?2.2:1.0, maxLen=tech==='hrl'?120:70;
+  let best=null;
+  for(let k=1;k<=80;k++){
+    const faces=2*k, br=Math.max(1,Math.ceil(bays/faces));
+    const X=T_.mobile?k*dbl+(k-1)*0.1+T_.aisle:2*single+(k-1)*dbl+k*T_.aisle;
+    const Y=br*bayW+T_.crossF+T_.crossR;
+    const waste=(faces*br-bays)/(faces*br);
+    const score=Math.abs(Math.log((Y/X)/target))+(Y>maxLen?5:0)+waste*1.5;
+    if(!best||score<best.score)best={k,br,X,Y,score};
+    if(br===1&&X>Y*3)break;
+  }
+  const {k,br,X,Y}=best, rows=[], aisles=[];
+  if(T_.mobile){let x=0;for(let i=0;i<k;i++){rows.push({x,w:dbl,sides:['L','R']});x+=dbl+0.1;} aisles.push({x:X-T_.aisle,w:T_.aisle});}
+  else{let x=0;rows.push({x:0,w:single,sides:['R']});x=single;
+    for(let i=1;i<k;i++){aisles.push({x,w:T_.aisle});x+=T_.aisle;rows.push({x,w:dbl,sides:['L','R']});x+=dbl;}
+    aisles.push({x,w:T_.aisle});x+=T_.aisle;rows.push({x,w:single,sides:['L']});}
+  const faces=[];rows.forEach((r,ri)=>r.sides.forEach(s=>faces.push({ri,s})));
+  const queue=[...z.items].sort((a,b)=>a.abc.localeCompare(b.abc)||b.acc-a.acc);
+  const fill=[];let qi=0,left=queue.length?queue[0].lu:0;
+  outer: for(let b=0;b<br;b++)for(let l=0;l<levels;l++)for(let f=0;f<faces.length;f++)for(let p=0;p<perBay;p++){
+    if(qi>=queue.length)break outer;
+    fill.push({b,l,f,p,pid:queue[qi].idx}); if(--left<=0){qi++;left=qi<queue.length?queue[qi].lu:0;}
+  }
+  const capacity=faces.length*br*capFace;
+  const moves=z.items.reduce((s,i)=>s+i.moves,0), lines=z.items.reduce((s,i)=>s+i.lines,0);
+  return {key:z.env+'|'+z.group,env:z.env,group:z.group,tech,T:T_,items:z.items,slots,lu,capacity,levels,pitch,rackH,perBay,bayW,single,dbl,loadD,loadW,k,br,X,Y,rows,aisles,faces,fill,zoneH,moves,lines,maxLoad,
+    label:ENV[z.env].zone+(T_.kind==='pal'?'':' · '+T_.short), area:X*Y};
+}
+
+function compute(S,P){
+  const util=S.util/100, warns=[];
+  const items=P.map((p0,idx)=>{
+    const p={...p0,name:pname(p0),l:Math.max(1,+p0.l||1),b:Math.max(1,+p0.b||1),h:Math.max(1,+p0.h||1),kg:Math.max(0.01,+p0.kg||0.01),qty:Math.max(0,+p0.qty||0),out:Math.max(0,+p0.out||0)};
+    const maxDim=Math.max(p.l,p.b,p.h), vol=p.l*p.b*p.h/1e9, pal=palletFit(p,S);
+    let group;
+    if(maxDim>2500)group='krag';
+    else if((p.cat==='normal'||p.cat==='wert')&&maxDim<=600&&p.kg<=15&&vol<=0.03&&p.qty/pal.per<=70)group='fach';
+    else group='pal';
+    const per=group==='pal'?pal.per:group==='fach'?binFit(p):kragFit(p);
+    const lu=Math.max(p.qty>0?1:0,Math.ceil(p.qty/per)), slots=Math.ceil(lu/util);
+    const lines=group==='fach'?p.out/S.upl:0, moves=group==='fach'?0:2*p.out/per;
+    const transport=group==='krag'?p.out/per:p.out/pal.per;
+    const acc=group==='fach'?lines:moves;
+    if(group==='pal'&&pal.heavy)warns.push(T('w_heavy',{name:p.name,kg:fmt(S.maxKg)}));
+    if(group==='pal'&&pal.over)warns.push(T('w_over',{name:p.name}));
+    if(ENV[p.cat].haz&&group==='krag')warns.push(T('w_hazkrag',{name:p.name}));
+    return {...p,idx,color:pcol(idx),maxDim,vol,pal,group,per,lu,slots,lines,moves,transport,acc,abc:'C'};
+  }).filter(i=>i.qty>0);
+  const tot=items.reduce((s,i)=>s+i.acc,0)||1; let cum=0;
+  [...items].sort((a,b)=>b.acc-a.acc).forEach(i=>{cum+=i.acc/tot;i.abc=cum-i.acc/tot<0.8?'A':cum-i.acc/tot<0.95?'B':'C';});
+  const zmap={};items.forEach(it=>{const key=it.cat+'|'+it.group;(zmap[key]||(zmap[key]={env:it.cat,group:it.group,items:[]})).items.push(it);});
+  const order=['normal','wert','kuehl','tk','lgk3','lgk2b','lgk8','lgk51'];
+  const zones=Object.values(zmap).map(z=>buildZone(z,S)).sort((a,b)=>order.indexOf(a.env)-order.indexOf(b.env));
+  items.forEach(it=>{it.zone=zones.find(z=>z.items.includes(it));});
+
+  // Ressourcen
+  const sh=S.shifts, veh={};
+  zones.forEach(z=>{
+    if(z.T.kind==='fach')return;
+    if(z.tech==='hrl'){const k=T('veh_rbg_line');veh[k]=veh[k]||{name:k,count:0,rbg:true,zones:[]};veh[k].count+=z.k;veh[k].zones.push(z.label);return;}
+    const ex=ENV[z.env].ex, key=ex?T('veh_ex',{v:z.T.veh}):z.T.veh;
+    veh[key]=veh[key]||{name:key,moves:0,rate:z.T.rate,zones:[],ex};veh[key].moves+=z.moves;veh[key].zones.push(z.label);
+  });
+  Object.values(veh).forEach(v=>{if(!v.rbg)v.count=Math.max(1,Math.ceil(v.moves/sh/(v.rate*EFF_H)));});
+  const inPal=items.reduce((s,i)=>s+i.transport,0), outPal=inPal;
+  const lines=items.reduce((s,i)=>s+i.lines,0);
+  const egu=Math.max(1,Math.ceil((inPal+outPal)/sh/(25*EFF_H)));
+  const pickers=lines>0?Math.max(1,Math.ceil(lines/sh/(PICK_RATE*EFF_H))):0;
+  const we=Math.max(1,Math.ceil(inPal/sh/(30*EFF_H))), wa=Math.max(1,Math.ceil(outPal/sh/(30*EFF_H))+(lines?Math.ceil(lines/sh/(120*EFF_H)):0));
+  const hasHRL=zones.some(z=>z.tech==='hrl'), hasHaz=zones.some(z=>ENV[z.env].haz), hasCold=zones.some(z=>ENV[z.env].cold);
+  const drivers=Object.values(veh).filter(v=>!v.rbg).reduce((s,v)=>s+v.count,0);
+  const perShift=drivers+egu+pickers+we+wa+1+(hasHRL?1:0);
+  const totalSlots=zones.reduce((s,z)=>s+z.capacity,0);
+  const dayStaff=1+(totalSlots>8000?2:1)+(hasHRL?1:0);
+  const totalStaff=perShift*sh+dayStaff, maxPresent=perShift+dayStaff;
+  const trucksIn=inPal/TRUCK_PAL, opH=Math.min(sh,2)*8;
+  const doorsIn=Math.max(2,Math.ceil(trucksIn*1.5/opH)), doorsOut=Math.max(2,Math.ceil(outPal/TRUCK_PAL*1.5/opH));
+  const officeA=dayStaff*10+8, pauseA=Math.max(12,maxPresent*1.5), umkA=Math.max(10,totalStaff*0.6), sanA=Math.max(15,maxPresent*0.8);
+  const sozA=Math.ceil(officeA+pauseA+umkA+sanA);
+  const battVeh=drivers+egu*2;
+  const ladeA=battVeh*3+10, packA=lines?Math.max(30,pickers*15):0, leerA=Math.max(20,Math.ceil(outPal*0.15));
+  const res={veh:Object.values(veh),inPal,outPal,lines,egu,pickers,we,wa,perShift,dayStaff,totalStaff,maxPresent,doorsIn,doorsOut,trucksIn,officeA,pauseA,umkA,sanA,sozA,ladeA,packA,leerA,battVeh,drivers,hasHRL,hasHaz,hasCold,totalSlots};
+  const site=layoutSite(zones,res);
+  return {S,items,zones,res,site,warns};
+}
+
+function layoutSite(zones,res){
+  const hall=zones.filter(z=>!ENV[z.env].haz), haz=zones.filter(z=>ENV[z.env].haz);
+  const front=[
+    {id:'we',label:T('front_we'),w:Math.max(12,res.doorsIn*4+2),doors:res.doorsIn},
+    {id:'leer',label:T('front_leer'),w:Math.max(4,res.leerA/FRONT_D)},
+    {id:'lade',label:T('front_lade'),w:Math.max(5,res.ladeA/FRONT_D)},
+  ];
+  if(res.packA)front.push({id:'pack',label:T('front_pack'),w:Math.max(6,res.packA/FRONT_D)});
+  front.push({id:'wa',label:T('front_wa'),w:Math.max(12,res.doorsOut*4+2),doors:res.doorsOut});
+  front.push({id:'soz',label:T('front_soz'),w:Math.max(8,res.sozA/FRONT_D)});
+  const frontW=front.reduce((s,f)=>s+f.w,0);
+  const storeA=hall.reduce((s,z)=>s+z.X*z.Y,0);
+  const W=Math.max(frontW,...hall.map(z=>z.X),Math.sqrt(storeA*2.1));
+  const y0=FRONT_D+MAIN_AISLE; let sy=y0,maxX=0,lastH=0;
+  let rest=[...hall].sort((a,b)=>b.Y-a.Y);
+  while(rest.length){
+    let x=0,sh=0,cols=[];const next=[];
+    rest.forEach(z=>{
+      const col=cols.find(c=>z.X<=c.w+0.01&&c.used+1.0+z.Y<=sh+0.01);
+      if(col){z.ox=col.x;z.oy=sy+col.used+1.0;col.used+=1.0+z.Y;return;}
+      if(x>0&&x+z.X>W+0.01){next.push(z);return;}
+      z.ox=x;z.oy=sy;sh=Math.max(sh,z.Y);cols.push({x,w:z.X,used:z.Y});x+=z.X+1.0;maxX=Math.max(maxX,x-1.0);
+    });
+    lastH=sh;rest=next;if(rest.length)sy+=sh+1.0;
+  }
+  const hallD=hall.length?sy+lastH:y0+10, hallW=Math.max(frontW,maxX);
+  if(hallW-frontW>0.5)front.splice(front.length-1,0,{id:'res',label:T('front_res'),w:hallW-frontW});
+  let fx=0;front.forEach(f=>{f.x=fx;f.y=0;f.d=FRONT_D;fx+=f.w;});
+  let hx=hallW+12,hy=y0,hazW=0;
+  haz.forEach(z=>{z.ox=hx;z.oy=hy;hy+=z.Y+0.3;hazW=Math.max(hazW,z.X);});
+  const hazD=haz.length?hy-0.3-y0:0;
+  return {front,hallW,hallD,y0,haz:haz.length?{x:hallW+12,y:y0,w:hazW,d:hazD}:null,maxX:haz.length?hallW+12+hazW:hallW,maxY:Math.max(hallD,y0+hazD)};
+}
+
+function buildReqs(R){
+  const {S,zones,res,site}=R, out=[], add=(area,item,qty,lv,basis)=>out.push({area,item,qty,lv,basis});
+  const n=v=>fmt(Math.round(v));
+  // Regale
+  const A1=T('a_rack');
+  zones.forEach(z=>{
+    const fields=z.faces.length*z.br;
+    const q=z.T.kind==='pal'?T('q_rack_pal',{f:n(fields),p:z.perBay,l:z.levels,h:fmt(z.rackH,1)}):
+      z.T.kind==='fach'?T('q_rack_fach',{f:n(fields)}):T('q_rack_krag',{f:n(fields),l:z.levels});
+    add(A1,`${z.T.name} – ${ENV[z.env].zone}`,q,'P',T('b_rack'));
+  });
+  add(A1,T('i_signs'),T('q_allRacks'),'P','DGUV Regel 108-007, DIN EN 15635');
+  if(zones.some(z=>z.T.kind!=='fach'&&z.tech!=='hrl'))add(A1,T('i_impact'),T('q_aisleEnds'),'P','DIN EN 15512 / DIN EN 15635');
+  add(A1,T('i_inspect'),T('q_yearly'),'P','DIN EN 15635, BetrSichV');
+  add(A1,T('i_mesh'),T('q_mesh'),'E','DGUV Regel 108-007');
+  add(A1,T('i_labels'),T('q_allSlots'),'E',T('b_labels'));
+  // Fördermittel
+  const A2=T('a_veh');
+  res.veh.forEach(v=>add(A2,v.name,T('q_pcs',{n:v.count}),'P',v.rbg?T('b_rbg'):T('b_moves',{m:n(v.moves),z:v.zones.join(', ')})));
+  add(A2,T('i_egu'),T('q_pcs',{n:res.egu*2}),'P',T('b_palday',{n:n(res.inPal+res.outPal)}));
+  add(A2,T('i_hand'),T('q_pcs',{n:Math.max(2,res.doorsIn+res.doorsOut)}),'P',T('b_hand'));
+  if(res.pickers)add(A2,T('i_cart'),T('q_pcs',{n:res.pickers+1}),'P',T('b_cart'));
+  add(A2,T('i_license'),T('q_allDrivers'),'P','DGUV Vorschrift 68, DGUV Grundsatz 308-001');
+  add(A2,T('i_bluespot'),T('q_allForklifts'),'E',T('b_bluespot'));
+  add(A2,T('i_liion'),'—','E',T('b_liion'));
+  // Tore & Umschlag
+  const A3=T('a_dock');
+  add(A3,T('i_doors'),T('q_doors',{a:res.doorsIn,b:res.doorsOut}),'P',T('b_doors',{t:fmt(res.trucksIn,1)}));
+  add(A3,T('i_seal'),T('q_pcs',{n:res.doorsIn+res.doorsOut}),res.hasCold?'P':'E',res.hasCold?T('b_seal_cold'):T('b_seal'));
+  add(A3,T('i_scale'),T('q_1pc'),'E',T('b_scale'));
+  add(A3,T('i_wrap'),T('q_1pc'),'E',T('b_wrap'));
+  add(A3,T('i_yard'),T('q_approx_m2',{n:n((res.doorsIn+res.doorsOut)*4*HOF_D)}),'P',T('b_yard',{d:HOF_D}));
+  // IT
+  const A4=T('a_it');
+  add(A4,res.hasHRL?T('i_wms_hrl'):T('i_wms'),T('q_1system'),res.hasHRL?'P':'E',res.hasHRL?T('b_wms_hrl'):T('b_wms'));
+  add(A4,T('i_mde'),T('q_pcs',{n:res.perShift}),'E',T('b_mde'));
+  if(res.pickers)add(A4,T('i_pbl'),T('b_cart'),'E',T('b_pbl'));
+  add(A4,T('i_wifi'),T('q_hallArea'),'E',T('b_wifi'));
+  // Brandschutz & Sicherheit
+  const A5=T('a_fire');
+  const hallA=site.hallW*site.hallD, le=LE(hallA);
+  add(A5,T('i_ext'),T('q_ext',{n:Math.ceil(le/6),le}),'P',T('b_ext',{a:n(hallA)}));
+  if(res.hasHRL)add(A5,T('i_sprHrl'),T('q_hrl'),'P',T('b_sprHrl'));
+  else add(A5,T('i_spr'),T('q_hall'),'C',T('b_spr'));
+  add(A5,T('i_escape'),T('q_wholeHall'),'P','ASR A2.3, ASR A3.4/7');
+  add(A5,T('i_fireAlarm'),T('q_hall'),res.hasHRL?'P':'C',T('b_fireAlarm'));
+  add(A5,T('i_fireHelp'),T('q_perShift',{n:Math.max(1,Math.ceil(res.maxPresent*0.05))}),'P',T('b_fireHelp'));
+  add(A5,T('i_firstAid'),T('q_perShift',{n:Math.max(1,Math.ceil(res.maxPresent*0.10))}),'P',T('b_firstAid'));
+  add(A5,T('i_marking'),T('q_mainAisle',{w:fmt(MAIN_AISLE,1)}),'P','ASR A1.8, ASR A1.3');
+  add(A5,T('i_light'),T('q_wholeHall'),'P',T('b_light'));
+  add(A5,T('i_ppe'),T('q_persons',{n:res.totalStaff}),'P',T('b_ppe'));
+  add(A5,T('i_column'),T('q_column'),'E','');
+  // Zonen-spezifisch
+  zones.forEach(z=>{
+    const e=ENV[z.env];
+    if(e.haz){
+      add(e.zone,T('i_hazSect'),T('q_1sect'),'P',T('b_hazSect'));
+      add(e.zone,T('i_sump'),z.env==='lgk2b'?'—':T('q_slotsN',{n:n(z.capacity)}),z.env==='lgk2b'?'E':'P','AwSV, TRGS 510');
+      add(e.zone,T('i_hazReg'),T('q_perSubst'),'P','GefStoffV §6, §14');
+      add(e.zone,T('i_vent'),T('q_m2',{n:n(z.area)}),'P','TRGS 510');
+      if(e.ex){add(e.zone,T('i_exDoc'),T('q_sect'),'P','GefStoffV, TRGS 720 ff.');add(e.zone,T('i_gas'),T('q_1plant'),'E',T('b_gas'));}
+      if(z.env==='lgk2b')add(e.zone,T('i_cage'),T('q_sect'),'P',T('b_cage'));
+      if(z.env==='lgk8')add(e.zone,T('i_shower'),T('q_1perSect'),'P',T('b_shower'));
+    }
+    if(e.cold){
+      add(e.zone,T('i_coldRoom'),T('q_m2',{n:n(z.area)}),'P',z.env==='tk'?T('b_coldTk'):T('b_coldK'));
+      add(e.zone,T('i_tempLog'),T('q_1system'),'P',T('b_tempLog'));
+      add(e.zone,T('i_coldExit'),T('q_perCell'),'P',T('b_coldExit'));
+      add(e.zone,T('i_coldPpe'),z.tech==='verschiebe'?T('q_coldDrivers'):T('q_coldStaff'),'P',T('b_risk'));
+      if(z.tech==='verschiebe')add(e.zone,T('i_mobile'),'—','E',T('b_mobile'));
+      add(e.zone,T('i_fastDoor'),T('q_1pc'),'E',T('b_fastDoor'));
+    }
+    if(z.env==='wert'){
+      add(e.zone,T('i_valCage'),T('q_m2',{n:n(z.area)}),'P',T('b_valCage'));
+      add(e.zone,T('i_cctv'),T('q_1system'),'E',T('b_cctv'));
+    }
+    if(z.tech==='hrl'){
+      const a=e.zone+' · '+TECH.hrl.short;
+      add(a,T('i_ipoint'),T('q_1plant'),'P',T('b_ipoint'));
+      add(a,T('i_silo'),T('q_heightM',{h:S.hrlH}),'E',T('b_silo'));
+      add(a,T('i_maint'),T('q_1contract'),'P',T('b_maint'));
+    }
+    if(z.T.kind==='fach'&&S.hallH>=6)add(e.zone+' · '+TECH.fach.short,T('i_mezz'),T('q_2levels'),'E',T('b_mezz',{h:fmt(S.hallH,1)}));
+  });
+  // Personal
+  const P=T('a_staff');
+  res.veh.filter(v=>!v.rbg).forEach(v=>add(P,T('i_driver',{v:v.name}),T('q_perShift',{n:v.count}),'P',v.ex?T('b_driverEx'):T('b_driver')));
+  add(P,T('i_hDriver'),T('q_perShift',{n:res.egu}),'P','');
+  if(res.pickers)add(P,T('i_picker'),T('q_perShift',{n:res.pickers}),'P',T('b_picker',{n:n(res.lines)}));
+  add(P,T('i_we'),T('q_perShift',{n:res.we}),'P','');
+  add(P,T('i_wa'),T('q_perShift',{n:res.wa}),'P','');
+  add(P,T('i_shiftLead'),T('q_perShift',{n:1}),'P','');
+  if(res.hasHRL)add(P,T('i_control'),T('q_perShift',{n:1}),'P','');
+  add(P,T('i_whMgr'),'1','P',T('b_day'));
+  add(P,T('i_inv'),String(res.dayStaff-1-(res.hasHRL?1:0)),'P',T('b_day'));
+  if(res.hasHRL)add(P,T('i_mech'),'1','P',T('b_mech'));
+  if(res.hasHaz)add(P,T('i_dgsa'),T('q_dgsa'),'P',T('b_dgsa'));
+  add(P,T('i_safety'),T('q_external'),'P',T('b_safety'));
+  // Flächen
+  const F=T('a_area');
+  add(F,T('i_office'),T('q_m2',{n:n(res.officeA)}),'P',T('b_office'));
+  add(F,T('i_break'),T('q_m2',{n:n(res.pauseA)}),'P','ASR A4.2');
+  add(F,T('i_locker'),T('q_m2',{n:n(res.umkA)}),'P','ASR A4.1');
+  add(F,T('i_wc'),T('q_m2',{n:n(res.sanA)}),'P','ASR A4.1');
+  add(F,T('i_charge'),T('q_m2',{n:n(res.ladeA)}),'P',T('b_charge'));
+  add(F,T('i_empties'),T('q_m2',{n:n(res.leerA)}),'P','');
+  if(res.packA)add(F,T('i_packArea'),T('q_m2',{n:n(res.packA)}),'P','');
+  add(F,T('i_pv'),T('q_upTo',{n:n(site.hallW*site.hallD*0.6)}),'E',T('b_pv'));
+  add(F,T('i_led'),T('q_hall'),'E',T('b_led'));
+  return out;
+}
+</script>
+
+<script id="ui">
+(function(){
+const $=s=>document.querySelector(s);
+let S={...DEFAULT_S}, P=DEFAULT_P.map(p=>({...p})), R=null, reqFilter='all', active='2d';
+
+/* ---------- Sprache anwenden ---------- */
+function applyLang(code){
+  const L=LANGS.find(l=>l.code===code)||LANGS[0];
+  LANG=L.code; LOC=L.loc; RTL=!!L.rtl;
+  try{localStorage.setItem('keyone-language',LANG);}catch(e){}
+  const root=document.documentElement;
+  root.lang=LANG; root.dir=L.rtl?'rtl':'ltr';
+  const raw=k=>(LP_I18N[LANG]&&LP_I18N[LANG][k])||LP_I18N.de[k];
+  document.title=raw('meta_title');
+  const md=document.querySelector('meta[name="description"]'); if(md)md.content=raw('meta_desc');
+  document.querySelectorAll('[data-i]').forEach(el=>{const v=T(el.dataset.i);
+    if(/<[a-z]/i.test(v))el.innerHTML=v; else el.textContent=v;
+    if(el.classList.contains('note'))el.hidden=!v;});
+  $('#kpis').setAttribute('aria-label',T('aria_kpis'));
+  $('#chips').setAttribute('aria-label',T('aria_filter'));
+  $('#langSel').value=LANG;
+  localizeEngine();
+  renderRows(); dirty3d=true; run();
+}
+function initLangSel(){
+  const sel=$('#langSel');
+  sel.innerHTML=LANGS.map(l=>`<option value="${l.code}" lang="${l.code}">${l.name}</option>`).join('');
+  sel.addEventListener('change',()=>applyLang(sel.value));
+}
+
+/* ---------- Eingaben ---------- */
+const sKeys=['hallH','hrlH','hrl','palTech','pal','maxLoadH','maxKg','util','shifts','upl'];
+function initParams(){
+  sKeys.forEach(k=>{const el=$('#s-'+k);
+    el.addEventListener(el.tagName==='SELECT'||el.type==='checkbox'?'change':'input',()=>{
+      S[k]=el.type==='checkbox'?el.checked:(el.tagName==='SELECT'&&isNaN(+el.value))?el.value:+el.value; schedule();});});
+  initValues();
+}
+function initValues(){sKeys.forEach(k=>{const el=$('#s-'+k); if(el.type==='checkbox')el.checked=S[k]; else el.value=S[k];});}
+const numF=[['l',1],['b',1],['h',1],['kg',0.1],['qty',1],['out',1]];
+function renderRows(){
+  const tb=$('#prodTbl tbody'); tb.innerHTML='';
+  P.forEach((p,i)=>{
+    const tr=document.createElement('tr');
+    const opts=Object.entries(ENV).map(([k,e])=>`<option value="${k}"${p.cat===k?' selected':''}>${esc(e.label)}</option>`).join('');
+    tr.innerHTML=`<td><span class="sw" style="background:${pcol(i)}"></span></td>
+      <td><input class="name" id="p-${i}-name" value="${esc(pname(p))}" aria-label="${esc(T('aria_name'))}"></td>
+      <td><select id="p-${i}-cat" aria-label="${esc(T('aria_cat'))}">${opts}</select></td>`+
+      numF.map(([f,st])=>`<td class="num"><input type="number" id="p-${i}-${f}" min="0" step="${st}" value="${p[f]}" aria-label="${esc(T('th_'+f))}"></td>`).join('')+
+      `<td><button class="del" type="button" data-i="${i}" aria-label="${esc(T('aria_del'))}">✕</button></td>`;
+    tb.appendChild(tr);
+  });
+  tb.querySelectorAll('input,select').forEach(el=>{
+    const [,i,f]=el.id.split('-');
+    el.addEventListener(el.tagName==='SELECT'?'change':'input',()=>{P[+i][f]=(f==='name'||f==='cat')?el.value:+el.value;schedule();});
+  });
+  tb.querySelectorAll('button.del').forEach(b=>b.addEventListener('click',()=>{P.splice(+b.dataset.i,1);renderRows();schedule();}));
+}
+$('#addRow').addEventListener('click',()=>{P.push({nk:'new_item',cat:'normal',l:400,b:300,h:300,kg:10,qty:1000,out:50});renderRows();schedule();});
+$('#resetRows').addEventListener('click',()=>{P=DEFAULT_P.map(p=>({...p}));S={...DEFAULT_S};initValues();renderRows();schedule();});
+
+let t=null; function schedule(){clearTimeout(t);t=setTimeout(run,220);}
+
+/* ---------- Tabs ---------- */
+function setTab(which){active=which;
+  $('#tab2d').setAttribute('aria-selected',which==='2d');$('#tab3d').setAttribute('aria-selected',which==='3d');
+  $('#view2d').hidden=which!=='2d';$('#view3d').hidden=which!=='3d';
+  if(which==='3d')render3D();}
+$('#tab2d').addEventListener('click',()=>setTab('2d'));$('#tab3d').addEventListener('click',()=>setTab('3d'));
+document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>{reqFilter=c.dataset.f;
+  document.querySelectorAll('.chip').forEach(x=>x.setAttribute('aria-pressed',x===c));renderReqs();}));
+
+/* ---------- Rechtliches: Links öffnen die Abschnitte ---------- */
+function openHash(){const id=location.hash.slice(1);if(id==='datenschutz'||id==='impressum'){const d=document.getElementById(id);d.open=true;d.scrollIntoView();}}
+window.addEventListener('hashchange',openHash);
+
+/* ---------- Rechnen ---------- */
+function run(){
+  R=compute(S,P);
+  renderKPIs();renderWarns();render2D();renderLegend();renderZones();renderRes();renderReqs();
+  if(active==='3d')render3D(); else dirty3d=true;
+}
+
+function renderKPIs(){
+  const {res,site,zones}=R, hallA=site.hallW*site.hallD, hazA=site.haz?site.haz.w*site.haz.d:0;
+  const maxH=Math.max(S.hallH,...zones.filter(z=>z.tech==='hrl').map(()=>S.hrlH));
+  const veh=res.veh.reduce((s,v)=>s+v.count,0)+res.egu*2;
+  const k=[
+    [T('kpi_hall'),fmt(hallA)+' m²',iso(`${fmt(site.hallW,1)} × ${fmt(site.hallD,1)} m`)],
+    [T('kpi_haz'),hazA?fmt(hazA)+' m²':'—',hazA?T('kpi_haz_sep'):T('kpi_haz_none')],
+    [T('kpi_slots'),fmt(res.totalSlots),T('kpi_zones',{n:zones.length})],
+    [T('kpi_maxH'),fmt(maxH,0)+' m',res.hasHRL?T('kpi_maxH_hrl'):T('kpi_maxH_hall')],
+    [T('kpi_staff'),fmt(res.totalStaff),T('kpi_staff_sub',{a:res.perShift,s:T('shift_'+S.shifts)})],
+    [T('kpi_veh'),fmt(veh),T('kpi_veh_sub')],
+    [T('kpi_doors'),`${res.doorsIn} + ${res.doorsOut}`,T('kpi_doors_sub')]
+  ];
+  $('#kpis').innerHTML=k.map(([a,b,c])=>`<div class="kpi"><span class="k">${esc(a)}</span><b class="ltr">${b}</b><small>${esc(c)}</small></div>`).join('');
+  $('#dimsLine').textContent=T('dims_hall',{w:fmt(site.hallW,1),d:fmt(site.hallD,1)})+(site.haz?' · '+T('dims_haz',{w:fmt(site.haz.w,1),d:fmt(site.haz.d,1)}):'');
+}
+function renderWarns(){$('#warns').innerHTML=R.warns.length?`<strong>${esc(T('warn_prefix'))} </strong>`+R.warns.map(esc).join(' '):'';}
+function renderLegend(){
+  $('#legend').innerHTML=R.items.map(i=>`<span><i class="sw" style="background:${i.color}"></i>${esc(i.name)}</span>`).join('')+
+   `<span><i class="sw" style="background:var(--mark)"></i>${esc(T('legend_mark'))}</span>`;
+}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function renderZones(){
+  const rows=R.zones.map(z=>`<tr><td><span class="sw" style="background:${ENV[z.env].color}"></span> ${esc(ENV[z.env].zone)}</td><td>${esc(z.T.short)}</td>
+   <td class="num">${fmt(z.lu)} / ${fmt(z.capacity)}</td><td class="num">${z.levels}</td><td class="num">${z.aisles.length}</td><td class="num">${fmt(z.rackH,1)}</td><td class="num">${fmt(z.area)}</td></tr>`).join('');
+  const tot=R.zones.reduce((s,z)=>s+z.area,0);
+  $('#zoneTbl').innerHTML=`<thead><tr><th>${T('th_zone')}</th><th>${T('th_tech')}</th><th class="num">${T('th_used')}</th><th class="num">${T('th_levels')}</th><th class="num">${T('th_aisles')}</th><th class="num">${T('th_height')}</th><th class="num">${T('th_area')}</th></tr></thead><tbody>${rows}
+   <tr><td colspan="6"><strong>${T('zones_total')}</strong></td><td class="num"><strong>${fmt(tot)}</strong></td></tr></tbody>`;
+}
+function renderRes(){
+  const unit={pal:T('unit_pal'),fach:T('unit_fach'),krag:T('unit_krag')};
+  const rows=R.items.map(i=>`<tr><td><span class="sw" style="background:${i.color}"></span> ${esc(i.name)}</td><td><span class="abc">${i.abc}</span></td><td>${esc(i.zone.T.short)}</td>
+   <td class="num">${fmt(i.per)} / ${unit[i.group]}</td><td class="num">${fmt(i.group==='pal'?i.pal.weight:i.per*i.kg)}</td><td class="num">${fmt(i.lu)}</td><td class="num">${fmt(i.slots)}</td></tr>`).join('');
+  $('#resTbl').innerHTML=`<thead><tr><th>${T('th_item')}</th><th>${T('th_abc')}</th><th>${T('th_storage')}</th><th class="num">${T('th_per')}</th><th class="num">${T('th_kgle')}</th><th class="num">${T('th_le')}</th><th class="num">${T('th_slots')}</th></tr></thead><tbody>${rows}</tbody>`;
+}
+function renderReqs(){
+  const all=buildReqs(R).filter(r=>reqFilter==='all'||r.lv===reqFilter);
+  const lbl={P:T('lv_P'),C:T('lv_C'),E:T('lv_E')};
+  let last='';
+  const rows=all.map(r=>{const a=r.area!==last?esc(r.area):'';last=r.area;
+    return `<tr><td>${a?`<strong>${a}</strong>`:''}</td><td>${esc(r.item)}</td><td class="num">${esc(r.qty)}</td><td><span class="pill ${r.lv}">${lbl[r.lv]}</span></td><td class="muted">${esc(r.basis)}</td></tr>`;}).join('');
+  $('#reqTbl').innerHTML=`<thead><tr><th>${T('th_areaGrp')}</th><th>${T('th_elem')}</th><th class="num">${T('th_qtyR')}</th><th>${T('th_status')}</th><th>${T('th_basis')}</th></tr></thead><tbody>${rows}</tbody>`;
+}
+
+/* ---------- Geometrie gemeinsam ---------- */
+function slotGeom(z,s){
+  const f=z.faces[s.f], row=z.rows[f.ri], it=R.items.find(i=>i.idx===s.pid);
+  const dbl=row.sides.length===2, depth=dbl?Math.min(z.loadD,row.w/2):Math.min(z.loadD,row.w+0.1);
+  const cx=dbl?(f.s==='L'?row.x+row.w*0.25:row.x+row.w*0.75):row.x+row.w/2;
+  let wy=z.loadW, cy;
+  if(z.T.kind==='krag'){wy=it.maxDim/1000;cy=z.T.crossF+s.b*z.bayW+z.bayW/2;}
+  else cy=z.T.crossF+s.b*z.bayW+0.05+(z.bayW-0.1)*(s.p+0.5)/z.perBay;
+  let h,y0;
+  if(z.T.kind==='pal'){h=it.pal.loadH/1000;y0=s.l*z.pitch+(s.l?0.02:0);}
+  else if(z.T.kind==='fach'){h=z.pitch*0.7;y0=s.l*z.pitch+0.04;}
+  else {h=0.4;y0=s.l*z.pitch+0.3;}
+  return {x:z.ox+cx,y:z.oy+cy,w:depth,d:wy,h,y0,color:it.color};
+}
+
+/* ---------- 2D ---------- */
+function render2D(){
+  const {site,zones}=R, M=6, H=site.maxY, W=site.maxX;
+  const vbH=H+HOF_D+M*2, vbW=W+M*2, fs=Math.max(0.9,Math.min(2.4,Math.max(W,H)/70));
+  const Y=(y,d=0)=>(H-y-d);   // Tore unten
+  const r=(x,y,w,d,a='')=>`<rect x="${x.toFixed(2)}" y="${Y(y,d).toFixed(2)}" width="${w.toFixed(2)}" height="${d.toFixed(2)}" ${a}/>`;
+  const txt=(x,y,s,sz,a='')=>`<text x="${x.toFixed(2)}" y="${Y(y).toFixed(2)}" font-size="${sz}" ${a}>${esc(s)}</text>`;
+  let g='';
+  g+=r(0,-HOF_D,site.hallW,HOF_D,'fill="var(--hof)"');
+  g+=txt(site.hallW/2,-HOF_D/2,T('plan_yard',{d:HOF_D}),fs,'text-anchor="middle" fill="var(--muted)"');
+  g+=r(0,0,site.hallW,site.hallD,'fill="var(--plan-floor)" stroke="var(--plan-text)" stroke-width="0.45"');
+  site.front.forEach(f=>{
+    g+=r(f.x,f.y,f.w,f.d,'fill="var(--plan-bg)" stroke="var(--plan-text)" stroke-width="0.12"');
+    g+=txt(f.x+f.w/2,f.d/2+fs*0.3,f.label,Math.min(fs,f.w/Math.max(6,f.label.length*0.55)),'text-anchor="middle" fill="var(--plan-text)" font-weight="600"');
+    if(f.doors)for(let i=0;i<f.doors;i++){const dx=f.x+1+i*4;
+      g+=r(dx+0.3,-1.2,3.4,1.2,'fill="var(--accent)"');
+      g+=txt(dx+2,-2.2,T('plan_door'),fs*0.6,'text-anchor="middle" fill="var(--muted)"');}
+  });
+  g+=r(0,FRONT_D,site.hallW,MAIN_AISLE,'fill="var(--plan-bg)"');
+  g+=r(0,FRONT_D+0.1,site.hallW,0.15,'fill="var(--mark)"')+r(0,FRONT_D+MAIN_AISLE-0.25,site.hallW,0.15,'fill="var(--mark)"');
+  g+=txt(site.hallW/2,FRONT_D+MAIN_AISLE/2-fs*0.35,T('plan_main',{w:fmt(MAIN_AISLE,1)}),fs*0.75,'text-anchor="middle" fill="var(--muted)"');
+  if(site.haz){const h=site.haz;
+    g+=r(h.x-0.6,h.y-0.6,h.w+1.2,h.d+1.2,'fill="none" stroke="var(--crit)" stroke-width="0.6"');
+    g+=txt(h.x+h.w/2,h.y+h.d+2,T('plan_haz'),fs*0.85,'text-anchor="middle" fill="var(--crit)" font-weight="600"');
+    g+=`<line x1="${site.hallW}" y1="${Y(h.y+4)}" x2="${h.x-0.6}" y2="${Y(h.y+4)}" stroke="var(--muted)" stroke-width="0.12" stroke-dasharray="0.6 0.4"/>`;
+    g+=txt(site.hallW+6.3,h.y+4.6,'≥ 12 m',fs*0.65,'text-anchor="middle" fill="var(--muted)"');
+  }
+  zones.forEach(z=>{
+    const c=ENV[z.env].color, special=z.env!=='normal'||z.tech==='hrl';
+    g+=r(z.ox,z.oy,z.X,z.Y,`fill="${c}" fill-opacity="0.10" stroke="${c}" stroke-width="${special?0.5:0.2}"`);
+    z.aisles.forEach(a=>{g+=`<line x1="${(z.ox+a.x+a.w/2).toFixed(2)}" y1="${Y(z.oy+z.T.crossF).toFixed(2)}" x2="${(z.ox+a.x+a.w/2).toFixed(2)}" y2="${Y(z.oy+z.Y-z.T.crossR).toFixed(2)}" stroke="var(--mark)" stroke-width="0.12" stroke-dasharray="0.8 0.8"/>`;});
+    const len=z.br*z.bayW, colorMap={};
+    z.fill.forEach(s=>{if(s.l===0&&s.p===0)colorMap[s.f+'_'+s.b]=s.pid;});
+    z.rows.forEach((row,ri)=>{
+      g+=r(z.ox+row.x,z.oy+z.T.crossF,row.w,len,'fill="var(--plan-bg)" stroke="var(--plan-rack)" stroke-width="0.08"');
+      row.sides.forEach(side=>{
+        const fi=z.faces.findIndex(f=>f.ri===ri&&f.s===side), half=row.sides.length===2?row.w/2:row.w, fx=side==='L'||row.sides.length===1?row.x:row.x+row.w/2;
+        for(let b=0;b<z.br;b++){const pid=colorMap[fi+'_'+b]; if(pid===undefined)continue;
+          const it=R.items.find(i=>i.idx===pid);
+          g+=r(z.ox+fx+0.06,z.oy+z.T.crossF+b*z.bayW+0.06,half-0.12,z.bayW-0.12,`fill="${it.color}" fill-opacity="0.85"`);}
+      });
+      if(z.br<=160)for(let b=1;b<z.br;b++)g+=`<line x1="${(z.ox+row.x).toFixed(2)}" x2="${(z.ox+row.x+row.w).toFixed(2)}" y1="${Y(z.oy+z.T.crossF+b*z.bayW).toFixed(2)}" y2="${Y(z.oy+z.T.crossF+b*z.bayW).toFixed(2)}" stroke="var(--plan-rack)" stroke-width="0.05"/>`;
+    });
+    const lsz=Math.min(fs,z.X/Math.max(8,z.label.length*0.52));
+    g+=txt(z.ox+z.X/2,z.oy+z.T.crossF*0.62,z.label,lsz,`text-anchor="middle" fill="var(--plan-text)" font-weight="700"`);
+    g+=txt(z.ox+z.X/2,z.oy+z.T.crossF*0.62-lsz*1.15,T('plan_zone_sub',{tech:z.T.short,lv:z.levels,h:fmt(z.rackH,1)}),lsz*0.78,`text-anchor="middle" fill="var(--muted)"`);
+  });
+  g+=txt(site.hallW/2,site.hallD+1.4,`${fmt(site.hallW,1)} m`,fs*0.8,'text-anchor="middle" fill="var(--muted)"');
+  g+=`<text x="${(-1.6).toFixed(2)}" y="${Y(site.hallD/2).toFixed(2)}" font-size="${fs*0.8}" fill="var(--muted)" text-anchor="middle" transform="rotate(-90 -1.6 ${Y(site.hallD/2).toFixed(2)})">${fmt(site.hallD,1)} m</text>`;
+  const sb=W>120?20:10, sx=W-sb;
+  g+=r(sx,-HOF_D-3,sb,0.5,'fill="var(--plan-text)"')+r(sx,-HOF_D-3,sb/2,0.5,'fill="var(--plan-bg)" stroke="var(--plan-text)" stroke-width="0.08"');
+  g+=txt(sx+sb/2,-HOF_D-1.6,`${sb} m`,fs*0.7,'text-anchor="middle" fill="var(--muted)"');
+  $('#view2d').innerHTML=`<svg viewBox="${-M} ${-M} ${vbW} ${vbH}" font-family="Barlow, Vazirmatn, system-ui, sans-serif" role="img" aria-label="${esc(T('plan_aria'))}" direction="ltr">${g}</svg>`;
+}
+
+/* ---------- 3D ---------- */
+let three=null, dirty3d=true;
+function render3D(){
+  if(typeof THREE==='undefined'){if(!$('#err3d'))$('#view3d').insertAdjacentHTML('beforeend',`<p id="err3d" style="padding:16px">${esc(T('err_3d'))}</p>`);return;}
+  const host=$('#view3d');
+  if(!three){
+    const renderer=new THREE.WebGLRenderer({antialias:true});
+    renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
+    host.prepend(renderer.domElement);
+    const camera=new THREE.PerspectiveCamera(45,1,0.5,5000);
+    const controls=new THREE.OrbitControls(camera,renderer.domElement);
+    controls.enableDamping=true;controls.maxPolarAngle=Math.PI*0.495;
+    three={renderer,camera,controls,scene:null};
+    const ro=new ResizeObserver(()=>resize3D());ro.observe(host);
+    (function loop(){requestAnimationFrame(loop);if(!host.hidden&&three.scene){controls.update();renderer.render(three.scene,camera);}})();
+  }
+  if(!dirty3d&&three.scene){resize3D();return;}
+  dirty3d=false;
+  if(three.scene)three.scene.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material){(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>{if(m.map)m.map.dispose();m.dispose();});}});
+  const cs=getComputedStyle(document.documentElement);
+  const bg=cs.getPropertyValue('--plan-bg').trim()||'#F7F9F9';
+  const scene=new THREE.Scene(); scene.background=new THREE.Color(bg);
+  scene.add(new THREE.HemisphereLight(0xffffff,0x667777,0.85));
+  const dl=new THREE.DirectionalLight(0xffffff,0.55);dl.position.set(-1,2,1.5);scene.add(dl);
+  const {site,zones}=R, unit=new THREE.BoxGeometry(1,1,1), o=new THREE.Object3D();
+  const box=(x,y,w,d,y0,h,color,opts={})=>{const m=new THREE.Mesh(unit,new THREE.MeshLambertMaterial({color,...opts}));m.position.set(x+w/2,y0+h/2,-(y+d/2));m.scale.set(w,h,d);scene.add(m);return m;};
+  const inst=(list,color)=>{if(!list.length)return;const m=new THREE.InstancedMesh(unit,new THREE.MeshLambertMaterial({color:color||0xffffff}),list.length);
+    const c=new THREE.Color();list.forEach((b,i)=>{o.position.set(b.x,b.y0+b.h/2,-b.y);o.scale.set(b.w,b.h,b.d);o.updateMatrix();m.setMatrixAt(i,o.matrix);if(!color){c.set(b.color);m.setColorAt(i,c);}});
+    m.instanceMatrix.needsUpdate=true;if(m.instanceColor)m.instanceColor.needsUpdate=true;scene.add(m);};
+  box(-40,-HOF_D-20,site.maxX+80,site.maxY+HOF_D+60,-0.2,0.18,0xC9CFCB);
+  box(0,-HOF_D,site.hallW,HOF_D,-0.05,0.05,0x8E9699);
+  box(0,0,site.hallW,site.hallD,-0.02,0.04,0xDADFDF);
+  site.front.forEach(f=>{box(f.x+0.2,0.2,f.w-0.4,f.d-0.4,0.02,0.02,f.id==='soz'?0xC9D6E0:0xE8ECEC);
+    if(f.id==='soz')box(f.x+0.3,0.3,f.w-0.6,f.d-0.6,0,3.2,0xB9C9D6,{transparent:true,opacity:0.55});
+    if(f.doors)for(let i=0;i<f.doors;i++)box(f.x+1.3+i*4,-0.35,3.4,0.3,0,3.2,0x0E8585);});
+  box(0,FRONT_D+0.1,site.hallW,0.15,0.02,0.02,0xE0B000);box(0,FRONT_D+MAIN_AISLE-0.25,site.hallW,0.15,0.02,0.02,0xE0B000);
+  const wall={transparent:true,opacity:0.10,depthWrite:false};
+  const walls=(x,y,w,d,h,col)=>{box(x,y,w,0.2,0,h,col,wall);box(x,y+d-0.2,w,0.2,0,h,col,wall);box(x,y,0.2,d,0,h,col,wall);box(x+w-0.2,y,0.2,d,0,h,col,wall);};
+  walls(0,0,site.hallW,site.hallD,S.hallH,0x5A6E73);
+  if(site.haz)walls(site.haz.x-0.6,site.haz.y-0.6,site.haz.w+1.2,site.haz.d+1.2,Math.min(S.hallH,8),0xD64933);
+  const loads=[],ups=[],beams=[],shelves=[],arms=[];
+  zones.forEach(z=>{
+    const col=new THREE.Color(ENV[z.env].color).lerp(new THREE.Color(0xDADFDF),0.72);
+    box(z.ox,z.oy,z.X,z.Y,0.025,0.02,col.getHex());
+    if(z.env!=='normal'||z.tech==='hrl')walls(z.ox,z.oy,z.X,z.Y,z.tech==='hrl'?S.hrlH:Math.min(S.hallH,z.rackH+1.5),new THREE.Color(ENV[z.env].color).getHex());
+    z.aisles.forEach(a=>box(z.ox+a.x+a.w/2-0.06,z.oy+z.T.crossF,0.12,z.br*z.bayW,0.05,0.01,0xE0B000));
+    const len=z.br*z.bayW, y0=z.oy+z.T.crossF;
+    z.rows.forEach(row=>{
+      const xs=[z.ox+row.x+0.05,z.ox+row.x+row.w-0.05];
+      if(z.T.kind==='krag'){
+        const cx=z.ox+row.x+row.w/2, nc=Math.max(2,Math.ceil(len/1.3)+1);
+        for(let i=0;i<nc;i++){const yy=y0+i*len/(nc-1);ups.push({x:cx,y:yy,w:0.18,d:0.18,y0:0,h:z.rackH});
+          for(let l=0;l<z.levels;l++)arms.push({x:cx,y:yy,w:row.w-0.1,d:0.08,y0:l*z.pitch+0.25,h:0.08});}
+      } else {
+        for(let b=0;b<=z.br;b++)xs.forEach(x=>ups.push({x,y:y0+b*z.bayW,w:0.09,d:0.09,y0:0,h:z.rackH}));
+        if(z.T.kind==='pal'){for(let l=1;l<=z.levels;l++)xs.forEach(x=>beams.push({x,y:y0+len/2,w:0.06,d:len,y0:l*z.pitch-0.12,h:0.11}));}
+        else for(let l=0;l<=z.levels;l++)shelves.push({x:z.ox+row.x+row.w/2,y:y0+len/2,w:row.w,d:len,y0:l*z.pitch,h:0.03});
+      }
+    });
+    z.fill.forEach(s=>{const b=slotGeom(z,s);loads.push(b);});
+  });
+  inst(ups,0x2E5FA3);inst(beams,0xE8762B);inst(shelves,0x9AA7AD);inst(arms,0x3D6E9E);inst(loads,null);
+  const rtl=document.documentElement.dir==='rtl';
+  const label=(text,x,y,h,color)=>{const c=document.createElement('canvas'),ctx=c.getContext('2d');const f=44,font=`700 ${f}px Barlow, Vazirmatn, sans-serif`;ctx.font=font;
+    const w=Math.ceil(ctx.measureText(text).width)+28;c.width=w;c.height=f+22;ctx.font=font;ctx.direction=rtl?'rtl':'ltr';
+    ctx.fillStyle='rgba(255,255,255,0.88)';ctx.fillRect(0,0,w,c.height);ctx.fillStyle=color;ctx.fillRect(rtl?w-8:0,0,8,c.height);ctx.fillStyle='#11262B';ctx.textBaseline='middle';
+    ctx.textAlign=rtl?'right':'left';ctx.fillText(text,rtl?w-16:16,c.height/2+2);
+    const tex=new THREE.CanvasTexture(c);const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,depthTest:false}));
+    const sc=Math.max(3,Math.max(site.maxX,site.maxY)/45);sp.scale.set(sc*w/c.height,sc,1);sp.position.set(x,h,-y);sp.renderOrder=10;scene.add(sp);};
+  zones.forEach(z=>label(z.label+(z.tech==='hrl'?' · '+TECH.hrl.short:''),z.ox+z.X/2,z.oy+z.Y/2,(z.tech==='hrl'?S.hrlH:z.rackH)+2.5,ENV[z.env].color));
+  site.front.forEach(f=>{if(f.id==='we'||f.id==='wa'||f.id==='soz')label(f.label,f.x+f.w/2,f.d/2,5,'#0E8585');});
+  three.scene=scene;
+  const cx=site.maxX/2, cy=site.maxY/2, span=Math.max(site.maxX,site.maxY+HOF_D);
+  three.controls.target.set(cx,0,-cy);
+  three.camera.position.set(cx-span*0.35,span*0.75,-cy+span*1.05);
+  three.camera.far=span*10;three.camera.updateProjectionMatrix();
+  resize3D();
+}
+function resize3D(){if(!three)return;const host=$('#view3d');const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;
+  three.renderer.setSize(w,h);three.camera.aspect=w/h;three.camera.updateProjectionMatrix();}
+matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',()=>{dirty3d=true;if(active==='3d')render3D();});
+new MutationObserver(()=>{dirty3d=true;if(active==='3d')render3D();}).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+
+initLangSel();initParams();applyLang(pickLang());openHash();
+})();
+</script>
+</body>
+</html>
