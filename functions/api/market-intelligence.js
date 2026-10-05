@@ -10,6 +10,8 @@
 // AI researches and extracts timestamped evidence; all scoring, weighting,
 // EUR conversion, ranking and consensus calculations are deterministic here.
 
+import { alphaQuote, compareQuotes } from '../lib/price-check.js';
+
 const YEAR_WEIGHTS = [0.35, 0.25, 0.18, 0.13, 0.09];
 const CACHE_HOURS = 24;
 const MAX_ASSET_LEN = 80;
@@ -75,6 +77,7 @@ const cleanAsset = (v) =>
   String(v || "").replace(/[\u0000-\u001f<>]/g, "").trim().slice(0, MAX_ASSET_LEN);
 
 const num = (v) => {
+  if (v === null || v === undefined || String(v).trim() === '') return null;
   const n = Number(v);
   return Number.isFinite(n) ? n : null;
 };
@@ -92,7 +95,7 @@ const normalizeCurrency = (c) => String(c || "USD").toUpperCase().replace(/[^A-Z
 const knownAsset = (q) => {
   const s = q.toLowerCase();
   if (["gold", "xau", "xauusd", "طلا", "gold spot"].includes(s)) {
-    return { key: "gold", name: "Gold", type: "Commodity", symbol: "XAU/EUR", unit: "EUR / troy oz", currency: "EUR" };
+    return { key: "gold", name: "Gold", type: "Commodity", symbol: "XAU/USD", unit: "EUR / troy oz", currency: "USD" };
   }
   if (["bitcoin", "btc", "btceur", "بیت کوین", "بیت‌کوین"].includes(s)) {
     return { key: "bitcoin", name: "Bitcoin", type: "Crypto", symbol: "BTC/EUR", unit: "EUR / BTC", currency: "EUR" };
@@ -100,6 +103,7 @@ const knownAsset = (q) => {
   if (["copper", "hg1", "مس", "copper spot"].includes(s)) {
     return { key: "copper", name: "Copper", type: "Commodity", symbol: "HG1", unit: "EUR / lb", currency: "USD" };
   }
+  if (s === 'asml') return { key:'asml-nasdaq',name:'ASML (US ADR)',type:'Stock',symbol:'ASML',exchange:'NASDAQ',currency:'USD',unit:'EUR / share' };
   return null;
 };
 
@@ -107,10 +111,12 @@ async function tdFetch(path, params, apiKey) {
   const u = new URL("https://api.twelvedata.com/" + path);
   for (const [k, v] of Object.entries(params || {})) if (v !== undefined && v !== null && v !== "") u.searchParams.set(k, String(v));
   u.searchParams.set("apikey", apiKey);
-  const r = await fetch(u.toString(), { headers: { accept: "application/json" } });
+  let r;
+  try { r = await fetch(u.toString(), { headers: { accept: "application/json" }, signal:AbortSignal.timeout(12000) }); }
+  catch { throw new Error('Twelve Data request failed or timed out.'); }
   let d;
   try { d = await r.json(); } catch { throw new Error("Market-data provider returned invalid JSON"); }
-  if (!r.ok || d.status === "error" || d.code) throw new Error(d.message || "Market-data provider error");
+  if (!r.ok || d.status === "error" || d.code) throw new Error('Twelve Data quote unavailable or quota/subscription restricted.');
   return d;
 }
 
@@ -163,7 +169,7 @@ async function resolveMarket(asset, apiKey) {
   }, apiKey);
 
   const price = num(quote.close) ?? num(quote.price);
-  if (price === null) throw new Error("No current price returned for " + resolved.symbol);
+  if (price === null || price <= 0) throw new Error("No valid current price returned for " + resolved.symbol);
 
   const currency = quote.currency || resolved.currency || (resolved.symbol.includes("/EUR") ? "EUR" : "USD");
   const fxCache = {};
@@ -179,8 +185,13 @@ async function resolveMarket(asset, apiKey) {
     source_currency: normalizeCurrency(currency),
     source_price: price,
     price_eur: priceEUR,
-    unit: resolved.unit,
-    timestamp: quote.datetime || (quote.timestamp ? new Date(Number(quote.timestamp) * 1000).toISOString() : new Date().toISOString()),
+    unit: resolved.unit.replace(/^[A-Z]{3}/,'EUR'),
+    quote_unit: resolved.key === 'gold' ? 'troy oz' : resolved.key === 'bitcoin' ? 'BTC' : resolved.key === 'copper' ? 'lb' : 'share',
+    instrument: resolved.key === 'gold' ? 'gold-spot' : resolved.key === 'copper' ? 'copper-futures-HG1' : resolved.symbol+'@'+(quote.exchange || resolved.exchange || 'aggregate'),
+    basis: /stock|etf|equity/i.test(resolved.type) && quote.is_market_open === false ? 'daily close' : 'spot',
+    timezone: quote.exchange_timezone || null,
+    timestamp: quote.timestamp ? new Date(Number(quote.timestamp) * 1000).toISOString() : (quote.datetime || null),
+    retrieved_at: new Date().toISOString(),
     provider: "Twelve Data"
   };
 }
@@ -513,14 +524,23 @@ export async function onRequestPost({ request, env }) {
   const started = Date.now();
 
   try {
-    const market = await resolveMarket(asset, env.TWELVE_DATA_API_KEY);
+    let market;
+    try { market = await resolveMarket(asset, env.TWELVE_DATA_API_KEY); }
+    catch (e) { market = {status:'unavailable',message:e.message,...knownAsset(asset),provider:'Twelve Data',timestamp:null}; }
+    const providerA = {provider:'Twelve Data',symbol:market.symbol,status:market.status,price:market.source_price ?? null,currency:market.source_currency ?? null,timestamp:market.timestamp ?? null,timezone:market.timezone,unit:market.quote_unit,instrument:market.instrument,basis:market.basis,asset_type:market.asset_type || market.type,retrieved_at:market.retrieved_at,message:market.message};
+    const providerB = await alphaQuote(market,env);
+    market.price_check = compareQuotes(providerA,providerB,env);
+    market.data_warning = market.price_check.data_warning;
+    // Quote-only mode lets preview validation avoid expensive AI research.
+    if (body.quoteOnly === true) return json({asset,market,generated_at:new Date().toISOString(),configuration:{market_data_connected:Boolean(env.TWELVE_DATA_API_KEY),secondary_price_connected:Boolean(env.ALPHA_VANTAGE_API_KEY)}});
 
     const cacheKey = market.status === "ok" ? market.key : asset.toLowerCase();
     let research = body.forceResearch ? null : await getCachedResearch(env.DB, cacheKey);
     let researchCache = research ? "hit" : "miss";
 
     if (!research) {
-      research = await researchAsset(asset, env);
+      try { research = await researchAsset(asset, env); }
+      catch { research = {status:'unavailable',message:'AI research request failed. Market quotes remain available.'}; }
       research = verifyResearchSources(research);
       await setCachedResearch(env.DB, cacheKey, market.name || asset, research);
     }
@@ -539,13 +559,14 @@ export async function onRequestPost({ request, env }) {
       sources: research.sources || [],
       configuration: {
         market_data_connected: Boolean(env.TWELVE_DATA_API_KEY),
+        secondary_price_connected: Boolean(env.ALPHA_VANTAGE_API_KEY),
         ai_research_connected: Boolean(env.OPENAI_API_KEY),
         database_connected: Boolean(env.DB)
       }
     });
   } catch (e) {
     return json({
-      error: e?.message || "Unexpected market intelligence error",
+      error: "Unexpected market intelligence error",
       asset,
       elapsed_ms: Date.now() - started
     }, 500);

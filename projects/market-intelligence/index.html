@@ -130,9 +130,17 @@ tr:last-child td{border-bottom:0} tbody tr:hover{background:rgba(49,208,170,.035
           <h2 id="assetName">Gold</h2>
           <p id="assetSub">Demo fallback · engine logic is live</p>
         </div>
-        <div class="card kpi"><label>Current price</label><strong id="currentPrice">€3,720</strong><small>Demo EUR / oz</small></div>
+        <div class="card kpi"><label>Current price</label><strong id="currentPrice">€3,720</strong><small id="priceUnit">Demo EUR / oz</small></div>
         <div class="card kpi"><label>3M consensus</label><strong id="consensus3m">—</strong><small id="upside3m">—</small></div>
         <div class="card kpi"><label>Next-year consensus</label><strong id="consensus1y">—</strong><small id="upside1y">—</small></div>
+      </section>
+
+      <section class="section card" aria-live="polite">
+        <h2>Price cross-check</h2>
+        <p id="priceCheckStatus">Demo · unverified</p>
+        <div class="sources"><div class="source" id="providerA">Provider A · unavailable</div><div class="source" id="providerB">Provider B · unavailable</div></div>
+        <p id="priceDifference">Difference: N/A</p>
+        <p id="priceCheckReasons"></p>
       </section>
 
       <section class="section">
@@ -231,6 +239,8 @@ function renderScenarios(sc){
 }
 function renderDemo(){
   showResult();
+  renderPriceCheck(null);
+  document.getElementById('priceUnit').textContent='Demo EUR / troy oz';
   const ranked=demoRanked(),total=ranked.reduce((s,a)=>s+a.score,0);
   const c3=ranked.reduce((s,a)=>s+a.m3*a.score,0)/total;
   const c1=ranked.reduce((s,a)=>s+a.y1*a.score,0)/total;
@@ -249,14 +259,33 @@ function renderDemo(){
   renderScenarios({bearish_eur:c1*.82,base_eur:c1,bullish_eur:c1*1.15,major_shock_range_eur:[c1*.70,c1*1.35]});
   renderSources([]);
 }
+function renderPriceCheck(check){
+  const labels={primary_unavailable:'Primary price unavailable',secondary_unavailable:'Secondary price unavailable',incompatible_instrument_or_basis:'Different instrument, unit or price basis',currency_mismatch:'Currencies do not match',timestamp_unavailable:'Source timestamp or timezone unavailable',stale_or_future_quote:'Source price is stale or has a future timestamp',timestamp_mismatch:'Source timestamps do not align',price_difference_exceeds_threshold:'Price difference exceeds the threshold'};
+  const status=document.getElementById('priceCheckStatus');
+  status.textContent=check ? (check.status==='verified'?'Verified':'Data warning') : 'Demo · unverified';
+  status.style.color=check?.status==='verified'?'var(--good)':'var(--warn)';
+  for(const [id,q,label] of [['providerA',check?.provider_a,'Provider A · Twelve Data'],['providerB',check?.provider_b,'Provider B · Alpha Vantage']]){
+    const box=document.getElementById(id);box.replaceChildren();
+    const content=document.createElement('div');
+    const title=document.createElement('b');title.textContent=label;content.append(title);
+    for(const line of [q?.price!=null?Number(q.price).toLocaleString('en-DE',{maximumFractionDigits:6})+' '+q.currency+' / '+(q.unit||'unit'):'Price: N/A', 'Symbol: '+(q?.symbol||'N/A'), 'Source timestamp: '+(q?.timestamp||'N/A')+(q?.timezone?' ('+q.timezone+')':''), 'Basis: '+(q?.basis||'N/A'),q?.message]){
+      if(!line)continue;const row=document.createElement('div');row.textContent=line;row.style.overflowWrap='anywhere';content.append(row);
+    }
+    box.append(content);
+  }
+  document.getElementById('priceDifference').textContent='Difference: '+(check?.difference_pct!=null?check.difference_pct.toFixed(2)+'%':'N/A')+(check?' · threshold '+check.threshold_pct+'% · |A − B| / A':'');
+  document.getElementById('priceCheckReasons').textContent=check?(check.reasons||[]).map(x=>labels[x]||x).join(' · '):'Illustrative demo prices have no source verification.';
+}
 function renderLive(data){
   const market=data.market,analysis=data.analysis;
-  if(!market||market.status!=="ok"){showEmpty("Market data unavailable",market?.message||"The live market connector did not return a price.");return}
+  if(!market){showEmpty("Market data unavailable","The live market connector did not return a price.");return}
   showResult();
   document.getElementById("assetMeta").textContent=(market.asset_type||"Asset")+" · "+(market.symbol||"");
   document.getElementById("assetName").textContent=market.name||data.asset;
   document.getElementById("assetSub").textContent="Live · "+market.provider+" · "+(market.exchange||"")+" · generated "+new Date(data.generated_at).toLocaleString();
   document.getElementById("currentPrice").textContent=money(market.price_eur);
+  document.getElementById('priceUnit').textContent=market.unit||'EUR';
+  renderPriceCheck(market.price_check);
 
   const c3=analysis?.consensus?.forecast_3m_eur,c1=analysis?.consensus?.forecast_next_year_eur;
   document.getElementById("consensus3m").textContent=money(c3);
@@ -284,7 +313,7 @@ async function analyze(){
     const r=await fetch("/api/market-intelligence",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({asset})});
     const data=await r.json();
     if(!r.ok)throw new Error(data.error||"Live analysis failed");
-    const configured=data.configuration?.market_data_connected&&data.configuration?.ai_research_connected;
+    const configured=data.configuration?.market_data_connected;
     if(!configured&&["gold","xau","xauusd","طلا","gold spot"].includes(asset.toLowerCase())){
       setNotice("<b>Demo fallback:</b> backend exists, but one or more Cloudflare API secrets are not configured yet. Showing the Gold demo dataset.");
       renderDemo();

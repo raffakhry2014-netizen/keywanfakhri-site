@@ -9,6 +9,7 @@ This branch is intentionally isolated from production.
 - Hosting target: existing Cloudflare Pages project
 - Cache/database: existing D1 binding `DB`
 - Market data: Twelve Data
+- Secondary price: Alpha Vantage (server only)
 - AI research: OpenAI Responses API + Web Search
 - Default model: `gpt-5.6-sol`
 
@@ -17,10 +18,41 @@ This branch is intentionally isolated from production.
 Add these in the existing Cloudflare Pages project settings for Preview first:
 
 - `TWELVE_DATA_API_KEY` — required for market quotes and EUR conversion
+- `ALPHA_VANTAGE_API_KEY` — required for the secondary price check; missing key returns a warning
 - `OPENAI_API_KEY` — required for web research and structured extraction
 - `OPENAI_MODEL` — optional; defaults to `gpt-5.6-sol`
 
 Never put API keys in HTML or JavaScript sent to the browser.
+
+## Price verification
+
+The main EUR price remains Twelve Data. The check compares original quotes in
+the same currency, instrument and unit: `abs(A - B) / A * 100`.
+Gold uses XAU/USD for the check and converts the displayed price to EUR.
+Bitcoin compares BTC/EUR. Bare ASML explicitly means NASDAQ USD ADR.
+Other stock/ETF listings currently support the same US USD ticker only;
+unsupported listings return a warning rather than guessing another listing.
+
+Preview environment variables (not secrets) can override defaults:
+
+- `PRICE_CHECK_THRESHOLD_PCT`: 1 (stocks, ETFs, crypto)
+- `PRICE_CHECK_COMMODITY_THRESHOLD_PCT`: 1.5
+- `PRICE_CHECK_MAX_AGE_MINUTES`: 30 (spot)
+- `PRICE_CHECK_MAX_SKEW_MINUTES`: 15 (spot)
+- `PRICE_CHECK_CLOSE_MAX_AGE_HOURS`: 96 (weekends/holidays)
+
+Both source timestamps must exist and align. Daily-close quotes must be for
+the same trading date; spot vs daily-close always warns. Missing/quota-limited
+or stale data never verifies. Retrieval time is separate from source time.
+Alpha Vantage COPPER is a monthly USD/metric-ton benchmark, while HG1 is a
+USD/lb futures instrument. Copper therefore returns `warning`, with no
+comparable percentage (N/A). A matching futures feed is needed to verify it.
+
+`market.price_check` returns provider A/B quotes, `status`, `data_warning`,
+`difference_pct`, `threshold_pct`, and reason codes. UI shows this even if
+research is unavailable. Demo data is always marked unverified.
+Use POST `{ "asset": "Gold", "quoteOnly": true }` for a quote-only preview
+check without AI research. Run `node --test tests/price-check.test.mjs` locally.
 
 ## What happens when Analyze is clicked
 
