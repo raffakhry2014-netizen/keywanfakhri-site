@@ -32,7 +32,7 @@ test('upstream quota/error messages do not expose secrets',async()=>{
 });
 test('missing preview secrets retain commodity thresholds and source warning',async()=>{
   for(const asset of ['Gold','Bitcoin','ASML','Copper']){
-    const r=await onRequestPost({request:new Request('https://preview.test/api/market-intelligence',{method:'POST',body:JSON.stringify({asset,quoteOnly:true})}),env:{}});
+    const r=await onRequestPost({request:new Request('https://preview.test/api/market-intelligence',{method:'POST',headers:{Authorization:'Bearer test-admin'},body:JSON.stringify({asset,quoteOnly:true})}),env:{ENABLE_LICENSED_MARKET_API:'true',ADMIN_PASSWORD:'test-admin'}});
     const d=await r.json();
     assert.equal(d.market.price_check.status,'warning');
     assert.equal(d.market.price_check.threshold_pct,['Gold','Copper'].includes(asset)?1.5:1);
@@ -66,7 +66,7 @@ test('four asset paths preserve primary price, timestamps, currency and warning 
         if(fn==='GLOBAL_QUOTE') return Response.json({'Global Quote':{'01. symbol':'ASML','05. price':'100','07. latest trading day':'2026-10-02'}});
         return Response.json({'Realtime Currency Exchange Rate':{'1. From_Currency Code':'BTC','3. To_Currency Code':'EUR','5. Exchange Rate':'100','6. Last Refreshed':new Date().toISOString(),'7. Time Zone':'UTC'}});
       };
-      const response=await onRequestPost({request:new Request('https://preview.test/api/market-intelligence',{method:'POST',body:JSON.stringify({asset,quoteOnly:true})}),env:{TWELVE_DATA_API_KEY:'test-only-td',ALPHA_VANTAGE_API_KEY:'test-only-av'}});
+      const response=await onRequestPost({request:new Request('https://preview.test/api/market-intelligence',{method:'POST',headers:{Authorization:'Bearer test-admin'},body:JSON.stringify({asset,quoteOnly:true})}),env:{ENABLE_LICENSED_MARKET_API:'true',ADMIN_PASSWORD:'test-admin',TWELVE_DATA_API_KEY:'test-only-td',ALPHA_VANTAGE_API_KEY:'test-only-av'}});
       const d=await response.json();
       assert.equal(response.status,200);
       assert.equal(d.market.source_price,100);
@@ -76,4 +76,13 @@ test('four asset paths preserve primary price, timestamps, currency and warning 
       assert.ok(!JSON.stringify(d).includes('test-only-'));
     }
   }finally{globalThis.fetch=old;}
+});
+
+test('public mode and unauthenticated requests never call paid providers',async()=>{
+ const old=globalThis.fetch;globalThis.fetch=async()=>{throw Error('Unexpected paid provider request');};
+ try{
+  for(const [env,status] of [[{TWELVE_DATA_API_KEY:'test-key',OPENAI_API_KEY:'test-key'},403],[{ENABLE_LICENSED_MARKET_API:'true',ADMIN_PASSWORD:'test-admin'},401]]){
+   const response=await onRequestPost({request:new Request('https://preview.test/api/market-intelligence',{method:'POST',body:'{"asset":"Gold"}'}),env});assert.equal(response.status,status);
+  }
+ }finally{globalThis.fetch=old;}
 });

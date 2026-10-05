@@ -516,6 +516,15 @@ export async function onRequestOptions() {
 }
 
 export async function onRequestPost({ request, env }) {
+  // Public widgets do not grant redistribution rights for API prices.
+  // The legacy paid API is private, explicitly opt-in and disabled by default.
+  if (env.ENABLE_LICENSED_MARKET_API !== 'true') {
+    return json({ error: 'API market data is disabled in public watchlist mode. Use the attributed provider chart.', mode: 'public_watchlist' }, 403);
+  }
+  if (!env.ADMIN_PASSWORD || request.headers.get('Authorization') !== `Bearer ${env.ADMIN_PASSWORD}`) {
+    return json({ error: 'Private market API authentication required.' }, 401);
+  }
+
   let body;
   try { body = await request.json(); } catch { return json({ error: "Invalid JSON body" }, 400); }
 
