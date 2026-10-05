@@ -1,11 +1,23 @@
-# Public market watchlist
+# Forecast evidence and public watchlist
+
+The primary screen compares documented forecasts with actual annual outcomes. Charts are supplementary and load only when expanded. This release covers gold (10 eligible individual analysts), silver (9), platinum (8), and one evaluated institution (EIA) for Brent, WTI and Henry Hub gas. Only gold/silver/platinum have comparative rankings. The other 22 assets lack verified comparable five-year history. No list is padded to ten.
+
+`evidence.json` contains 405 LBMA records and 18 EIA records, with original source URLs, named identities, units, currencies, benchmark definitions, forecast dates/date precision and linked annual outcomes. World Bank annual averages for seven commodities and Finder aggregates for five crypto assets are contextual forecasts, never assigned historical ranks. ETF outlook links are asset-class context, not fund-share targets.
+
+`research-engine.js` computes a weighted mean of yearly absolute percentage errors: `sum(weight * abs(forecast - actual) / actual * 100)`. Weights: 2021 9%, 2022 13%, 2023 18%, 2024 25%, 2025 35%. This is a declared preference for recency, not fitted to results. All five completed years, one observation per forecaster/year, linked evidence and the same currency/unit/benchmark are required. Duplicate, missing or incompatible records cannot earn a rank. Current-year forecasts do not affect scores. Lower error is better; it is not a probability of future success. Five observations is a small sample. Rankings describe the imported panel, not all market analysts.
+
+Historical selections are fixed early-year vintages: LBMA annual surveys and EIA January STEO. Later revisions do not replace forecasts. LBMA dates are submission deadlines, except 2021 (launch publication upper bound). The 2026 page inconsistently gives January 12/13; January 13 is a disclosed conservative bound. EIA dates are publication dates. EIA outcomes use official annual historical spot tables reviewed September 30, 2026, rather than preliminary next-January STEO values; revisions, aggregation and rounding may cause small differences. Its latest imported forecast is September 2026, distinct from scored January vintages. Peter Fertig and Jonathan Butler have eligible historical LBMA records but no imported 2026 forecast, shown explicitly.
+
+Individual analysts remain separate across employers. Media reporting an institution's forecast do not inherit its forecasting score. No article text or daily licensed benchmark series is redistributed. Source pages may later be revised. Static evidence and deterministic scoring make no paid API calls.
 
 28 fixed assets: 8 commodities, 10 US-listed ETFs and 10 crypto pairs. Definitions live in `watchlist.json`; timestamps refer to the catalog review, not market-price freshness.
 
 The page embeds the official TradingView advanced chart with attribution, a daily interval and the exchange timezone. Provider data may be live, delayed or end-of-day. A daily interval is not a scheduled daily snapshot; the current bar can be incomplete. No chart data is scraped, copied into our API, converted, or cross-checked against a second source. Unsupported symbols have a source link and must not be assigned a substitute price. Commodity futures/CFD references and crypto exchange pairs are labeled explicitly.
 
-Weekly and monthly research are unpublished, with null publication timestamps. This release does not implement a research scheduler or manufacture forecasts/accuracy scores. A sourced review can be added later with its actual publication date.
+The evidence is a manually reviewed snapshot with its actual timestamp. No automatic weekly/monthly research scheduler is implemented. The page states this explicitly; refreshing the page does not create a new review date. Historical accuracy does not guarantee future accuracy. Open the per-analyst evidence for original forecasts, outcomes and date evidence.
 
 The legacy Twelve Data / Alpha Vantage cross-check code is preserved but its API is disabled by default. Enabling it requires the server variable `ENABLE_LICENSED_MARKET_API=true`, appropriate provider rights/subscriptions and a server-side `ADMIN_PASSWORD`; requests must carry that password as a Bearer token. Never put it in the public frontend. Enabling this API can incur OpenAI research costs unless `quoteOnly=true`. Existing secrets alone cannot trigger provider calls in public mode.
 
 Official embed documentation: https://www.tradingview.com/widget-docs/widgets/charts/advanced-chart/demos/basic-area-chart/
+
+Validation: `node --test tests/price-check.test.mjs tests/research-engine.test.mjs`. Tests cover unsafe/incompatible history, future dates, incomplete years, duplicate forecasts, pending-year exclusion, exact imported panel counts, EIA vintage selection, an independently fixed gold error score and existing no-paid-call/secret-redaction behavior. Browser checks cover all 28 selectors, source history, filters/search, missing-history states and supplementary chart disclosure.
