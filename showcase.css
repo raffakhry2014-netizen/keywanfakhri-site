@@ -93,7 +93,7 @@ body[data-page=home] #project-grid .kb-card p{margin:0;font-size:14.5px;line-hei
 /* Hero: kompakter Kopfbereich, echte Demo-Bilder, Kontaktlinks */
 body[data-page=home] .heritage-header{height:124px;background-size:100% 200px;background-position:center top}
 body[data-page=home] .heritage-header header{min-height:84px}
-.concept-art.concept-shot{animation:none;object-position:right center}
+.concept-art.concept-shot{object-position:right center}
 .hero-social{display:flex;flex-wrap:wrap;gap:10px 22px;margin:14px 0 0;font-size:14px}
 .hero-social a{display:inline-flex;align-items:center;gap:8px;color:var(--ink);text-decoration:none;min-height:32px}
 .hero-social a:hover{color:var(--accent)}
@@ -101,3 +101,14 @@ body[data-page=home] .heritage-header header{min-height:84px}
 .hero-social svg.stroke{fill:none;stroke:var(--accent);stroke-width:1.8;stroke-linejoin:round}
 @media(max-width:1000px){body[data-page=home] .heritage-header{height:auto;min-height:112px;background-size:max(100%,520px) 200px;background-position:center top}}
 @media(max-width:700px){body[data-page=home] .heritage-header{height:auto;min-height:0;background-size:auto 170px;background-position:22% top}body[data-page=home] .heritage-header header{min-height:0;padding-bottom:6px}.hero-social{margin-top:10px}}
+
+/* Slider: kurze Demo-Videos im Browser-Rahmen (Desktop), Bild mit Kamerafahrt (Handy / reduzierte Bewegung) */
+.concept-stage.has-video{background:radial-gradient(circle at 78% 40%,#e3f4f0 0%,#eef8f6 40%,#f7fbfb 75%)}
+.concept-device{position:absolute;right:-3%;top:15%;width:61%;border-radius:12px;background:#fff;overflow:hidden;z-index:-2;box-shadow:0 30px 60px -28px rgba(16,60,60,.5),0 0 0 1px rgba(16,60,60,.08);animation:device-in .7s ease-out both}
+.concept-device-bar{height:26px;display:flex;align-items:center;gap:5px;padding:0 10px;background:#f1f5f5;border-bottom:1px solid var(--line)}
+.concept-device-bar i{width:8px;height:8px;border-radius:50%;background:#d9c9c4;display:block}
+.concept-device-bar i:nth-child(2){background:#e3d9b5}.concept-device-bar i:nth-child(3){background:#bcd8c9}
+.concept-device-bar span{margin-inline-start:10px;flex:1;max-width:60%;height:16px;border-radius:5px;background:#fff;border:1px solid var(--line);font-size:10px;line-height:16px;padding:0 7px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.concept-video{display:block;width:100%;height:auto;aspect-ratio:1280/800;object-fit:cover;background:#f4f7f7}
+@keyframes device-in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.concept-device{animation:none}}
