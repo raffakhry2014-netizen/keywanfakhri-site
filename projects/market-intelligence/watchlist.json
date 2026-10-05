@@ -1,5 +1,5 @@
 {
-  "reviewed_at": "2026-10-05T13:04:24Z",
+  "reviewed_at": "2026-10-05T13:10:00Z",
   "assets": [
     {
       "id": "gold",
@@ -18,43 +18,43 @@
     {
       "id": "copper",
       "name": "Copper",
-      "symbol": "COMEX:HG1!",
-      "description": "USD / pound \u00b7 continuous futures",
+      "symbol": "FX:COPPER",
+      "description": "USD / pound \u00b7 FXCM CFD reference",
       "category": "Commodities"
     },
     {
       "id": "platinum",
       "name": "Platinum",
-      "symbol": "NYMEX:PL1!",
-      "description": "USD / troy ounce \u00b7 continuous futures",
+      "symbol": "TVC:PLATINUM",
+      "description": "USD / troy ounce \u00b7 CFD reference",
       "category": "Commodities"
     },
     {
       "id": "aluminium",
       "name": "Aluminium",
-      "symbol": "COMEX:ALI1!",
-      "description": "USD / metric ton \u00b7 continuous futures",
+      "symbol": "CAPITALCOM:ALUMINUM",
+      "description": "USD quote \u00b7 Capital.com CFD reference; see source for contract units",
       "category": "Commodities"
     },
     {
       "id": "brent",
       "name": "Brent crude",
-      "symbol": "ICEEUR:BRN1!",
-      "description": "USD / barrel \u00b7 continuous futures",
+      "symbol": "TVC:UKOIL",
+      "description": "USD / barrel \u00b7 Brent CFD reference",
       "category": "Commodities"
     },
     {
       "id": "wti",
       "name": "WTI crude",
-      "symbol": "NYMEX:CL1!",
-      "description": "USD / barrel \u00b7 continuous futures",
+      "symbol": "TVC:USOIL",
+      "description": "USD / barrel \u00b7 WTI CFD reference",
       "category": "Commodities"
     },
     {
       "id": "gas",
       "name": "Natural gas",
-      "symbol": "NYMEX:NG1!",
-      "description": "USD / MMBtu \u00b7 continuous futures",
+      "symbol": "CAPITALCOM:NATURALGAS",
+      "description": "USD quote \u00b7 Capital.com CFD reference; see source for contract units",
       "category": "Commodities"
     },
     {
