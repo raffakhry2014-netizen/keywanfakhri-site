@@ -61,3 +61,31 @@ body[data-page=home] #project-grid .project-card:last-child{border-inline-end:0}
 #area-panel-gastro .service-group{margin-bottom:34px}
 @media(max-width:1000px){body[data-page=home] #project-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){.area-tabs{align-self:stretch}.area-tab{flex:1 1 100%;text-align:start}body[data-page=home] #project-grid{grid-template-columns:1fr}body[data-page=home] #project-grid .project-card{border-inline-end:0}}
+
+/* Kartenstil „Kopfband“ – Projekte und Gastronomie-Leistungen auf der Startseite */
+body[data-page=home] #project-grid{gap:20px;border-block:0}
+body[data-page=home] #project-grid .kb-card{padding:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;gap:0;background:#fff;transition:border-color .15s,box-shadow .15s}
+body[data-page=home] #project-grid .kb-card:last-child{border-inline-end:1px solid var(--line)}
+body[data-page=home] #project-grid .kb-card:before{display:none}
+body[data-page=home] #project-grid .kb-card:hover,#area-panel-gastro .service:hover{border-color:#b8cfca;box-shadow:0 10px 24px -18px rgba(22,45,46,.45)}
+.kb-band,#area-panel-gastro .service .card-top{height:104px;box-sizing:border-box;padding:20px 22px;background:var(--pale);border-bottom:1px solid var(--line);display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:0}
+.kb-band svg,#area-panel-gastro .service .card-top svg{width:44px;height:44px;fill:none;stroke:var(--accent);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.kb-label{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11.5px;letter-spacing:.06em;color:var(--accent)}
+.kb-body{padding:22px;display:flex;flex-direction:column;gap:10px;flex:1}
+body[data-page=home] #project-grid .kb-card h3{margin:0;font-size:19px;line-height:1.3}
+body[data-page=home] #project-grid .kb-card p{margin:0;font-size:14.5px;line-height:1.6;color:var(--muted)}
+.kb-actions{margin-top:auto;padding-top:12px;display:flex;gap:10px}
+.kb-btn{flex:1;display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 12px;border-radius:9px;border:1px solid var(--line);color:var(--ink);text-decoration:none;font-size:14px;font-weight:600;text-align:center;transition:background .15s,border-color .15s}
+.kb-btn:hover{border-color:var(--accent);color:var(--accent)}
+.kb-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.kb-primary:hover{background:#066664;color:#fff}
+.kb-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#area-panel-gastro .service-group .cards{gap:20px}
+#area-panel-gastro .service{padding:0;border-radius:16px;overflow:hidden;cursor:pointer}
+#area-panel-gastro .service h3{margin:22px 22px 0;font-family:"DM Sans",Arial,sans-serif;font-weight:600;font-size:19px;line-height:1.3;letter-spacing:normal}
+#area-panel-gastro .service p{margin:10px 22px 18px;font-size:14.5px;line-height:1.6;color:var(--muted)}
+#area-panel-gastro .service .card-end{margin:auto 22px 22px;padding:10px 12px;min-height:44px;box-sizing:border-box;border:1px solid var(--line);border-radius:9px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:14px;font-weight:600;color:var(--ink)}
+#area-panel-gastro .service p+.card-end{margin-top:auto}
+#area-panel-gastro .service:hover .card-end{border-color:var(--accent);color:var(--accent)}
+#area-panel-gastro .service-group .inline-link{border-radius:10px}
+@media(max-width:700px){body[data-page=home] #project-grid .kb-card{border-inline-end:1px solid var(--line)}}

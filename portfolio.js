@@ -17,6 +17,7 @@ function renderPortfolio(){
   host.innerHTML=projectRegistry.filter(x=>area==='projects'?visibleProjects().includes(x):x.area==='lab'||x.status!=='available').map(project=>{
    const c=project.id==='gastlyo'?[rc[0],rc[1],rc[1]]:projectCopy[lang][project.copy];
    if(project.id==='gastlyo')return `<article class="project-card"><div class="project-top"><span class="project-kind">HOSPITALITY</span></div><div class="project-mark restaurant-mark" aria-hidden="true">SMART<br>RESTAURANT</div><h3>${esc(c[0])}</h3><p>${esc(c[1])}</p><div class="project-links"><a class="project-detail" href="/projects/restaurant/?lang=${lang}">${esc(p.details)} ↗</a></div></article>`;
+   if(area==='projects'&&document.body.dataset.page==='home')return kbCard(project,c,p);
    return `<article class="project-card ${project.id==='gastlyo'?'featured-project':''}"><div class="project-top"><span class="status ${project.status}">${esc(p[project.status])}</span><span class="project-kind">${project.id==='logistics'?'KPI':project.type==='finance'&&!project.demo?'RESEARCH':project.type==='hospitality'?'HOSPITALITY':'LAB'}</span></div><div class="project-mark" aria-hidden="true">${project.id==='gastlyo'?'Gastlyo':project.id==='10x'?'10<span>×</span>':project.id==='logistics'?'LOG / KPI':project.id==='6m'?'6<span>M</span>':project.id==='tester'?'01 / TEST':project.id==='economic-assistant'?'02 / DE':esc(c[0].slice(0,16))}</div><h3>${esc(c[0])}</h3><p>${esc(c[1])}</p><div class="project-links"><a href="#project/${project.id}" class="project-detail">${esc(p.details)} <span aria-hidden="true">↗</span></a>${project.demo?`<a class="demo-link" href="${esc(['10x','logistics','6m','prozessatlas'].includes(project.id)?project.demo+'?lang='+lang:project.demo)}" target="_blank" rel="noopener noreferrer" aria-label="${esc(p.external)}">${esc(p.demo)} ↗</a>`:''}</div></article>`;
   }).join('');
  }
@@ -72,3 +73,10 @@ document.addEventListener('keydown',e=>{const b=e.target.closest&&e.target.close
  if(e.key==='ArrowRight')i+=rtl?-1:1;else if(e.key==='ArrowLeft')i+=rtl?1:-1;else if(e.key==='Home')i=0;else if(e.key==='End')i=AREA_ORDER.length-1;else return;
  e.preventDefault();selectArea(AREA_ORDER[(i+AREA_ORDER.length)%AREA_ORDER.length],true);});
 function visibleProjects(){return projectRegistry.filter(x=>x.area==='projects'&&x.status==='available'&&(typeof projectAreaOf!=='function'||(currentArea!=='gastro'&&projectAreaOf(x)===currentArea)));}
+/* Kartenstil „Kopfband“ für die Projektkarten der Startseite */
+const KB_ICON={logistics:'M4 20h16M7 16v-5M12 16V7M17 16v-8',prozessatlas:'M5 5h4v4H5zM15 3h4v4h-4zM15 15h4v4h-4zM9 7h3v10h3M12 5h3',lagerplaner:'M3 21V8l9-5 9 5v13M7 21v-7h10v7M7 17.5h10','10x':'M3 20h18M4 16l5-5 4 3 7-8M15 6h5v5','6m':'M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zM16 16l5 5M8 11h6M11 8v6'};
+const KB_LABEL={logistics:'KPI · DASHBOARD',prozessatlas:'BPM · ATLAS',lagerplaner:'WMS · 2D/3D','10x':'10X · DEMO','6m':'6M · SCREENING'};
+function kbCard(project,c,p){
+ const demo=project.demo?esc(['10x','logistics','6m','prozessatlas'].includes(project.id)?project.demo+'?lang='+lang:project.demo):'';
+ return `<article class="project-card kb-card"><div class="kb-band"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${KB_ICON[project.id]||'M4 4h16v16H4z'}"/></svg><span class="kb-label" dir="ltr">${esc(KB_LABEL[project.id]||project.id.toUpperCase())}</span></div><div class="kb-body"><h3>${esc(c[0])}</h3><p>${esc(c[1])}</p><div class="kb-actions"><a class="kb-btn" href="#project/${project.id}">${esc(p.details)}</a>${demo?`<a class="kb-btn kb-primary" href="${demo}" target="_blank" rel="noopener noreferrer" aria-label="${esc(p.external)}">${esc(p.demo)} ↗</a>`:''}</div></div></article>`;
+}
