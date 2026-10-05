@@ -1,19 +1,27 @@
 import {renderResearch,renderMethodology} from './research-view.js';
-let catalog, evidence, selected, category='All', activeAsset, chartAsset;
+import {forecastsFor} from './outlook-engine.js';
+import {renderOutlook,renderAssetScenarios,renderOverview,formatValue} from './outlook-view.js';
+let catalog, evidence, outlook, selected, category='All', activeAsset, chartAsset;
 const el=id=>document.getElementById(id);
 function render(){
  const term=el('search').value.trim().toLowerCase();
  const items=catalog.assets.filter(a=>(category==='All'||a.category===category)&&`${a.name} ${a.symbol}`.toLowerCase().includes(term));
- el('assets').replaceChildren();let last='';
+ el('assets').replaceChildren();
  for(const a of items){
-  if(a.category!==last){const label=document.createElement('h3');label.className='category-label';label.textContent=a.category;el('assets').append(label);last=a.category;}
-  const b=document.createElement('button');b.className='asset';b.dataset.id=a.id;b.setAttribute('aria-pressed',String(a.id===selected));
-  const title=document.createElement('strong');title.textContent=a.name;const subtitle=document.createElement('span');subtitle.textContent=evidence.coverage[a.id].status==='evidence_available'?(a.id==='brent'||a.id==='wti'||a.id==='gas'?'Five-year history · one institution':'Five-year ranking available'):'Historical ranking pending';b.append(title,subtitle);b.addEventListener('click',()=>select(a));el('assets').append(b);
+  const b=document.createElement('button');b.className='asset '+a.category.toLowerCase();b.dataset.id=a.id;b.setAttribute('aria-haspopup','dialog');b.setAttribute('aria-label',`Open ${a.name} research`);
+  const top=document.createElement('div');top.className='tile-top';const mark=document.createElement('span');mark.className='asset-mark';mark.textContent=a.id.toUpperCase();const categoryLabel=document.createElement('small');categoryLabel.textContent=a.category;top.append(mark,categoryLabel);
+  const title=document.createElement('strong');title.textContent=a.name;
+  const annual=forecastsFor(outlook,a.id);const lead=annual.find(r=>r.provider==='U.S. EIA')||annual[0];
+  const value=document.createElement('div');value.className='tile-value';value.textContent=lead?formatValue(lead.value):'Awaiting research';
+  const note=document.createElement('span');note.className='tile-note';note.textContent=lead?`2027 ${lead.basis} · ${lead.provider} · USD / ${lead.unit}`:'No verified 2027 target imported';
+  const foot=document.createElement('div');foot.className='tile-foot';const status=document.createElement('small');status.textContent=annual.length?`${annual.length} annual source${annual.length>1?'s':''}`:'Coverage pending';const arrow=document.createElement('span');arrow.textContent='↗';foot.append(status,arrow);
+  b.append(top,title,value,note,foot);b.addEventListener('click',()=>select(a));el('assets').append(b);
  }
+ if(!items.length){const empty=document.createElement('p');empty.className='empty';empty.textContent='No assets match. Try another name or category.';el('assets').append(empty);}
  el('count').textContent=`${items.length} assets shown`;
 }
 function select(a){
- selected=a.id;activeAsset=a;render();el('name').textContent=a.name;el('basis').textContent=`Chart reference: ${a.description}`;renderResearch(evidence,a,el('research'));
+ selected=a.id;activeAsset=a;el('name').textContent=a.name;el('basis').textContent=`Chart reference: ${a.description}`;el('detail-category').textContent=a.category+' / '+a.id.toUpperCase();renderResearch(evidence,a,el('research'));el('outlook').replaceChildren();renderOutlook(outlook,a,el('outlook'));el('scenarios').replaceChildren();renderAssetScenarios(outlook,a,el('scenarios'));el('asset-dialog').showModal();el('asset-dialog').scrollTop=0;
  el('chart').replaceChildren();chartAsset=null;
  if(el('market-details').open)loadChart(a);
 }
@@ -32,10 +40,10 @@ function loadChart(a){
  container.append(widget,credit,script);el('chart').replaceChildren(container);
 }
 try{
- const responses=await Promise.all([fetch('./watchlist.json'),fetch('./evidence.json')]);if(responses.some(r=>!r.ok))throw Error('evidence');[catalog,evidence]=await Promise.all(responses.map(r=>r.json()));
- const date=new Date(evidence.reviewed_at);el('reviewed').textContent=date.toISOString().replace('T',' · ').replace('.000Z',' UTC');renderMethodology(evidence,el('methodology'));
+ const responses=await Promise.all([fetch('./watchlist.json'),fetch('./evidence.json'),fetch('./outlook-2027.json')]);if(responses.some(r=>!r.ok))throw Error('evidence');[catalog,evidence,outlook]=await Promise.all(responses.map(r=>r.json()));
+ const date=new Date(evidence.reviewed_at);el('reviewed').textContent=date.toISOString().replace('T',' · ').replace('.000Z',' UTC');renderMethodology(evidence,el('methodology'));const outlookLink=document.createElement('a');outlookLink.href='./outlook-2027.json';outlookLink.textContent='Download the 2027 source snapshot';el('methodology').append(outlookLink);
  el('market-details').addEventListener('toggle',()=>{if(el('market-details').open&&activeAsset)loadChart(activeAsset);});
  el('search').addEventListener('input',render);
  document.querySelectorAll('[data-category]').forEach(b=>b.addEventListener('click',()=>{category=b.dataset.category;document.querySelectorAll('[data-category]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));render();}));
- select(catalog.assets[0]);
+ render();el('outlook-reviewed').textContent=new Date(outlook.reviewed_at).toISOString().replace('T',' · ').replace('.000Z',' UTC');renderOverview(outlook,catalog.assets,el('overview'));el('overview-period').addEventListener('change',()=>renderOverview(outlook,catalog.assets,el('overview'),el('overview-period').value));el('close-detail').addEventListener('click',()=>el('asset-dialog').close());el('asset-dialog').addEventListener('close',()=>{el('chart').replaceChildren();chartAsset=null;el('market-details').open=false;});el('asset-dialog').addEventListener('click',event=>{if(event.target===el('asset-dialog')){const rect=el('asset-dialog').getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)el('asset-dialog').close();}});
 }catch{el('name').textContent='Watchlist unavailable';el('reviewed').textContent='Unavailable';el('count').textContent='Please reload to try again.';}

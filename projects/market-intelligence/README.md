@@ -1,5 +1,15 @@
 # Forecast evidence and public watchlist
 
+## 2027 mosaic interface
+
+The public landing page now shows 28 clickable mosaic tiles. Native modal dialogs provide the annual 2027 view, Q1–Q4, historical forecaster evidence and a scenario summary at the bottom. Escape and the close control dismiss the dialog and return focus to the tile; charts are cleared when the dialog closes. A separate overview includes all 28 assets and switches between the annual horizon and each quarter.
+
+`outlook-2027.json` stores 23 source-backed forecasts: World Bank annual averages for seven commodities, EIA annual and Q1–Q4 averages for Brent/WTI/Henry Hub gas (15 records), and Alex Thorn/Galaxy's by-year-end 2027 Bitcoin target (one record, dated December 18, 2025). Nine assets have yearly targets; three have complete quarterly coverage. All others explicitly lack imported targets. Annual averages, quarterly averages and a by-year-end target keep their own price definitions. No conversion of 2026/2030 targets, no invented quarterly interpolation and no claimed price targets for ETFs from underlying index forecasts.
+
+`outlook-engine.js` validates horizon, source, issue date, currency and duplicate observations. The bearish/base/bullish table displays only explicitly published scenarios. The imported reports contain baseline targets, not a complete three-case numerical distribution; unsupported bearish/bullish cases remain unavailable. Different benchmark definitions stay in separate rows and historical LBMA accuracy is not attached to World Bank targets. Every target links its original report. Static snapshots remain manually reviewed and do not call paid providers.
+
+Additional validation: `node --test tests/outlook-2027.test.mjs`, including exact EIA source columns, missing-quarter handling, separating baselines from scenarios, duplicate/future/incompatible data rejection and imported coverage.
+
 The primary screen compares documented forecasts with actual annual outcomes. Charts are supplementary and load only when expanded. This release covers gold (10 eligible individual analysts), silver (9), platinum (8), and one evaluated institution (EIA) for Brent, WTI and Henry Hub gas. Only gold/silver/platinum have comparative rankings. The other 22 assets lack verified comparable five-year history. No list is padded to ten.
 
 `evidence.json` contains 405 LBMA records and 18 EIA records, with original source URLs, named identities, units, currencies, benchmark definitions, forecast dates/date precision and linked annual outcomes. World Bank annual averages for seven commodities and Finder aggregates for five crypto assets are contextual forecasts, never assigned historical ranks. ETF outlook links are asset-class context, not fund-share targets.
