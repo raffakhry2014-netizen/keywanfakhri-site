@@ -84,7 +84,7 @@ tr:last-child td{border-bottom:0} tbody tr:hover{background:rgba(49,208,170,.035
       <div class="logo">K1</div>
       <div><strong>KeyOne Market Intelligence</strong><small>by Keywan Fakhri</small></div>
     </div>
-    <div class="demo-pill">Prototype · Demo dataset</div>
+    <div class="demo-pill">Prototype · Live-ready</div>
   </header>
 
   <main>
@@ -102,7 +102,7 @@ tr:last-child td{border-bottom:0} tbody tr:hover{background:rgba(49,208,170,.035
         <button data-q="ASML">ASML</button>
         <button data-q="Copper">Copper</button>
       </div>
-      <div class="notice"><b>Prototype scope:</b> Gold is fully interactive using an internal demo dataset. Other assets intentionally return “Live connector required”. No demo number below should be used as investment data.</div>
+      <div class="notice" id="statusNotice"><b>Prototype status:</b> Live backend is wired. Until Cloudflare secrets are configured, the page falls back to the Gold demo dataset. Live results will show their source links and generation time.</div>
     </section>
 
     <section class="section">
@@ -126,9 +126,9 @@ tr:last-child td{border-bottom:0} tbody tr:hover{background:rgba(49,208,170,.035
     <div id="result">
       <section class="section asset-head">
         <div class="card asset-main">
-          <div class="eyebrow">Commodity · XAU</div>
-          <h2>Gold</h2>
-          <p>Demo mode · all values illustrative · engine logic is live</p>
+          <div class="eyebrow" id="assetMeta">Commodity · XAU</div>
+          <h2 id="assetName">Gold</h2>
+          <p id="assetSub">Demo fallback · engine logic is live</p>
         </div>
         <div class="card kpi"><label>Current price</label><strong id="currentPrice">€3,720</strong><small>Demo EUR / oz</small></div>
         <div class="card kpi"><label>3M consensus</label><strong id="consensus3m">—</strong><small id="upside3m">—</small></div>
@@ -158,8 +158,8 @@ tr:last-child td{border-bottom:0} tbody tr:hover{background:rgba(49,208,170,.035
       </section>
 
       <section class="section">
-        <div class="section-head"><div><h2>Source architecture</h2><p>These are the source classes the live agent will verify.</p></div></div>
-        <div class="sources">
+        <div class="section-head"><div><h2>Verified sources</h2><p id="sourceCaption">Live mode lists the URLs actually returned by web research.</p></div></div>
+        <div class="sources" id="sourceList">
           <div class="source"><div><b>Primary analyst report</b><span>Bank / research house publication</span></div><span>Required</span></div>
           <div class="source"><div><b>Independent verification</b><span>Reuters / FT / WSJ / Bloomberg</span></div><span>Cross-check</span></div>
           <div class="source"><div><b>Official market data</b><span>Exchange / benchmark / trusted data API</span></div><span>Price</span></div>
@@ -182,8 +182,8 @@ tr:last-child td{border-bottom:0} tbody tr:hover{background:rgba(49,208,170,.035
 
 <script>
 const weights=[.35,.25,.18,.13,.09];
-const current=3720;
-const analysts=[
+const DEMO_CURRENT=3720;
+const demoAnalysts=[
 {name:"Ross Norman",inst:"Metals Daily",years:8,errors:[6.1,8.7,9.9,7.5,10.2],direction:[1,1,1,1,1],source:97,m3:3890,y1:4320},
 {name:"Keisuke Okui",inst:"Sumitomo Corporation",years:7,errors:[5.4,9.1,10.4,8.8,11.0],direction:[1,1,1,1,0],source:98,m3:3920,y1:4380},
 {name:"Bruce Ikemizu",inst:"Japan Bullion Market Association",years:9,errors:[7.0,8.4,11.1,9.6,10.2],direction:[1,1,1,1,1],source:97,m3:3870,y1:4290},
@@ -198,51 +198,114 @@ const analysts=[
 
 function avg(a){return a.reduce((x,y)=>x+y,0)/a.length}
 function stdev(a){const m=avg(a);return Math.sqrt(avg(a.map(x=>(x-m)**2)))}
-function calc(a){
-  const wm=a.errors.reduce((s,e,i)=>s+e*weights[i],0);
-  const dir=avg(a.direction)*100;
-  const consistency=Math.max(0,100-stdev(a.errors)*6);
-  const coverage=Math.min(100,(a.years/5)*100);
-  const errorScore=Math.max(0,100-wm);
-  const score=.55*errorScore+.20*dir+.10*consistency+.05*coverage+.10*a.source;
-  return {...a,wm,dir,consistency,score};
+function money(v){return v==null||!Number.isFinite(Number(v))?"N/A":new Intl.NumberFormat("en-DE",{style:"currency",currency:"EUR",maximumFractionDigits:0}).format(v)}
+function pct(v){return v==null||!Number.isFinite(Number(v))?"N/A":(v>=0?"+":"")+Number(v).toFixed(1)+"%"}
+function setNotice(html){document.getElementById("statusNotice").innerHTML=html}
+function showResult(){document.getElementById("result").classList.remove("hidden");document.getElementById("empty").style.display="none"}
+function showEmpty(title,msg){document.getElementById("result").classList.add("hidden");const e=document.getElementById("empty");e.style.display="block";e.innerHTML="<strong>"+title+"</strong><span>"+msg+"</span>"}
+
+function demoRanked(){
+  return demoAnalysts.map(a=>{
+    const wm=a.errors.reduce((sum,e,i)=>sum+e*weights[i],0);
+    const dir=avg(a.direction)*100;
+    const consistency=Math.max(0,100-stdev(a.errors)*6);
+    const coverage=Math.min(100,(a.years/5)*100);
+    const score=.55*Math.max(0,100-wm)+.20*dir+.10*consistency+.05*coverage+.10*a.source;
+    return {...a,wm,dir,score};
+  }).sort((a,b)=>b.score-a.score);
 }
-const ranked=analysts.map(calc).sort((a,b)=>b.score-a.score);
-function money(v){return new Intl.NumberFormat("en-DE",{style:"currency",currency:"EUR",maximumFractionDigits:0}).format(v)}
-function pct(v){return (v>=0?"+":"")+v.toFixed(1)+"%"}
-function consensus(field){
-  const total=ranked.reduce((s,a)=>s+a.score,0);
-  return ranked.reduce((s,a)=>s+a[field]*a.score,0)/total;
+function renderSources(sources){
+  const list=document.getElementById("sourceList");
+  if(!sources||!sources.length){
+    list.innerHTML='<div class="source"><div><b>No live source list yet</b><span>Configure the research connector to populate verified URLs.</span></div><span>N/A</span></div>';
+    return;
+  }
+  list.innerHTML=sources.slice(0,20).map((s,i)=>'<a class="source" href="'+s.url+'" target="_blank" rel="noopener"><div><b>'+(s.title||("Source "+(i+1)))+'</b><span>'+new URL(s.url).hostname.replace(/^www\./,"")+'</span></div><span>↗</span></a>').join("");
 }
-function renderGold(){
-  document.getElementById("result").classList.remove("hidden");
-  document.getElementById("empty").style.display="none";
-  const c3=consensus("m3"), c1=consensus("y1");
-  document.getElementById("currentPrice").textContent=money(current);
+function renderScenarios(sc){
+  const shock=Array.isArray(sc?.major_shock_range_eur)?money(sc.major_shock_range_eur[0])+" – "+money(sc.major_shock_range_eur[1]):"N/A";
+  document.getElementById("bearish").textContent=money(sc?.bearish_eur);
+  document.getElementById("base").textContent=money(sc?.base_eur);
+  document.getElementById("bullish").textContent=money(sc?.bullish_eur);
+  document.getElementById("shock").textContent=shock;
+}
+function renderDemo(){
+  showResult();
+  const ranked=demoRanked(),total=ranked.reduce((s,a)=>s+a.score,0);
+  const c3=ranked.reduce((s,a)=>s+a.m3*a.score,0)/total;
+  const c1=ranked.reduce((s,a)=>s+a.y1*a.score,0)/total;
+  document.getElementById("assetMeta").textContent="Commodity · XAU";
+  document.getElementById("assetName").textContent="Gold";
+  document.getElementById("assetSub").textContent="Demo fallback · illustrative values only";
+  document.getElementById("currentPrice").textContent=money(DEMO_CURRENT);
   document.getElementById("consensus3m").textContent=money(c3);
   document.getElementById("consensus1y").textContent=money(c1);
-  document.getElementById("upside3m").innerHTML='<span class="'+(c3>=current?'up':'down')+'">'+pct((c3/current-1)*100)+" vs current</span>";
-  document.getElementById("upside1y").innerHTML='<span class="'+(c1>=current?'up':'down')+'">'+pct((c1/current-1)*100)+" vs current</span>";
-  const tbody=document.getElementById("analystRows");
-  tbody.innerHTML=ranked.map((a,i)=>{
-    const up=(a.y1/current-1)*100;
-    return '<tr><td class="rank">'+(i+1)+'</td><td class="name"><strong>'+a.name+'</strong><span>'+a.inst+'</span></td><td>'+a.years+'</td><td>'+a.wm.toFixed(1)+'%</td><td>'+a.dir.toFixed(0)+'%</td><td><span class="score"><i class="dot"></i>'+a.score.toFixed(1)+'/100</span></td><td>'+money(current)+'</td><td>'+money(a.m3)+'</td><td>'+money(a.y1)+'</td><td class="'+(up>=0?'up':'down')+'">'+pct(up)+'</td></tr>';
+  document.getElementById("upside3m").innerHTML='<span class="'+(c3>=DEMO_CURRENT?'up':'down')+'">'+pct((c3/DEMO_CURRENT-1)*100)+" vs current</span>";
+  document.getElementById("upside1y").innerHTML='<span class="'+(c1>=DEMO_CURRENT?'up':'down')+'">'+pct((c1/DEMO_CURRENT-1)*100)+" vs current</span>";
+  document.getElementById("analystRows").innerHTML=ranked.map((a,i)=>{
+    const up=(a.y1/DEMO_CURRENT-1)*100;
+    return '<tr><td class="rank">'+(i+1)+'</td><td class="name"><strong>'+a.name+'</strong><span>'+a.inst+'</span></td><td>'+a.years+'</td><td>'+a.wm.toFixed(1)+'%</td><td>'+a.dir.toFixed(0)+'%</td><td><span class="score"><i class="dot"></i>'+a.score.toFixed(1)+'/100</span></td><td>'+money(DEMO_CURRENT)+'</td><td>'+money(a.m3)+'</td><td>'+money(a.y1)+'</td><td class="'+(up>=0?'up':'down')+'">'+pct(up)+'</td></tr>';
   }).join("");
-  document.getElementById("bearish").textContent=money(c1*.82);
-  document.getElementById("base").textContent=money(c1);
-  document.getElementById("bullish").textContent=money(c1*1.15);
-  document.getElementById("shock").textContent=money(c1*1.35);
+  renderScenarios({bearish_eur:c1*.82,base_eur:c1,bullish_eur:c1*1.15,major_shock_range_eur:[c1*.70,c1*1.35]});
+  renderSources([]);
 }
-function analyze(){
-  const q=document.getElementById("assetInput").value.trim().toLowerCase();
-  if(["gold","xau","xauusd","طلا","gold spot"].includes(q)){renderGold();return;}
-  document.getElementById("result").classList.add("hidden");
-  document.getElementById("empty").style.display="block";
+function renderLive(data){
+  const market=data.market,analysis=data.analysis;
+  if(!market||market.status!=="ok"){showEmpty("Market data unavailable",market?.message||"The live market connector did not return a price.");return}
+  showResult();
+  document.getElementById("assetMeta").textContent=(market.asset_type||"Asset")+" · "+(market.symbol||"");
+  document.getElementById("assetName").textContent=market.name||data.asset;
+  document.getElementById("assetSub").textContent="Live · "+market.provider+" · "+(market.exchange||"")+" · generated "+new Date(data.generated_at).toLocaleString();
+  document.getElementById("currentPrice").textContent=money(market.price_eur);
+
+  const c3=analysis?.consensus?.forecast_3m_eur,c1=analysis?.consensus?.forecast_next_year_eur;
+  document.getElementById("consensus3m").textContent=money(c3);
+  document.getElementById("consensus1y").textContent=money(c1);
+  document.getElementById("upside3m").innerHTML=analysis?.consensus?.upside_3m_pct==null?"N/A":'<span class="'+(analysis.consensus.upside_3m_pct>=0?'up':'down')+'">'+pct(analysis.consensus.upside_3m_pct)+" vs current</span>";
+  document.getElementById("upside1y").innerHTML=analysis?.consensus?.upside_next_year_pct==null?"N/A":'<span class="'+(analysis.consensus.upside_next_year_pct>=0?'up':'down')+'">'+pct(analysis.consensus.upside_next_year_pct)+" vs current</span>";
+
+  const rows=analysis?.analysts||[];
+  document.getElementById("analystRows").innerHTML=rows.length?rows.map((a,i)=>{
+    const up=a.forecast_next_year_eur&&market.price_eur?(a.forecast_next_year_eur/market.price_eur-1)*100:null;
+    const src=a.primary_source_url?' <a href="'+a.primary_source_url+'" target="_blank" rel="noopener">↗</a>':"";
+    return '<tr><td class="rank">'+(i+1)+'</td><td class="name"><strong>'+a.name+src+'</strong><span>'+a.institution+'</span></td><td>'+a.years_reviewed+'</td><td>'+a.weighted_avg_error.toFixed(1)+'%</td><td>'+a.direction_accuracy.toFixed(0)+'%</td><td><span class="score"><i class="dot"></i>'+a.accuracy_score.toFixed(1)+'/100</span></td><td>'+money(market.price_eur)+'</td><td>'+money(a.forecast_3m_eur)+'</td><td>'+money(a.forecast_next_year_eur)+'</td><td class="'+(up!=null&&up>=0?'up':'down')+'">'+pct(up)+'</td></tr>';
+  }).join(""):'<tr><td colspan="10" style="text-align:center;color:#8ea4ae">Insufficient verified 5-year history for a Top 10 ranking.</td></tr>';
+  renderScenarios(analysis?.scenarios);
+  renderSources(data.sources||[]);
+  setNotice('<b>Live result:</b> market data connected · AI research '+(data.configuration?.ai_research_connected?"connected":"not configured")+' · cache '+(data.research_cache||"n/a")+'. Historical observations only count when their source URL is present in the actual web-search evidence set.');
+}
+async function analyze(){
+  const asset=document.getElementById("assetInput").value.trim();
+  if(!asset)return;
+  const btn=document.getElementById("analyzeBtn");
+  const old=btn.textContent;btn.disabled=true;btn.textContent="Analyzing…";
+  setNotice("<b>Working:</b> resolving the market symbol, fetching the EUR price, checking cached research and running source verification.");
+  try{
+    const r=await fetch("/api/market-intelligence",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({asset})});
+    const data=await r.json();
+    if(!r.ok)throw new Error(data.error||"Live analysis failed");
+    const configured=data.configuration?.market_data_connected&&data.configuration?.ai_research_connected;
+    if(!configured&&["gold","xau","xauusd","طلا","gold spot"].includes(asset.toLowerCase())){
+      setNotice("<b>Demo fallback:</b> backend exists, but one or more Cloudflare API secrets are not configured yet. Showing the Gold demo dataset.");
+      renderDemo();
+    }else if(!configured){
+      showEmpty("API configuration required","The live backend is ready, but the Cloudflare secrets for market data and AI research must be configured before this asset can be analyzed.");
+    }else{
+      renderLive(data);
+    }
+  }catch(e){
+    if(["gold","xau","xauusd","طلا","gold spot"].includes(asset.toLowerCase())){
+      setNotice("<b>Demo fallback:</b> live endpoint was unavailable. Showing Gold demo values only.");
+      renderDemo();
+    }else{
+      showEmpty("Live analysis unavailable",e.message||"Unknown error");
+    }
+  }finally{btn.disabled=false;btn.textContent=old}
 }
 document.getElementById("analyzeBtn").addEventListener("click",analyze);
 document.getElementById("assetInput").addEventListener("keydown",e=>{if(e.key==="Enter")analyze()});
 document.querySelectorAll("[data-q]").forEach(b=>b.addEventListener("click",()=>{document.getElementById("assetInput").value=b.dataset.q;analyze()}));
-renderGold();
+renderDemo();
 </script>
 </body>
 </html>
