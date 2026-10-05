@@ -17,13 +17,13 @@ function render(){
   const value=document.createElement('div');value.className='tile-value';value.textContent=lead?formatValue(lead.value):'Awaiting research';
   const note=document.createElement('span');note.className='tile-note';note.textContent=lead?`2027 ${lead.basis} · ${lead.provider} · USD / ${lead.unit}`:'No verified 2027 target imported';
   const foot=document.createElement('div');foot.className='tile-foot';const status=document.createElement('small');status.textContent=annual.length?`${annual.length} annual source${annual.length>1?'s':''}`:'Coverage pending';const arrow=document.createElement('span');arrow.textContent='↗';foot.append(status,arrow);
-  const ranks=rankForecasters(evidence,a.id,new Date(evidence.reviewed_at));status.textContent=ranks.ranked.length>1?`${ranks.ranked.length}/10 ranked analysts`:ranks.ranked.length===1?'1 evaluated institution':'History incomplete';b.append(top,title,foot);b.addEventListener('click',()=>select(a));el('assets').append(b);
+  const ranks=rankForecasters(evidence,a.id,new Date(evidence.reviewed_at));status.textContent=ranks.ranked.length>=3?`${ranks.ranked.length}/10 ranked analysts`:ranks.ranked.length===1?'1 evaluated institution':'History incomplete';b.append(top,title,foot);b.addEventListener('click',()=>select(a));el('assets').append(b);
  }
  if(!items.length){const empty=document.createElement('p');empty.className='empty';empty.textContent='No assets match. Try another name or category.';el('assets').append(empty);}
  el('count').textContent=`${items.length} assets shown`;
 }
 function select(a){
- selected=a.id;activeAsset=a;renderCoverage(evidence,outlook,a,el('coverage'));document.querySelector('.history').open=true;el('name').textContent=a.name;el('basis').textContent=`Chart reference: ${a.description}`;el('detail-category').textContent=a.category+' / '+a.id.toUpperCase();renderResearch(evidence,a,el('research'));el('outlook').replaceChildren();renderOutlook(outlook,a,el('outlook'));el('scenarios').replaceChildren();renderAssetScenarios(outlook,a,el('scenarios'));el('asset-dialog').showModal();el('asset-dialog').scrollTop=0;
+ selected=a.id;activeAsset=a;renderCoverage(evidence,outlook,a,el('coverage'));document.querySelector('.history').open=true;el('name').textContent=a.name;el('basis').textContent=`Chart reference: ${a.description}`;el('detail-category').textContent=a.category+' / '+a.id.toUpperCase();renderResearch(evidence,a,el('research'));el('outlook').replaceChildren();renderOutlook(outlook,a,el('outlook'),evidence);el('scenarios').replaceChildren();renderAssetScenarios(outlook,a,el('scenarios'));el('asset-dialog').showModal();el('asset-dialog').scrollTop=0;
  el('chart').replaceChildren();chartAsset=null;
  if(el('market-details').open)loadChart(a);
 }
