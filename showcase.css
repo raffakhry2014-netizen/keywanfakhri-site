@@ -44,3 +44,20 @@ body[data-page=home] #project-grid h3{font-size:19px;line-height:1.4;margin:0}bo
 @media(max-width:1000px){body[data-page=home] .personal-hero{grid-template-columns:1fr 1.5fr;gap:20px}body[data-page=home] .project-grid{grid-template-columns:repeat(2,minmax(0,1fr))}body[data-page=home] #project-grid .project-card{border-bottom:1px solid var(--line)}.concept-copy{left:20px;width:46%}.concept-caption-text{font-size:25px}.concept-name{font-size:42px}.concept-about .concept-caption-text{font-size:17px}.concept-bottom{padding:15px}.concept-bottom h2{font-size:16px!important}}
 @media(max-width:700px){body[data-page=home] .heritage-header{height:180px;background-size:auto 270px}body[data-page=home] .personal-hero{grid-template-columns:1fr;gap:23px;padding-top:22px}body[data-page=home] .personal-copy h1{font-size:33px;max-width:100%;margin:7px 0 12px}body[data-page=home] .personal-copy .lead{font-size:15px}body[data-page=home] .personal-copy .location-line{display:none}.concept-stage{height:310px}.concept-art{object-position:61% center}.concept-copy{left:19px;top:60px;width:46%;gap:15px}.concept-caption-text{font-size:25px}.concept-name{font-size:42px}.concept-about .concept-copy{gap:10px}.concept-about .concept-caption-text{font-size:16px}.concept-location{font-size:11px}.concept-top{padding:14px 17px}.concept-kicker{font-size:11px;letter-spacing:.06em}.concept-bottom>span{font-size:12px}.concept-bottom h2{font-size:15px!important}body[data-page=home] #project-grid .project-card{padding:18px 12px}body[data-page=home] #project-grid h3{font-size:17px}.project-index{font-size:11px}.concept-footnote{font-size:10px}}
 @media(prefers-reduced-motion:reduce){.concept *{animation:none!important;transition:none!important}}
+
+/* Startseite: Bereichs-Leiste (Engineering · Gastronomie · Finanzen) */
+body[data-page=home] .hero-actions{display:flex;margin-top:22px}
+.area-bar{display:flex;flex-direction:column;align-items:flex-start;gap:12px;margin:6px 0 24px}
+.area-tabs{display:flex;flex-wrap:wrap;gap:6px;padding:6px;background:var(--pale);border-radius:12px}
+.area-tab{font:inherit;font-size:14.5px;font-weight:600;line-height:1.3;padding:11px 16px;min-height:44px;border:0;border-radius:9px;background:transparent;color:var(--ink);cursor:pointer;transition:background .15s,color .15s}
+.area-tab:hover{background:rgba(8,126,124,.08)}
+.area-tab[aria-selected=true]{background:var(--accent);color:#fff}
+.area-tab:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.area-tab .n{opacity:.75;font-weight:500;margin-inline-start:5px}
+.area-intro{margin:0;color:var(--muted);font-size:15.5px;line-height:1.55}
+body[data-page=home] #project-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+body[data-page=home] #project-grid .project-card:last-child{border-inline-end:0}
+#area-panel-gastro .service-group>h2{font-size:21px;margin-bottom:14px}
+#area-panel-gastro .service-group{margin-bottom:34px}
+@media(max-width:1000px){body[data-page=home] #project-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.area-tabs{align-self:stretch}.area-tab{flex:1 1 100%;text-align:start}body[data-page=home] #project-grid{grid-template-columns:1fr}body[data-page=home] #project-grid .project-card{border-inline-end:0}}
