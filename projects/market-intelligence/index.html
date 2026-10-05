@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>KeyOne Market Intelligence — Prototype</title>
+<meta name="description" content="Prototype asset forecast accuracy engine by KeyOne." />
+<style>
+:root{
+  --bg:#071014;--panel:#0d181e;--panel2:#101f27;--line:#21333c;--text:#edf6f8;
+  --muted:#8ea4ae;--accent:#31d0aa;--accent2:#7ee7cf;--warn:#f6c85f;--bad:#ff6b6b;
+  --good:#56d98b;--blue:#6aa9ff;--shadow:0 18px 55px rgba(0,0,0,.28);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:
+radial-gradient(circle at 15% 0%,rgba(49,208,170,.11),transparent 30rem),
+radial-gradient(circle at 90% 10%,rgba(106,169,255,.08),transparent 30rem),
+var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+a{color:var(--accent2);text-decoration:none} a:hover{text-decoration:underline}
+.shell{max-width:1240px;margin:0 auto;padding:28px 20px 70px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:36px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:42px;height:42px;border:1px solid rgba(126,231,207,.45);border-radius:14px;display:grid;place-items:center;font-weight:800;background:linear-gradient(145deg,rgba(49,208,170,.18),rgba(106,169,255,.09));box-shadow:inset 0 0 30px rgba(49,208,170,.08)}
+.brand strong{display:block;font-size:15px;letter-spacing:.02em}.brand small{color:var(--muted)}
+.demo-pill{font-size:12px;padding:7px 10px;border:1px solid rgba(246,200,95,.35);background:rgba(246,200,95,.08);color:#ffe29a;border-radius:999px}
+.hero{padding:30px;border:1px solid var(--line);border-radius:28px;background:linear-gradient(145deg,rgba(16,31,39,.95),rgba(8,19,24,.96));box-shadow:var(--shadow);overflow:hidden;position:relative}
+.hero:after{content:"";position:absolute;width:260px;height:260px;border-radius:50%;right:-110px;top:-120px;background:radial-gradient(circle,rgba(49,208,170,.2),transparent 67%);pointer-events:none}
+.eyebrow{color:var(--accent2);text-transform:uppercase;letter-spacing:.16em;font-weight:700;font-size:11px}
+h1{font-size:clamp(34px,6vw,68px);line-height:.98;margin:12px 0 18px;max-width:870px;letter-spacing:-.045em}
+.lead{color:#aac0c9;max-width:760px;font-size:17px;line-height:1.65;margin:0 0 24px}
+.search{display:grid;grid-template-columns:1fr auto;gap:10px;max-width:860px}
+.search input{width:100%;background:#071116;border:1px solid #29404a;color:var(--text);border-radius:15px;padding:17px 18px;font-size:16px;outline:none}
+.search input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(49,208,170,.10)}
+button{border:0;border-radius:15px;padding:0 22px;font-weight:800;background:var(--accent);color:#042019;cursor:pointer;font-size:14px}
+button:hover{filter:brightness(1.06)}
+.quick{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+.quick button{background:transparent;color:#b8cbd2;border:1px solid #263b45;padding:7px 10px;border-radius:999px;font-weight:600}
+.quick button:hover{border-color:#3d5a66;color:white}
+.notice{margin-top:18px;padding:12px 14px;border-left:3px solid var(--warn);background:rgba(246,200,95,.06);color:#d7cda9;border-radius:8px;font-size:13px;line-height:1.55}
+.section{margin-top:30px}
+.section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:15px;margin-bottom:14px}
+.section-head h2{margin:0;font-size:22px}.section-head p{margin:0;color:var(--muted);font-size:13px}
+.method{border:1px solid var(--line);background:rgba(13,24,30,.78);border-radius:20px;overflow:hidden}
+.method summary{cursor:pointer;padding:18px 20px;font-weight:800;list-style:none}
+.method summary::-webkit-details-marker{display:none}
+.method .body{padding:0 20px 20px;color:#a9bdc6;line-height:1.65;font-size:14px}
+.weights{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:12px 0}
+.weight{border:1px solid #28404a;background:#09151a;padding:10px;border-radius:12px;text-align:center}
+.weight b{display:block;color:var(--text);font-size:18px}.weight span{color:var(--muted);font-size:11px}
+.formula{background:#071116;border:1px solid #213640;padding:12px 14px;border-radius:12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#bfeee3;font-size:12px;overflow:auto}
+.asset-head{display:grid;grid-template-columns:1.4fr repeat(3,.8fr);gap:12px}
+.card{border:1px solid var(--line);background:linear-gradient(160deg,rgba(16,31,39,.9),rgba(9,19,24,.88));border-radius:18px;padding:18px}
+.asset-main h2{margin:8px 0 6px;font-size:32px}.asset-main p{margin:0;color:var(--muted)}
+.kpi label{display:block;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px}.kpi strong{font-size:25px}.kpi small{display:block;margin-top:6px;color:var(--muted)}
+.up{color:var(--good)}.down{color:var(--bad)}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:18px;background:rgba(9,19,24,.75)}
+table{width:100%;border-collapse:collapse;min-width:980px}
+th,td{padding:13px 14px;border-bottom:1px solid #1d3039;text-align:right;font-size:13px;white-space:nowrap}
+th{position:sticky;top:0;background:#0d1a20;color:#91a8b2;text-transform:uppercase;font-size:10px;letter-spacing:.08em;z-index:1}
+th:nth-child(2),td:nth-child(2){text-align:left}
+tr:last-child td{border-bottom:0} tbody tr:hover{background:rgba(49,208,170,.035)}
+.rank{font-weight:900;color:#c5d9df}.name strong{display:block;color:#f4fafb}.name span{font-size:11px;color:var(--muted)}
+.score{display:inline-flex;align-items:center;gap:7px}.dot{width:7px;height:7px;border-radius:50%;background:var(--good);box-shadow:0 0 10px rgba(86,217,139,.55)}
+.scenarios{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.scenario{border:1px solid var(--line);border-radius:18px;padding:18px;background:#0c171d}
+.scenario .tag{font-size:12px;font-weight:800;margin-bottom:14px}.scenario strong{display:block;font-size:27px}.scenario p{margin:7px 0 0;color:var(--muted);font-size:12px;line-height:1.5}
+.s-bad{border-top:3px solid var(--bad)}.s-base{border-top:3px solid var(--warn)}.s-good{border-top:3px solid var(--good)}.s-shock{border-top:3px solid var(--blue)}
+.sources{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.source{border:1px solid var(--line);border-radius:14px;padding:14px;background:#0a151a;display:flex;justify-content:space-between;gap:12px}
+.source span{color:#9bb0b9;font-size:13px}.source b{font-size:13px}
+.empty{display:none;border:1px dashed #35515d;border-radius:18px;padding:30px;text-align:center;color:#9bb0b9;margin-top:28px}
+.empty strong{display:block;color:white;font-size:21px;margin-bottom:8px}
+.footer{margin-top:42px;padding-top:20px;border-top:1px solid #1c2f38;color:#738b95;font-size:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.hidden{display:none!important}
+@media(max-width:900px){.asset-head{grid-template-columns:1fr 1fr}.asset-main{grid-column:1/-1}.scenarios{grid-template-columns:1fr 1fr}.sources{grid-template-columns:1fr}}
+@media(max-width:620px){.shell{padding:18px 12px 50px}.hero{padding:22px 16px}.search{grid-template-columns:1fr}.search button{height:50px}.weights{grid-template-columns:1fr 1fr 1fr}.asset-head{grid-template-columns:1fr}.asset-main{grid-column:auto}.scenarios{grid-template-columns:1fr}.topbar{align-items:flex-start}.demo-pill{max-width:150px;text-align:center}h1{font-size:40px}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">K1</div>
+      <div><strong>KeyOne Market Intelligence</strong><small>by Keywan Fakhri</small></div>
+    </div>
+    <div class="demo-pill">Prototype · Demo dataset</div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="eyebrow">Forecast accuracy engine</div>
+      <h1>Rank forecasts by track record, not reputation.</h1>
+      <p class="lead">Enter an asset. The production agent will verify historical forecasts, score analyst accuracy, convert market data to EUR and build a weighted consensus with scenario ranges.</p>
+      <div class="search">
+        <input id="assetInput" autocomplete="off" value="Gold" placeholder="Gold, BTC, ASML, Copper, MSCI World…" />
+        <button id="analyzeBtn">Analyze asset</button>
+      </div>
+      <div class="quick">
+        <button data-q="Gold">Gold demo</button>
+        <button data-q="Bitcoin">Bitcoin</button>
+        <button data-q="ASML">ASML</button>
+        <button data-q="Copper">Copper</button>
+      </div>
+      <div class="notice"><b>Prototype scope:</b> Gold is fully interactive using an internal demo dataset. Other assets intentionally return “Live connector required”. No demo number below should be used as investment data.</div>
+    </section>
+
+    <section class="section">
+      <details class="method" open>
+        <summary>How this analysis works · methodology guide</summary>
+        <div class="body">
+          Minimum five years of timestamped forecasts are compared with realized market prices. More recent years receive greater weight. Analysts without verifiable date, target and source are excluded from the production ranking.
+          <div class="weights">
+            <div class="weight"><b>35%</b><span>latest year</span></div>
+            <div class="weight"><b>25%</b><span>year −2</span></div>
+            <div class="weight"><b>18%</b><span>year −3</span></div>
+            <div class="weight"><b>13%</b><span>year −4</span></div>
+            <div class="weight"><b>9%</b><span>year −5</span></div>
+          </div>
+          <div class="formula">Accuracy Score = 55% × (100 − Weighted MAPE) + 20% × Direction Accuracy + 10% × Consistency + 5% × Coverage + 10% × Source Quality</div>
+          <p>The final 3‑month and next‑year consensus is accuracy‑weighted. In live mode, key figures must be checked against the primary analyst report plus at least one independent source. Missing reliable forecasts are shown as N/A — never invented.</p>
+        </div>
+      </details>
+    </section>
+
+    <div id="result">
+      <section class="section asset-head">
+        <div class="card asset-main">
+          <div class="eyebrow">Commodity · XAU</div>
+          <h2>Gold</h2>
+          <p>Demo mode · all values illustrative · engine logic is live</p>
+        </div>
+        <div class="card kpi"><label>Current price</label><strong id="currentPrice">€3,720</strong><small>Demo EUR / oz</small></div>
+        <div class="card kpi"><label>3M consensus</label><strong id="consensus3m">—</strong><small id="upside3m">—</small></div>
+        <div class="card kpi"><label>Next-year consensus</label><strong id="consensus1y">—</strong><small id="upside1y">—</small></div>
+      </section>
+
+      <section class="section">
+        <div class="section-head"><div><h2>Top 10 analysts / institutions</h2><p>Sorted by calculated Accuracy Score</p></div><p>5-year weighted backtest</p></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th>#</th><th>Analyst / institution</th><th>Years</th><th>Weighted avg error</th><th>Direction</th><th>Accuracy score</th><th>Current €</th><th>3M forecast</th><th>Next year</th><th>Upside / downside</th>
+            </tr></thead>
+            <tbody id="analystRows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head"><div><h2>Scenario model</h2><p>Derived from weighted consensus in this prototype</p></div></div>
+        <div class="scenarios">
+          <div class="scenario s-bad"><div class="tag">🔴 Bearish</div><strong id="bearish">—</strong><p>Risk-off reversal, tighter liquidity or weaker structural demand.</p></div>
+          <div class="scenario s-base"><div class="tag">🟡 Base case</div><strong id="base">—</strong><p>Accuracy-weighted consensus of the tracked forecast set.</p></div>
+          <div class="scenario s-good"><div class="tag">🟢 Bullish</div><strong id="bullish">—</strong><p>Supportive macro trend and stronger-than-base investor demand.</p></div>
+          <div class="scenario s-shock"><div class="tag">🚀 Crisis / major shock</div><strong id="shock">—</strong><p>Illustrative stress regime; not assigned a fixed probability here.</p></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head"><div><h2>Source architecture</h2><p>These are the source classes the live agent will verify.</p></div></div>
+        <div class="sources">
+          <div class="source"><div><b>Primary analyst report</b><span>Bank / research house publication</span></div><span>Required</span></div>
+          <div class="source"><div><b>Independent verification</b><span>Reuters / FT / WSJ / Bloomberg</span></div><span>Cross-check</span></div>
+          <div class="source"><div><b>Official market data</b><span>Exchange / benchmark / trusted data API</span></div><span>Price</span></div>
+          <div class="source"><div><b>Historical forecast archive</b><span>Timestamped forecast + realized price</span></div><span>Backtest</span></div>
+        </div>
+      </section>
+    </div>
+
+    <div id="empty" class="empty">
+      <strong>Live connector required for this asset</strong>
+      <span>The UI and scoring engine are ready. The next phase connects market data, web research and the AI verification pipeline so this search can work for any stock, ETF, crypto or commodity.</span>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <span>KeyOne Market Intelligence · Prototype branch</span>
+    <span>Research tool only · not financial advice</span>
+  </footer>
+</div>
+
+<script>
+const weights=[.35,.25,.18,.13,.09];
+const current=3720;
+const analysts=[
+{name:"Ross Norman",inst:"Metals Daily",years:8,errors:[6.1,8.7,9.9,7.5,10.2],direction:[1,1,1,1,1],source:97,m3:3890,y1:4320},
+{name:"Keisuke Okui",inst:"Sumitomo Corporation",years:7,errors:[5.4,9.1,10.4,8.8,11.0],direction:[1,1,1,1,0],source:98,m3:3920,y1:4380},
+{name:"Bruce Ikemizu",inst:"Japan Bullion Market Association",years:9,errors:[7.0,8.4,11.1,9.6,10.2],direction:[1,1,1,1,1],source:97,m3:3870,y1:4290},
+{name:"Bart Melek",inst:"TD Securities",years:6,errors:[7.4,7.9,8.8,10.7,12.1],direction:[1,1,1,0,1],source:98,m3:3960,y1:4440},
+{name:"Joni Teves",inst:"UBS",years:9,errors:[8.2,10.1,11.0,12.4,13.1],direction:[1,1,1,1,0],source:99,m3:4000,y1:4460},
+{name:"Nicky Shiels",inst:"MKS PAMP",years:7,errors:[8.8,10.6,12.0,12.7,14.4],direction:[1,1,1,1,0],source:96,m3:3860,y1:4260},
+{name:"Chantelle Schieven",inst:"Capitalight Research",years:6,errors:[9.4,11.1,12.3,13.0,14.1],direction:[1,1,1,0,1],source:94,m3:3840,y1:4230},
+{name:"Rhona O'Connell",inst:"StoneX",years:10,errors:[10.1,12.7,14.0,15.1,16.2],direction:[1,1,0,1,1],source:98,m3:3810,y1:4160},
+{name:"James Steel",inst:"HSBC",years:10,errors:[10.8,13.1,14.5,15.2,17.0],direction:[1,1,1,0,1],source:99,m3:3780,y1:4100},
+{name:"Nikos Kavalis",inst:"Metals Focus",years:8,errors:[11.9,14.4,15.8,17.1,18.2],direction:[1,1,0,1,0],source:97,m3:3750,y1:4050}
+];
+
+function avg(a){return a.reduce((x,y)=>x+y,0)/a.length}
+function stdev(a){const m=avg(a);return Math.sqrt(avg(a.map(x=>(x-m)**2)))}
+function calc(a){
+  const wm=a.errors.reduce((s,e,i)=>s+e*weights[i],0);
+  const dir=avg(a.direction)*100;
+  const consistency=Math.max(0,100-stdev(a.errors)*6);
+  const coverage=Math.min(100,(a.years/5)*100);
+  const errorScore=Math.max(0,100-wm);
+  const score=.55*errorScore+.20*dir+.10*consistency+.05*coverage+.10*a.source;
+  return {...a,wm,dir,consistency,score};
+}
+const ranked=analysts.map(calc).sort((a,b)=>b.score-a.score);
+function money(v){return new Intl.NumberFormat("en-DE",{style:"currency",currency:"EUR",maximumFractionDigits:0}).format(v)}
+function pct(v){return (v>=0?"+":"")+v.toFixed(1)+"%"}
+function consensus(field){
+  const total=ranked.reduce((s,a)=>s+a.score,0);
+  return ranked.reduce((s,a)=>s+a[field]*a.score,0)/total;
+}
+function renderGold(){
+  document.getElementById("result").classList.remove("hidden");
+  document.getElementById("empty").style.display="none";
+  const c3=consensus("m3"), c1=consensus("y1");
+  document.getElementById("currentPrice").textContent=money(current);
+  document.getElementById("consensus3m").textContent=money(c3);
+  document.getElementById("consensus1y").textContent=money(c1);
+  document.getElementById("upside3m").innerHTML='<span class="'+(c3>=current?'up':'down')+'">'+pct((c3/current-1)*100)+" vs current</span>";
+  document.getElementById("upside1y").innerHTML='<span class="'+(c1>=current?'up':'down')+'">'+pct((c1/current-1)*100)+" vs current</span>";
+  const tbody=document.getElementById("analystRows");
+  tbody.innerHTML=ranked.map((a,i)=>{
+    const up=(a.y1/current-1)*100;
+    return '<tr><td class="rank">'+(i+1)+'</td><td class="name"><strong>'+a.name+'</strong><span>'+a.inst+'</span></td><td>'+a.years+'</td><td>'+a.wm.toFixed(1)+'%</td><td>'+a.dir.toFixed(0)+'%</td><td><span class="score"><i class="dot"></i>'+a.score.toFixed(1)+'/100</span></td><td>'+money(current)+'</td><td>'+money(a.m3)+'</td><td>'+money(a.y1)+'</td><td class="'+(up>=0?'up':'down')+'">'+pct(up)+'</td></tr>';
+  }).join("");
+  document.getElementById("bearish").textContent=money(c1*.82);
+  document.getElementById("base").textContent=money(c1);
+  document.getElementById("bullish").textContent=money(c1*1.15);
+  document.getElementById("shock").textContent=money(c1*1.35);
+}
+function analyze(){
+  const q=document.getElementById("assetInput").value.trim().toLowerCase();
+  if(["gold","xau","xauusd","طلا","gold spot"].includes(q)){renderGold();return;}
+  document.getElementById("result").classList.add("hidden");
+  document.getElementById("empty").style.display="block";
+}
+document.getElementById("analyzeBtn").addEventListener("click",analyze);
+document.getElementById("assetInput").addEventListener("keydown",e=>{if(e.key==="Enter")analyze()});
+document.querySelectorAll("[data-q]").forEach(b=>b.addEventListener("click",()=>{document.getElementById("assetInput").value=b.dataset.q;analyze()}));
+renderGold();
+</script>
+</body>
+</html>
