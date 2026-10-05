@@ -230,7 +230,7 @@ async function researchAsset(asset, env) {
     return { status: "configuration_required", message: "OPENAI_API_KEY is not configured." };
   }
 
-  const model = env.OPENAI_MODEL || "gpt-5.5";
+  const model = env.OPENAI_MODEL || "gpt-5.6-sol";
   const prompt = `
 Research the asset "${asset}" as a financial forecast-audit task.
 
