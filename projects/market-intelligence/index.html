@@ -97,7 +97,7 @@ tr:last-child td{border-bottom:0} tbody tr:hover{background:rgba(49,208,170,.035
         <button id="analyzeBtn">Analyze asset</button>
       </div>
       <div class="quick">
-        <button data-q="Gold">Gold demo</button>
+        <button data-q="Gold">Gold</button>
         <button data-q="Bitcoin">Bitcoin</button>
         <button data-q="ASML">ASML</button>
         <button data-q="Copper">Copper</button>
@@ -301,7 +301,7 @@ function renderLive(data){
   }).join(""):'<tr><td colspan="10" style="text-align:center;color:#8ea4ae">Insufficient verified 5-year history for a Top 10 ranking.</td></tr>';
   renderScenarios(analysis?.scenarios);
   renderSources(data.sources||[]);
-  setNotice('<b>Live result:</b> market data connected · AI research '+(data.configuration?.ai_research_connected?"connected":"not configured")+' · cache '+(data.research_cache||"n/a")+'. Historical observations only count when their source URL is present in the actual web-search evidence set.');
+  setNotice('<b>Live result:</b> Twelve Data '+(data.configuration?.market_data_connected?'configured':'not configured')+' · Alpha Vantage '+(data.configuration?.secondary_price_connected?'configured':'not configured')+' · AI research '+(data.configuration?.ai_research_connected?"configured":"not configured")+' · cache '+(data.research_cache||"n/a")+'. Check the source status and warning reasons below.');
 }
 async function analyze(){
   const asset=document.getElementById("assetInput").value.trim();
@@ -313,15 +313,7 @@ async function analyze(){
     const r=await fetch("/api/market-intelligence",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({asset})});
     const data=await r.json();
     if(!r.ok)throw new Error(data.error||"Live analysis failed");
-    const configured=data.configuration?.market_data_connected;
-    if(!configured&&["gold","xau","xauusd","طلا","gold spot"].includes(asset.toLowerCase())){
-      setNotice("<b>Demo fallback:</b> backend exists, but one or more Cloudflare API secrets are not configured yet. Showing the Gold demo dataset.");
-      renderDemo();
-    }else if(!configured){
-      showEmpty("API configuration required","The live backend is ready, but the Cloudflare secrets for market data and AI research must be configured before this asset can be analyzed.");
-    }else{
-      renderLive(data);
-    }
+    renderLive(data);
   }catch(e){
     if(["gold","xau","xauusd","طلا","gold spot"].includes(asset.toLowerCase())){
       setNotice("<b>Demo fallback:</b> live endpoint was unavailable. Showing Gold demo values only.");

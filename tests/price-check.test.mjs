@@ -30,6 +30,15 @@ test('upstream quota/error messages do not expose secrets',async()=>{
     assert.ok(!JSON.stringify(q).includes('secret-key-in-url'));
   }finally{globalThis.fetch=old;}
 });
+test('missing preview secrets retain commodity thresholds and source warning',async()=>{
+  for(const asset of ['Gold','Bitcoin','ASML','Copper']){
+    const r=await onRequestPost({request:new Request('https://preview.test/api/market-intelligence',{method:'POST',body:JSON.stringify({asset,quoteOnly:true})}),env:{}});
+    const d=await r.json();
+    assert.equal(d.market.price_check.status,'warning');
+    assert.equal(d.market.price_check.threshold_pct,['Gold','Copper'].includes(asset)?1.5:1);
+    assert.equal(d.market.price_check.provider_a.timestamp,null);
+  }
+});
 test('four asset paths preserve primary price, timestamps, currency and warning semantics',async()=>{
   const old=globalThis.fetch;
   try{

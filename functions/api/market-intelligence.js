@@ -134,7 +134,7 @@ async function convertToEUR(amount, currency, apiKey, fxCache) {
 }
 
 async function resolveMarket(asset, apiKey) {
-  if (!apiKey) return { status: "configuration_required", message: "TWELVE_DATA_API_KEY is not configured." };
+  if (!apiKey) return { ...knownAsset(asset), asset_type:knownAsset(asset)?.type, provider:'Twelve Data', status: "configuration_required", message: "TWELVE_DATA_API_KEY is not configured." };
 
   const fixed = knownAsset(asset);
   let resolved = fixed;
@@ -186,7 +186,7 @@ async function resolveMarket(asset, apiKey) {
     source_price: price,
     price_eur: priceEUR,
     unit: resolved.unit.replace(/^[A-Z]{3}/,'EUR'),
-    quote_unit: resolved.key === 'gold' ? 'troy oz' : resolved.key === 'bitcoin' ? 'BTC' : resolved.key === 'copper' ? 'lb' : 'share',
+    quote_unit: resolved.key === 'gold' ? 'troy oz' : /crypto/i.test(resolved.type) ? resolved.symbol.split('/')[0] : resolved.key === 'copper' ? 'lb' : 'share',
     instrument: resolved.key === 'gold' ? 'gold-spot' : resolved.key === 'copper' ? 'copper-futures-HG1' : resolved.symbol+'@'+(quote.exchange || resolved.exchange || 'aggregate'),
     basis: /stock|etf|equity/i.test(resolved.type) && quote.is_market_open === false ? 'daily close' : 'spot',
     timezone: quote.exchange_timezone || null,
