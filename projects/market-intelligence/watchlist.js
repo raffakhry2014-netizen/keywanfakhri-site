@@ -1,3 +1,4 @@
+import {translate} from './i18n.js';
 import {renderResearch,renderMethodology} from './research-view.js';
 import {rankForecasters} from './research-engine.js';
 import {renderCoverage} from './coverage-view.js';
@@ -7,7 +8,7 @@ let catalog, evidence, outlook, selected, category='All', activeAsset, chartAsse
 const el=id=>document.getElementById(id);
 function render(){
  const term=el('search').value.trim().toLowerCase();
- const items=catalog.assets.filter(a=>(category==='All'||a.category===category)&&`${a.name} ${a.symbol}`.toLowerCase().includes(term));
+ const items=catalog.assets.filter(a=>(category==='All'||a.category===category)&&`${a.name} ${translate(a.name)} ${a.symbol}`.toLowerCase().includes(term));
  el('assets').replaceChildren();
  for(const a of items){
   const b=document.createElement('button');b.className='asset '+a.category.toLowerCase();b.dataset.id=a.id;b.setAttribute('aria-haspopup','dialog');b.setAttribute('aria-label',`Open ${a.name} research`);
