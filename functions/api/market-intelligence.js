@@ -289,6 +289,7 @@ Definitions:
   };
 
   const r = await fetch("https://api.openai.com/v1/responses", {
+    signal: AbortSignal.timeout(60000),
     method: "POST",
     headers: {
       "authorization": "Bearer " + env.OPENAI_API_KEY,
@@ -532,7 +533,7 @@ export async function onRequestPost({ request, env }) {
     market.price_check = compareQuotes(providerA,providerB,env);
     market.data_warning = market.price_check.data_warning;
     // Quote-only mode lets preview validation avoid expensive AI research.
-    if (body.quoteOnly === true) return json({asset,market,generated_at:new Date().toISOString(),configuration:{market_data_connected:Boolean(env.TWELVE_DATA_API_KEY),secondary_price_connected:Boolean(env.ALPHA_VANTAGE_API_KEY)}});
+    if (body.quoteOnly === true) return json({asset,market,generated_at:new Date().toISOString(),configuration:{market_data_connected:Boolean(env.TWELVE_DATA_API_KEY),secondary_price_connected:Boolean(env.ALPHA_VANTAGE_API_KEY),ai_research_connected:Boolean(env.OPENAI_API_KEY)}});
 
     const cacheKey = market.status === "ok" ? market.key : asset.toLowerCase();
     let research = body.forceResearch ? null : await getCachedResearch(env.DB, cacheKey);

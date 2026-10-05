@@ -97,6 +97,7 @@ tr:last-child td{border-bottom:0} tbody tr:hover{background:rgba(49,208,170,.035
         <button id="analyzeBtn">Analyze asset</button>
       </div>
       <div class="quick">
+        <button id="checkPricesBtn">Check prices</button>
         <button data-q="Gold">Gold</button>
         <button data-q="Bitcoin">Bitcoin</button>
         <button data-q="ASML">ASML</button>
@@ -303,14 +304,15 @@ function renderLive(data){
   renderSources(data.sources||[]);
   setNotice('<b>Live result:</b> Twelve Data '+(data.configuration?.market_data_connected?'configured':'not configured')+' · Alpha Vantage '+(data.configuration?.secondary_price_connected?'configured':'not configured')+' · AI research '+(data.configuration?.ai_research_connected?"configured":"not configured")+' · cache '+(data.research_cache||"n/a")+'. Check the source status and warning reasons below.');
 }
-async function analyze(){
+async function analyze(quoteOnly=false){
   const asset=document.getElementById("assetInput").value.trim();
   if(!asset)return;
   const btn=document.getElementById("analyzeBtn");
+  const pricesBtn=document.getElementById('checkPricesBtn');pricesBtn.disabled=true;
   const old=btn.textContent;btn.disabled=true;btn.textContent="Analyzing…";
   setNotice("<b>Working:</b> resolving the market symbol, fetching the EUR price, checking cached research and running source verification.");
   try{
-    const r=await fetch("/api/market-intelligence",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({asset})});
+    const r=await fetch("/api/market-intelligence",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({asset,quoteOnly})});
     const data=await r.json();
     if(!r.ok)throw new Error(data.error||"Live analysis failed");
     renderLive(data);
@@ -321,9 +323,10 @@ async function analyze(){
     }else{
       showEmpty("Live analysis unavailable",e.message||"Unknown error");
     }
-  }finally{btn.disabled=false;btn.textContent=old}
+  }finally{btn.disabled=false;pricesBtn.disabled=false;btn.textContent=old}
 }
-document.getElementById("analyzeBtn").addEventListener("click",analyze);
+document.getElementById("analyzeBtn").addEventListener("click",()=>analyze());
+document.getElementById('checkPricesBtn').addEventListener('click',()=>analyze(true));
 document.getElementById("assetInput").addEventListener("keydown",e=>{if(e.key==="Enter")analyze()});
 document.querySelectorAll("[data-q]").forEach(b=>b.addEventListener("click",()=>{document.getElementById("assetInput").value=b.dataset.q;analyze()}));
 renderDemo();
