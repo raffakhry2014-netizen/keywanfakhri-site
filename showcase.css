@@ -113,7 +113,7 @@ body[data-page=home] .heritage-header header{min-height:84px}
 @keyframes device-in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){.concept-device{animation:none}}
 
-/* ===== Vorschau: drei Kopfbereich-Varianten (html.hdr-a / hdr-b / hdr-c) ===== */
+/* ===== Kompakter Kopf (Variante A) und kompakter Hero ===== */
 /* Gemeinsam: kompakterer Hero, damit Hero + Tabs auf einen Bildschirm passen */
 @media(min-width:1001px){
  html[class*=hdr-] body[data-page=home] .personal-hero{grid-template-columns:minmax(300px,.85fr) minmax(0,1.5fr);gap:40px;padding:18px 0 10px}
@@ -132,20 +132,25 @@ html[class*=hdr-] body[data-page=home] .heritage-header .brand img{width:236px;l
 html.hdr-a body[data-page=home] .heritage-header{height:80px;min-height:0;background-size:100% 135px;background-position:center top}
 html.hdr-a body[data-page=home] .heritage-header header{min-height:80px;padding-block:8px}
 
-/* B · Minimal: weißer, schmaler Kopf ohne Bild, bleibt beim Scrollen oben */
-html.hdr-b body[data-page=home] .heritage-header{height:auto;min-height:0;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:60}
-html.hdr-b body[data-page=home] .heritage-header header{min-height:64px;padding-block:6px;background:transparent}
-
-/* C · Illustration im Hintergrund des Heros, Kopf schwebt darüber und bleibt oben */
-html.hdr-c body[data-page=home] .heritage-header{height:auto;min-height:0;background:rgba(255,255,255,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);position:sticky;top:0;z-index:60;border-bottom:1px solid rgba(220,229,228,.7)}
-html.hdr-c body[data-page=home] .heritage-header header{min-height:64px;padding-block:6px;background:transparent}
-html.hdr-c body[data-page=home] main{position:relative}
-html.hdr-c body[data-page=home] main::before{content:"";position:absolute;left:50%;transform:translateX(-50%);top:-64px;width:100vw;height:330px;background:url('/heritage-header.png') center top/100% 300px no-repeat;opacity:.32;z-index:-1;pointer-events:none;-webkit-mask-image:linear-gradient(#000 45%,transparent);mask-image:linear-gradient(#000 45%,transparent)}
-html.hdr-c body{overflow-x:hidden}
 
 @media(max-width:700px){
  html.hdr-a body[data-page=home] .heritage-header{height:auto;background-size:auto 150px}
  html[class*=hdr-] body[data-page=home] .heritage-header header{min-height:0}
 }
 html.hdr-a body[data-page=home] .heritage-header{box-shadow:inset 0 0 0 100vmax rgba(255,255,255,.38)}
-html.hdr-c body[data-page=home] main::before{opacity:.2}
+
+/* Kompaktere Karten (Projekte und Gastronomie) */
+.kb-band,#area-panel-gastro .service .card-top{height:72px;padding:14px 18px}
+.kb-band svg,#area-panel-gastro .service .card-top svg{width:30px;height:30px;stroke-width:1.7}
+.kb-label{font-size:11px}
+.kb-body{padding:16px 18px 18px;gap:7px}
+body[data-page=home] #project-grid .kb-card h3{font-size:17px}
+body[data-page=home] #project-grid .kb-card p{font-size:14px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.kb-actions{padding-top:8px;gap:8px}
+.kb-btn{min-height:40px;padding:8px 10px;font-size:13.5px}
+body[data-page=home] #project-grid{gap:16px}
+#area-panel-gastro .service-group .cards{gap:16px}
+#area-panel-gastro .service h3{margin:16px 18px 0;font-size:17px}
+#area-panel-gastro .service p{margin:7px 18px 14px;font-size:14px;line-height:1.55}
+#area-panel-gastro .service .card-end{margin:auto 18px 18px;min-height:40px;padding:8px 10px;font-size:13.5px}
+#area-panel-gastro .service-group{margin-bottom:28px}
