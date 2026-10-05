@@ -39,6 +39,17 @@ test('missing preview secrets retain commodity thresholds and source warning',as
     assert.equal(d.market.price_check.provider_a.timestamp,null);
   }
 });
+test('restriction diagnostics are fixed messages and never echo provider secrets',async()=>{
+  const old=globalThis.fetch;
+  try {
+    for(const [notice,expected] of [['Invalid API key private-secret','invalid'],['Our rate limit is 25 requests per day private-secret','quota reached'],['This is a premium endpoint private-secret','subscription'],['The demo API key private-secret','demo key']]) {
+      globalThis.fetch=async()=>Response.json({Information:notice});
+      const q=await alphaQuote({key:'gold'},{ALPHA_VANTAGE_API_KEY:'test-only-key'});
+      assert.ok(q.message.includes(expected));
+      assert.ok(!q.message.includes('private-secret'));
+    }
+  } finally {globalThis.fetch=old;}
+});
 test('four asset paths preserve primary price, timestamps, currency and warning semantics',async()=>{
   const old=globalThis.fetch;
   try{

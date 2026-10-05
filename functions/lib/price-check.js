@@ -10,7 +10,15 @@ async function avFetch(params, key) {
   catch { throw new Error('Alpha Vantage request failed or timed out.'); }
   let data;
   try { data = await response.json(); } catch { throw new Error('Alpha Vantage returned invalid JSON.'); }
-  if (data.Note || data.Information) throw new Error('Alpha Vantage quota or subscription restriction.');
+  if (data.Note || data.Information || data['Error Message']) {
+    const notice = String(data.Note || data.Information || data['Error Message']);
+    let message = 'Alpha Vantage rejected the request; restriction is unspecified.';
+    if (/invalid.*(api.?key|apikey)|(api.?key|apikey).*invalid/i.test(notice)) message = 'Alpha Vantage API key is invalid.';
+    else if (/demo.*(api.?key|apikey)|(api.?key|apikey).*demo/i.test(notice)) message = 'Alpha Vantage received a demo key instead of a personal key.';
+    else if (/rate limit|call frequency|requests? per|calls? per|quota/i.test(notice)) message = 'Alpha Vantage request quota reached. Wait for the quota to reset.';
+    else if (/premium|subscription|entitlement/i.test(notice)) message = 'Alpha Vantage endpoint requires a different subscription or entitlement.';
+    throw new Error(message);
+  }
   if (!response.ok || data['Error Message']) throw new Error('Alpha Vantage quote unavailable.');
   return data;
 }
