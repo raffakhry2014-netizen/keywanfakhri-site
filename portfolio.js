@@ -10,7 +10,7 @@ function renderPortfolio(){
  if(document.body.dataset.page==='contact'){document.title=p.contactNav+' — KeyOne';document.querySelector('meta[name="description"]').content=p.contactNav+' · Keywan Fakhri · Konstanz';return;}
  if(document.body.dataset.page==='restaurant'){document.title=rc[0]+' — KeyOne';document.getElementById('headline').textContent=rc[0];document.getElementById('subhead').textContent=rc[1];document.querySelector('meta[name=description]').content=rc[1];return;}
  document.getElementById('custom-title').textContent=rc[6];document.getElementById('custom-body').textContent=rc[7];
- const lt=document.querySelector('[data-p=labTitle]');if(lt)lt.textContent=rc[8];const li=document.querySelector('[data-p=labIntro]');if(li)li.textContent=rc[9];document.querySelector('[data-p=projectsIntro]').textContent='';
+ const lt=document.querySelector('[data-p=labTitle]');if(lt)lt.textContent=rc[8];const li=document.querySelector('[data-p=labIntro]');if(li)li.textContent=rc[9];const pi=document.querySelector('[data-p=projectsIntro]');if(pi)pi.textContent='';
  for(const area of ['projects','lab']){
   const host=document.getElementById(area==='projects'?'project-grid':'lab-grid');if(!host)continue;
   host.innerHTML=projectRegistry.filter(x=>area==='projects'?visibleProjects().includes(x):x.area==='lab'||x.status!=='available').map(project=>{

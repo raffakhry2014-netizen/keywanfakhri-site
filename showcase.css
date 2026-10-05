@@ -161,3 +161,10 @@ body[data-page=home] #project-grid,#area-panel-gastro .service-group .cards{grid
 @media(max-width:1000px){body[data-page=home] #project-grid,#area-panel-gastro .service-group .cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){body[data-page=home] #project-grid,#area-panel-gastro .service-group .cards{grid-template-columns:1fr}}
 .kb-btn{white-space:nowrap}
+
+/* Projekte: Titel in einer Zeile mit den Bereichs-Tabs */
+.area-row{display:flex;align-items:center;flex-wrap:wrap;gap:12px 18px}
+body[data-page=home] .area-title{margin:0;font-size:20px;font-weight:600;letter-spacing:-.01em;line-height:1.2;white-space:nowrap}
+body[data-page=home] .projects-section{padding-top:22px}
+.area-bar{margin-top:0}
+@media(max-width:700px){.area-row{align-items:stretch;flex-direction:column}body[data-page=home] .area-title{font-size:18px}}
