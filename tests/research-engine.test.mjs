@@ -24,7 +24,7 @@ test('missing year, duplicate forecast and incompatible price basis cannot recei
  }
 });
 test('invalid actual, missing evidence, future date and wrong currency reject the affected analyst',()=>{
- for(const [field,value] of [['actual',0],['actual',null],['actual_source',null],['source_url',null],['date_source',null],['issued_by','2027-01-01'],['currency','EUR'],['unit','kilogram']]){
+ for(const [field,value] of [['actual',0],['actual',null],['actual_source',null],['source_url',null],['date_source',null],['issued_by','2027-01-01'],['issued_by','2021-12-30'],['currency','EUR'],['unit','kilogram']]){
   const d=clone();d.records.find(r=>r.forecaster_id==='rossnorman'&&r.asset_id==='gold'&&r.target_year===2021)[field]=value;assert.ok(!rankForecasters(d,'gold',now).ranked.some(r=>r.id==='rossnorman'));
  }
 });
