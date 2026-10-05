@@ -89,3 +89,15 @@ body[data-page=home] #project-grid .kb-card p{margin:0;font-size:14.5px;line-hei
 #area-panel-gastro .service:hover .card-end{border-color:var(--accent);color:var(--accent)}
 #area-panel-gastro .service-group .inline-link{border-radius:10px}
 @media(max-width:700px){body[data-page=home] #project-grid .kb-card{border-inline-end:1px solid var(--line)}}
+
+/* Hero: kompakter Kopfbereich, echte Demo-Bilder, Kontaktlinks */
+body[data-page=home] .heritage-header{height:124px;background-size:100% 200px;background-position:center top}
+body[data-page=home] .heritage-header header{min-height:84px}
+.concept-art.concept-shot{animation:none;object-position:right center}
+.hero-social{display:flex;flex-wrap:wrap;gap:10px 22px;margin:14px 0 0;font-size:14px}
+.hero-social a{display:inline-flex;align-items:center;gap:8px;color:var(--ink);text-decoration:none;min-height:32px}
+.hero-social a:hover{color:var(--accent)}
+.hero-social svg{width:18px;height:18px;fill:var(--accent)}
+.hero-social svg.stroke{fill:none;stroke:var(--accent);stroke-width:1.8;stroke-linejoin:round}
+@media(max-width:1000px){body[data-page=home] .heritage-header{height:auto;min-height:112px;background-size:max(100%,520px) 200px;background-position:center top}}
+@media(max-width:700px){body[data-page=home] .heritage-header{height:auto;min-height:0;background-size:auto 170px;background-position:22% top}body[data-page=home] .heritage-header header{min-height:0;padding-bottom:6px}.hero-social{margin-top:10px}}

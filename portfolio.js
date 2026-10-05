@@ -4,7 +4,6 @@ function renderPortfolio(){
  document.querySelectorAll('[data-about-link],.site-nav a[href="/#about"]').forEach(a=>{a.dataset.aboutLink='';a.href='/about/?lang='+lang});
  document.querySelectorAll('[data-about-link],.site-nav a[href="/#about"]').forEach(a=>a.href="/about/?lang="+lang);
  document.querySelectorAll('[data-p]').forEach(el=>el.textContent=p[el.dataset.p]||'');
- document.querySelectorAll('[data-p=heroTitle],[data-p=heroText]').forEach(el=>{el.setAttribute('dir','ltr');el.setAttribute('lang','en');});
  document.title='KeyOne — Keywan Fakhri | '+p.projectsNav;
  document.querySelector('meta[name="description"]').content=p.heroText;
  document.getElementById('footer-note').textContent=p.location;
