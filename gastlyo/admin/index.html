@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gastlyo Admin</title>
+<style>
+    :root{
+      --green:#1f4d3b;
+      --cream:#f7f4ee;
+      --card:#ffffff;
+      --text:#1d2a24;
+      --muted:#6f7b75;
+      --line:#e4e8e5;
+      --danger:#b13a3a;
+      --ok:#18864b;
+      --yellow:#e9b949;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:Arial,Helvetica,sans-serif;
+      background:var(--cream);
+      color:var(--text);
+    }
+
+    header{
+      background:var(--green);
+      color:white;
+      padding:18px 22px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+
+    header h1{margin:0;font-size:22px}
+    header .small{opacity:.8;font-size:13px}
+
+    .wrap{
+      max-width:1180px;
+      margin:28px auto;
+      padding:0 16px;
+    }
+
+    .panel{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:22px;
+      box-shadow:0 8px 28px rgba(0,0,0,.05);
+    }
+
+    .login{
+      max-width:430px;
+      margin:60px auto;
+    }
+
+    label{
+      display:block;
+      font-size:13px;
+      font-weight:700;
+      margin:14px 0 6px;
+    }
+
+    input,textarea,select{
+      width:100%;
+      padding:11px 12px;
+      border:1px solid #ccd5d0;
+      border-radius:10px;
+      background:white;
+      font-size:14px;
+    }
+
+    textarea{min-height:82px;resize:vertical}
+
+    button{
+      border:none;
+      border-radius:10px;
+      padding:11px 14px;
+      cursor:pointer;
+      font-weight:700;
+      font-size:14px;
+    }
+
+    button:disabled{
+      opacity:.6;
+      cursor:not-allowed;
+    }
+
+    .primary{background:var(--green);color:white}
+    .secondary{background:#edf2ef;color:var(--green)}
+    .danger{background:#f9e9e9;color:var(--danger)}
+    .yellow{background:var(--yellow);color:#2e2a1d}
+    .full{width:100%;margin-top:16px}
+
+    .hidden{display:none!important}
+
+    .message{
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius:10px;
+      font-size:13px;
+      line-height:1.45;
+      display:none;
+    }
+
+    .message.error{
+      display:block;
+      color:var(--danger);
+      background:#fbecec;
+      border:1px solid #f2caca;
+    }
+
+    .message.success{
+      display:block;
+      color:var(--ok);
+      background:#eaf7ef;
+      border:1px solid #c7ead4;
+    }
+
+    .message.info{
+      display:block;
+      color:#35534a;
+      background:#eef5f2;
+      border:1px solid #d7e6df;
+    }
+
+    .toolbar{
+      display:flex;
+      gap:10px;
+      justify-content:space-between;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-bottom:18px;
+    }
+
+    .toolbar .left{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .count{
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(290px,1fr));
+      gap:14px;
+    }
+
+    .item{
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:#fff;
+      padding:15px;
+    }
+
+    .item-top{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+      margin-bottom:10px;
+    }
+
+    .item-name{font-weight:800}
+    .price{font-weight:800;color:var(--green)}
+
+    .badge{
+      display:inline-block;
+      font-size:11px;
+      padding:5px 8px;
+      border-radius:999px;
+      margin-top:6px;
+      background:#eef3f0;
+      color:#4e5d55;
+    }
+
+    .available{background:#e5f5eb;color:#14743f}
+    .soldout{background:#f7e7e7;color:#9f2f2f}
+
+    .actions{
+      display:flex;
+      gap:8px;
+      margin-top:12px;
+    }
+
+    .actions button{flex:1}
+
+    .thumb{
+      width:100%;
+      aspect-ratio:4/3;
+      object-fit:cover;
+      border-radius:12px;
+      background:#eef2ef;
+      margin-bottom:12px;
+      display:block;
+    }
+
+    .delete-link{
+      margin-top:10px;
+      width:100%;
+    }
+
+    .modal{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.42);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:50;
+    }
+
+    .modal-card{
+      width:min(760px,100%);
+      max-height:92vh;
+      overflow:auto;
+      background:#fff;
+      border-radius:18px;
+      padding:20px;
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    .checks{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:8px;
+      margin-top:12px;
+    }
+
+    .check{
+      display:flex;
+      gap:7px;
+      align-items:center;
+      border:1px solid var(--line);
+      padding:9px;
+      border-radius:10px;
+      font-size:13px;
+    }
+
+    .check input{width:auto}
+
+    .modal-actions{
+      display:flex;
+      gap:10px;
+      justify-content:flex-end;
+      margin-top:18px;
+    }
+
+
+    .admin-tabs{
+      display:flex;
+      gap:8px;
+      margin-bottom:16px;
+      overflow-x:auto;
+    }
+
+    .tab-btn{
+      background:#edf2ef;
+      color:var(--green);
+      white-space:nowrap;
+    }
+
+    .tab-btn.active{
+      background:var(--green);
+      color:#fff;
+    }
+
+    .dashboard-grid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:12px;
+      margin-bottom:18px;
+    }
+
+    .metric{
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:#fff;
+      padding:16px;
+    }
+
+    .metric-label{
+      color:var(--muted);
+      font-size:12px;
+      font-weight:700;
+      margin-bottom:8px;
+    }
+
+    .metric-value{
+      color:var(--green);
+      font-size:28px;
+      font-weight:900;
+      letter-spacing:-.03em;
+    }
+
+    .metric-sub{
+      color:var(--muted);
+      font-size:11px;
+      margin-top:4px;
+    }
+
+    .analytics-layout{
+      display:grid;
+      grid-template-columns:1.25fr .75fr;
+      gap:14px;
+      margin-top:14px;
+    }
+
+    .analytics-card{
+      border:1px solid var(--line);
+      border-radius:16px;
+      background:#fff;
+      padding:16px;
+    }
+
+    .analytics-card h3{
+      margin:0 0 14px;
+      font-size:16px;
+    }
+
+    .bar-row{
+      display:grid;
+      grid-template-columns:minmax(100px,1.2fr) 3fr auto;
+      gap:10px;
+      align-items:center;
+      margin:10px 0;
+      font-size:13px;
+    }
+
+    .bar-label{
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+
+    .bar-track{
+      height:10px;
+      background:#edf2ef;
+      border-radius:999px;
+      overflow:hidden;
+    }
+
+    .bar-fill{
+      height:100%;
+      min-width:2px;
+      border-radius:999px;
+      background:var(--green);
+    }
+
+    .bar-value{
+      color:var(--muted);
+      font-variant-numeric:tabular-nums;
+    }
+
+    .daily-chart{
+      height:190px;
+      display:flex;
+      gap:8px;
+      align-items:flex-end;
+      padding-top:8px;
+    }
+
+    .day-col{
+      flex:1;
+      min-width:0;
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-end;
+      align-items:center;
+      gap:6px;
+    }
+
+    .day-bar-wrap{
+      width:min(34px,80%);
+      height:145px;
+      display:flex;
+      align-items:flex-end;
+      justify-content:center;
+      background:#f4f6f4;
+      border-radius:10px;
+      overflow:hidden;
+    }
+
+    .day-bar{
+      width:100%;
+      background:var(--green);
+      min-height:2px;
+      border-radius:8px 8px 0 0;
+    }
+
+    .day-value{
+      font-size:11px;
+      font-weight:800;
+      color:var(--green);
+    }
+
+    .day-label{
+      font-size:10px;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+
+    .empty-analytics{
+      color:var(--muted);
+      font-size:13px;
+      padding:14px 0;
+    }
+
+    @media(max-width:900px){
+      .dashboard-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .analytics-layout{grid-template-columns:1fr}
+    }
+
+    @media(max-width:650px){
+      .row{grid-template-columns:1fr}
+      .checks{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div>
+    <h1>Gastlyo Admin</h1>
+    <div class="small">Kiwan Fakhri Restaurant</div>
+  </div>
+
+  <button id="logoutBtn" class="secondary hidden">
+    Abmelden
+  </button>
+</header>
+
+
+<div class="wrap">
+
+  <section id="loginView" class="panel login">
+
+    <h2>Admin Login</h2>
+
+    <p style="color:#6f7b75">
+      Melde dich mit deinem Restaurant-Admin-Konto an.
+    </p>
+
+    <label>E-Mail</label>
+    <input
+      id="email"
+      type="email"
+      autocomplete="email"
+    />
+
+    <label>Passwort</label>
+    <input
+      id="password"
+      type="password"
+      autocomplete="current-password"
+    />
+
+    <button
+      id="loginBtn"
+      class="primary full"
+    >
+      Anmelden
+    </button>
+
+    <div
+      id="loginMsg"
+      class="message"
+    ></div>
+
+  </section>
+
+
+  <section
+    id="adminView"
+    class="hidden"
+  >
+
+    <div class="admin-tabs">
+      <button id="dashboardTabBtn" class="tab-btn active">Statistiken</button>
+      <button id="menuTabBtn" class="tab-btn">Menüverwaltung</button>
+    </div>
+
+    <div id="dashboardPanel" class="panel">
+      <div class="toolbar">
+        <div>
+          <h2 style="margin:0 0 4px">Dashboard</h2>
+          <div class="count">Echte Demo-Daten von Gastlyo</div>
+        </div>
+        <button id="analyticsRefreshBtn" class="secondary">Aktualisieren</button>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="metric">
+          <div class="metric-label">Aufrufe heute</div>
+          <div id="metricToday" class="metric-value">0</div>
+          <div class="metric-sub">Menüaufrufe</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Letzte 7 Tage</div>
+          <div id="metric7d" class="metric-value">0</div>
+          <div class="metric-sub">Menüaufrufe</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">KIWA Chats · 30 Tage</div>
+          <div id="metricKiwa" class="metric-value">0</div>
+          <div class="metric-sub">erfolgreiche KIWA-Anfragen</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Sessions · 30 Tage</div>
+          <div id="metricSessions" class="metric-value">0</div>
+          <div class="metric-sub">anonyme Besuchssitzungen</div>
+        </div>
+      </div>
+
+      <div class="analytics-layout">
+        <div class="analytics-card">
+          <h3>Menüaufrufe · letzte 7 Tage</h3>
+          <div id="dailyChart" class="daily-chart"></div>
+        </div>
+
+        <div class="analytics-card">
+          <h3>Sprachen · 30 Tage</h3>
+          <div id="languageBars"></div>
+        </div>
+      </div>
+
+      <div class="analytics-layout">
+        <div class="analytics-card">
+          <h3>Top 5 Gerichte · Klicks</h3>
+          <div id="topItems"></div>
+        </div>
+
+        <div class="analytics-card">
+          <h3>Interaktionen · 30 Tage</h3>
+          <div id="interactionBars"></div>
+        </div>
+      </div>
+
+      <div id="analyticsMsg" class="message"></div>
+    </div>
+
+    <div id="menuPanel" class="panel hidden">
+
+      <div class="toolbar">
+
+        <div class="left">
+
+          <button
+            id="refreshBtn"
+            class="secondary"
+          >
+            Aktualisieren
+          </button>
+
+          <button
+            id="addItemBtn"
+            class="primary"
+          >
+            + Neues Gericht
+          </button>
+
+          <span
+            id="itemCount"
+            class="count"
+          ></span>
+
+        </div>
+
+        <div class="count">
+          Gericht hinzufügen • Bearbeiten • Löschen • Verfügbarkeit
+        </div>
+
+      </div>
+
+      <div
+        id="items"
+        class="grid"
+      ></div>
+
+      <div
+        id="adminMsg"
+        class="message"
+      ></div>
+
+    </div>
+
+  </section>
+
+</div>
+
+
+<div
+  id="editModal"
+  class="modal hidden"
+>
+
+  <div class="modal-card">
+
+    <h2 id="editModalTitle">Menüeintrag bearbeiten</h2>
+
+    <input
+      id="editId"
+      type="hidden"
+    />
+
+    <div class="row">
+
+      <div>
+        <label>Name</label>
+        <input id="editName" />
+      </div>
+
+      <div>
+        <label>Preis (€)</label>
+        <input
+          id="editPrice"
+          type="number"
+          min="0"
+          step="0.01"
+        />
+      </div>
+
+    </div>
+
+    <label>Beschreibung</label>
+    <textarea id="editDescription"></textarea>
+
+    <label>Bild (URL oder relativer Pfad)</label>
+    <input
+      id="editImageUrl"
+      placeholder="z. B. images/menu-41.webp oder https://..."
+    />
+    <div id="imageHint" style="font-size:12px;color:#6f7b75;margin-top:6px">
+      Für vorhandene GitHub-Bilder z. B. images/menu-41.webp eintragen.
+    </div>
+
+    <div class="row">
+
+      <div>
+        <label>Kategorie</label>
+        <input id="editCategory" />
+      </div>
+
+      <div>
+        <label>Portion</label>
+        <input id="editServing" />
+      </div>
+
+    </div>
+
+    <div class="row">
+
+      <div>
+        <label>Kalorien</label>
+        <input
+          id="editCalories"
+          type="number"
+          min="0"
+        />
+      </div>
+
+      <div>
+        <label>Protein (g)</label>
+        <input
+          id="editProtein"
+          type="number"
+          min="0"
+        />
+      </div>
+
+    </div>
+
+    <div class="row">
+
+      <div>
+        <label>Fett (g)</label>
+        <input
+          id="editFat"
+          type="number"
+          min="0"
+        />
+      </div>
+
+      <div>
+        <label>Kohlenhydrate (g)</label>
+        <input
+          id="editCarbs"
+          type="number"
+          min="0"
+        />
+      </div>
+
+    </div>
+
+    <label>Zutaten (durch Komma trennen)</label>
+    <textarea id="editIngredients"></textarea>
+
+    <label>Allergene (durch Komma trennen)</label>
+    <textarea id="editAllergens"></textarea>
+
+    <div class="checks">
+
+      <label class="check">
+        <input
+          id="editVegetarian"
+          type="checkbox"
+        />
+        Vegetarisch
+      </label>
+
+      <label class="check">
+        <input
+          id="editVegan"
+          type="checkbox"
+        />
+        Vegan
+      </label>
+
+      <label class="check">
+        <input
+          id="editGlutenFree"
+          type="checkbox"
+        />
+        Glutenfrei
+      </label>
+
+      <label class="check">
+        <input
+          id="editBestseller"
+          type="checkbox"
+        />
+        Bestseller
+      </label>
+
+      <label class="check">
+        <input
+          id="editAvailable"
+          type="checkbox"
+        />
+        Verfügbar
+      </label>
+
+    </div>
+
+    <div class="modal-actions">
+
+      <button
+        id="cancelEdit"
+        class="secondary"
+      >
+        Abbrechen
+      </button>
+
+      <button
+        id="saveEdit"
+        class="primary"
+      >
+        Speichern
+      </button>
+
+    </div>
+
+    <div
+      id="editMsg"
+      class="message"
+    ></div>
+
+  </div>
+
+</div>
+
+
+<script>
+const RESTAURANT_SLUG="kiwan-fakhri";
+let cfg=null, accessToken=null, userId=null, restaurantId=null, currentItems=[], analyticsEvents=[];
+const $=id=>document.getElementById(id);
+
+function showMessage(el,text,type="error"){el.textContent=text||"";el.className="message "+type}
+function clearMessage(el){el.textContent="";el.className="message"}
+function esc(v=""){return String(v).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;")}
+
+async function jsonFetch(url,options={}){
+  const r=await fetch(url,options);
+  let d=null;
+  try{d=await r.json()}catch{}
+  if(!r.ok){
+    throw new Error(d?.msg||d?.message||d?.error_description||d?.error||`HTTP ${r.status}`);
+  }
+  return d;
+}
+
+function headers(auth=true){
+  const h={"apikey":cfg.supabaseAnonKey,"Content-Type":"application/json"};
+  if(auth&&accessToken) h.Authorization=`Bearer ${accessToken}`;
+  return h;
+}
+
+async function init(){
+  try{
+    showMessage($("loginMsg"),"Verbindung wird hergestellt...","info");
+    cfg=await jsonFetch("/gastlyo/api/config",{cache:"no-store"});
+    if(!cfg.supabaseUrl||!cfg.supabaseAnonKey) throw new Error("SUPABASE_URL oder SUPABASE_ANON_KEY fehlt.");
+
+    const savedToken=sessionStorage.getItem("gastlyo_access_token");
+    const savedUser=sessionStorage.getItem("gastlyo_user_id");
+
+    if(savedToken&&savedUser){
+      accessToken=savedToken;
+      userId=savedUser;
+      try{await enterAdmin();return}catch(e){
+        sessionStorage.removeItem("gastlyo_access_token");
+        sessionStorage.removeItem("gastlyo_user_id");
+        accessToken=null; userId=null;
+      }
+    }
+
+    $("loginBtn").disabled=false;
+    showMessage($("loginMsg"),"Verbindung bereit. Bitte anmelden.","success");
+  }catch(e){
+    console.error(e);
+    $("loginBtn").disabled=true;
+    showMessage($("loginMsg"),"Verbindungsfehler: "+(e.message||"Unbekannter Fehler"),"error");
+  }
+}
+
+async function login(){
+  if(!cfg){showMessage($("loginMsg"),"Verbindung ist noch nicht bereit.","error");return}
+  const email=$("email").value.trim(), password=$("password").value;
+  if(!email||!password){showMessage($("loginMsg"),"Bitte E-Mail und Passwort eingeben.","error");return}
+
+  $("loginBtn").disabled=true;
+  $("loginBtn").textContent="Anmeldung läuft...";
+  showMessage($("loginMsg"),"Anmeldung läuft...","info");
+
+  try{
+    const auth=await jsonFetch(`${cfg.supabaseUrl}/auth/v1/token?grant_type=password`,{
+      method:"POST",
+      headers:{"apikey":cfg.supabaseAnonKey,"Content-Type":"application/json"},
+      body:JSON.stringify({email,password})
+    });
+
+    accessToken=auth.access_token;
+    userId=auth.user?.id;
+    if(!accessToken||!userId) throw new Error("Login-Daten wurden nicht vollständig zurückgegeben.");
+
+    sessionStorage.setItem("gastlyo_access_token",accessToken);
+    sessionStorage.setItem("gastlyo_user_id",userId);
+
+    showMessage($("loginMsg"),"Login erfolgreich. Admin-Zugriff wird geprüft...","success");
+    await enterAdmin();
+  }catch(e){
+    let m=e.message||"Login fehlgeschlagen.";
+    if(m.toLowerCase().includes("invalid login credentials")) m="E-Mail oder Passwort ist falsch.";
+    showMessage($("loginMsg"),"Login fehlgeschlagen: "+m,"error");
+  }finally{
+    $("loginBtn").disabled=false;
+    $("loginBtn").textContent="Anmelden";
+  }
+}
+
+async function enterAdmin(){
+  const restaurants=await jsonFetch(
+    `${cfg.supabaseUrl}/rest/v1/restaurants?slug=eq.${encodeURIComponent(RESTAURANT_SLUG)}&select=id,name`,
+    {headers:headers(true)}
+  );
+  const restaurant=restaurants?.[0];
+  if(!restaurant) throw new Error("Restaurant wurde nicht gefunden.");
+
+  const memberships=await jsonFetch(
+    `${cfg.supabaseUrl}/rest/v1/restaurant_users?restaurant_id=eq.${restaurant.id}&user_id=eq.${encodeURIComponent(userId)}&select=role`,
+    {headers:headers(true)}
+  );
+  if(!memberships?.length) throw new Error("Dieses Konto ist nicht als Restaurant-Admin freigeschaltet.");
+
+  restaurantId=restaurant.id;
+  $("loginView").classList.add("hidden");
+  $("adminView").classList.remove("hidden");
+  $("logoutBtn").classList.remove("hidden");
+  await Promise.all([loadItems(), loadAnalytics()]);
+  showDashboard();
+}
+
+
+function startOfLocalDay(d=new Date()){
+  return new Date(d.getFullYear(),d.getMonth(),d.getDate());
+}
+
+function isoDateKey(d){
+  const y=d.getFullYear();
+  const m=String(d.getMonth()+1).padStart(2,"0");
+  const day=String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
+}
+
+function languageName(code){
+  return ({
+    de:"Deutsch",en:"English",fr:"Français",es:"Español",
+    it:"Italiano",tr:"Türkçe",ar:"العربية",fa:"فارسی"
+  })[code] || code || "Unbekannt";
+}
+
+function showDashboard(){
+  $("dashboardPanel").classList.remove("hidden");
+  $("menuPanel").classList.add("hidden");
+  $("dashboardTabBtn").classList.add("active");
+  $("menuTabBtn").classList.remove("active");
+}
+
+function showMenuManagement(){
+  $("dashboardPanel").classList.add("hidden");
+  $("menuPanel").classList.remove("hidden");
+  $("dashboardTabBtn").classList.remove("active");
+  $("menuTabBtn").classList.add("active");
+}
+
+async function loadAnalytics(){
+  if(!restaurantId)return;
+
+  clearMessage($("analyticsMsg"));
+
+  try{
+    const from=new Date(Date.now()-30*24*60*60*1000).toISOString();
+    analyticsEvents=await jsonFetch(
+      `${cfg.supabaseUrl}/rest/v1/analytics_events?restaurant_id=eq.${restaurantId}&created_at=gte.${encodeURIComponent(from)}&select=id,event_type,menu_item_id,menu_item_name,language,session_id,created_at&order=created_at.asc&limit=5000`,
+      {headers:headers(true)}
+    )||[];
+
+    renderAnalytics();
+  }catch(e){
+    console.error(e);
+    analyticsEvents=[];
+    renderAnalytics();
+    showMessage(
+      $("analyticsMsg"),
+      "Statistiken konnten nicht geladen werden. Falls du das Analytics-SQL noch nicht ausgeführt hast, führe die Datei 1-analytics-setup.sql einmal in Supabase aus. Fehler: "+e.message,
+      "error"
+    );
+  }
+}
+
+function renderBars(el, entries, emptyText="Noch keine Daten"){
+  if(!entries.length){
+    el.innerHTML=`<div class="empty-analytics">${emptyText}</div>`;
+    return;
+  }
+
+  const max=Math.max(...entries.map(x=>x.value),1);
+
+  el.innerHTML=entries.map(x=>`
+    <div class="bar-row">
+      <div class="bar-label" title="${esc(x.label)}">${esc(x.label)}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.max(2,(x.value/max)*100)}%"></div></div>
+      <div class="bar-value">${x.value}</div>
+    </div>
+  `).join("");
+}
+
+function renderAnalytics(){
+  const now=new Date();
+  const todayStart=startOfLocalDay(now);
+  const sevenStart=new Date(todayStart.getTime()-6*24*60*60*1000);
+
+  const menuViews=analyticsEvents.filter(e=>e.event_type==="menu_view");
+  const todayViews=menuViews.filter(e=>new Date(e.created_at)>=todayStart).length;
+  const sevenViews=menuViews.filter(e=>new Date(e.created_at)>=sevenStart).length;
+  const kiwa=analyticsEvents.filter(e=>e.event_type==="kiwa_chat").length;
+
+  const sessions=new Set(
+    analyticsEvents
+      .map(e=>e.session_id)
+      .filter(Boolean)
+  ).size;
+
+  $("metricToday").textContent=todayViews;
+  $("metric7d").textContent=sevenViews;
+  $("metricKiwa").textContent=kiwa;
+  $("metricSessions").textContent=sessions;
+
+  // Daily views
+  const days=[];
+  for(let i=6;i>=0;i--){
+    const d=new Date(todayStart.getTime()-i*24*60*60*1000);
+    days.push({date:d,key:isoDateKey(d),value:0});
+  }
+
+  menuViews.forEach(e=>{
+    const d=new Date(e.created_at);
+    const key=isoDateKey(d);
+    const found=days.find(x=>x.key===key);
+    if(found) found.value++;
+  });
+
+  const maxDay=Math.max(...days.map(x=>x.value),1);
+  $("dailyChart").innerHTML=days.map(x=>{
+    const pct=Math.max(2,(x.value/maxDay)*100);
+    const label=x.date.toLocaleDateString("de-DE",{weekday:"short"});
+    return `
+      <div class="day-col">
+        <div class="day-value">${x.value}</div>
+        <div class="day-bar-wrap">
+          <div class="day-bar" style="height:${pct}%"></div>
+        </div>
+        <div class="day-label">${esc(label)}</div>
+      </div>
+    `;
+  }).join("");
+
+  // Top items
+  const itemCounts=new Map();
+  analyticsEvents
+    .filter(e=>e.event_type==="item_click")
+    .forEach(e=>{
+      const key=e.menu_item_name || `Gericht #${e.menu_item_id || "?"}`;
+      itemCounts.set(key,(itemCounts.get(key)||0)+1);
+    });
+
+  const topItems=[...itemCounts.entries()]
+    .map(([label,value])=>({label,value}))
+    .sort((a,b)=>b.value-a.value)
+    .slice(0,5);
+
+  renderBars($("topItems"),topItems,"Noch keine Gerichtsklicks.");
+
+  // Languages: prefer menu_view + language_change + kiwa_chat
+  const languageCounts=new Map();
+  analyticsEvents
+    .filter(e=>e.language && ["menu_view","language_change","kiwa_chat"].includes(e.event_type))
+    .forEach(e=>languageCounts.set(e.language,(languageCounts.get(e.language)||0)+1));
+
+  const languages=[...languageCounts.entries()]
+    .map(([code,value])=>({label:languageName(code),value}))
+    .sort((a,b)=>b.value-a.value);
+
+  renderBars($("languageBars"),languages,"Noch keine Sprachdaten.");
+
+  const interactionEntries=[
+    {label:"Gerichtsklicks",value:analyticsEvents.filter(e=>e.event_type==="item_click").length},
+    {label:"KIWA Chats",value:kiwa},
+    {label:"Sprachwechsel",value:analyticsEvents.filter(e=>e.event_type==="language_change").length},
+    {label:"Menüaufrufe",value:menuViews.length}
+  ];
+
+  renderBars($("interactionBars"),interactionEntries);
+}
+
+async function loadItems(){
+  try{
+    clearMessage($("adminMsg"));
+    currentItems=await jsonFetch(
+      `${cfg.supabaseUrl}/rest/v1/menu_items?restaurant_id=eq.${restaurantId}&select=*&order=sort_order.asc,external_id.asc`,
+      {headers:headers(true)}
+    )||[];
+    $("itemCount").textContent=`${currentItems.length} Menüeinträge`;
+    renderItems();
+  }catch(e){
+    showMessage($("adminMsg"),"Menü konnte nicht geladen werden: "+e.message,"error");
+  }
+}
+
+function renderItems(){
+  $("items").innerHTML=currentItems.map(item=>{
+    let img=item.image_url || (item.external_id ? `../images/menu-${String(item.external_id).padStart(2,"0")}.webp` : "");
+    if(img && !/^https?:\/\//i.test(img) && !img.startsWith("../") && !img.startsWith("/")){
+      img="../"+img.replace(/^\.\//,"");
+    }
+    return `
+    <article class="item">
+      ${img ? `<img class="thumb" src="${esc(img)}" alt="${esc(item.name)}" onerror="this.style.display='none'">` : ""}
+      <div class="item-top">
+        <div>
+          <div class="item-name">${esc(item.name)}</div>
+          <span class="badge">${esc(item.category)}</span>
+          <span class="badge ${item.available?"available":"soldout"}">${item.available?"Verfügbar":"Ausverkauft"}</span>
+        </div>
+        <div class="price">€${Number(item.price).toFixed(2)}</div>
+      </div>
+      <div style="font-size:13px;color:#6f7b75;line-height:1.5">${esc(item.description||"")}</div>
+      <div class="actions">
+        <button class="secondary" data-edit="${item.id}">Bearbeiten</button>
+        <button class="${item.available?"danger":"yellow"}" data-toggle="${item.id}">${item.available?"Ausverkauft":"Verfügbar"}</button>
+      </div>
+      <button class="danger delete-link" data-delete="${item.id}">Löschen</button>
+    </article>
+  `}).join("");
+
+  document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>openEdit(Number(b.dataset.edit)));
+  document.querySelectorAll("[data-toggle]").forEach(b=>b.onclick=()=>toggleAvailability(Number(b.dataset.toggle)));
+  document.querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>deleteItem(Number(b.dataset.delete)));
+}
+
+async function insertItem(payload){
+  const r=await fetch(`${cfg.supabaseUrl}/rest/v1/menu_items`,{
+    method:"POST",
+    headers:{...headers(true),"Prefer":"return=minimal"},
+    body:JSON.stringify(payload)
+  });
+  if(!r.ok){
+    let d=null; try{d=await r.json()}catch{}
+    throw new Error(d?.message||d?.error||`HTTP ${r.status}`);
+  }
+}
+
+async function deleteItem(id){
+  const item=currentItems.find(x=>x.id===id);
+  if(!item)return;
+
+  const ok=confirm(`"${item.name}" wirklich löschen?\n\nDiese Aktion kann nicht rückgängig gemacht werden.`);
+  if(!ok)return;
+
+  try{
+    const r=await fetch(`${cfg.supabaseUrl}/rest/v1/menu_items?id=eq.${id}&restaurant_id=eq.${restaurantId}`,{
+      method:"DELETE",
+      headers:{...headers(true),"Prefer":"return=minimal"}
+    });
+    if(!r.ok){
+      let d=null; try{d=await r.json()}catch{}
+      throw new Error(d?.message||d?.error||`HTTP ${r.status}`);
+    }
+    showMessage($("adminMsg"),`"${item.name}" wurde gelöscht.`,"success");
+    await loadItems();
+  }catch(e){
+    showMessage($("adminMsg"),"Löschen fehlgeschlagen: "+e.message,"error");
+  }
+}
+
+async function patchItem(id,payload){
+  const r=await fetch(`${cfg.supabaseUrl}/rest/v1/menu_items?id=eq.${id}&restaurant_id=eq.${restaurantId}`,{
+    method:"PATCH",
+    headers:{...headers(true),"Prefer":"return=minimal"},
+    body:JSON.stringify(payload)
+  });
+  if(!r.ok){
+    let d=null; try{d=await r.json()}catch{}
+    throw new Error(d?.message||d?.error||`HTTP ${r.status}`);
+  }
+}
+
+async function toggleAvailability(id){
+  const item=currentItems.find(x=>x.id===id);
+  if(!item)return;
+  try{await patchItem(id,{available:!item.available});await loadItems()}
+  catch(e){showMessage($("adminMsg"),"Änderung fehlgeschlagen: "+e.message,"error")}
+}
+
+function resetEditor(){
+  $("editId").value="";
+  $("editName").value="";
+  $("editPrice").value="";
+  $("editDescription").value="";
+  $("editImageUrl").value="";
+  $("editCategory").value="";
+  $("editServing").value="";
+  $("editCalories").value="";
+  $("editProtein").value="";
+  $("editFat").value="";
+  $("editCarbs").value="";
+  $("editIngredients").value="";
+  $("editAllergens").value="";
+  $("editVegetarian").checked=false;
+  $("editVegan").checked=false;
+  $("editGlutenFree").checked=false;
+  $("editBestseller").checked=false;
+  $("editAvailable").checked=true;
+  clearMessage($("editMsg"));
+}
+
+function openAdd(){
+  resetEditor();
+  $("editModalTitle").textContent="Neues Gericht hinzufügen";
+  $("saveEdit").textContent="Gericht hinzufügen";
+  $("editModal").classList.remove("hidden");
+}
+
+function openEdit(id){
+  const i=currentItems.find(x=>x.id===id); if(!i)return;
+  resetEditor();
+  $("editModalTitle").textContent="Menüeintrag bearbeiten";
+  $("saveEdit").textContent="Speichern";
+  $("editId").value=i.id;
+  $("editName").value=i.name||"";
+  $("editPrice").value=i.price??"";
+  $("editDescription").value=i.description||"";
+  $("editImageUrl").value=i.image_url||"";
+  $("editCategory").value=i.category||"";
+  $("editServing").value=i.serving_size||"";
+  $("editCalories").value=i.calories??"";
+  $("editProtein").value=i.protein??"";
+  $("editFat").value=i.fat??"";
+  $("editCarbs").value=i.carbs??"";
+  $("editIngredients").value=Array.isArray(i.ingredients)?i.ingredients.join(", "):"";
+  $("editAllergens").value=Array.isArray(i.allergens)?i.allergens.join(", "):"";
+  $("editVegetarian").checked=!!i.vegetarian;
+  $("editVegan").checked=!!i.vegan;
+  $("editGlutenFree").checked=!!i.gluten_free;
+  $("editBestseller").checked=!!i.bestseller;
+  $("editAvailable").checked=!!i.available;
+  $("editModal").classList.remove("hidden");
+}
+
+const csv=v=>v.split(",").map(x=>x.trim()).filter(Boolean);
+
+async function saveEdit(){
+  const rawId=$("editId").value;
+  const isNew=!rawId;
+  const id=isNew?null:Number(rawId);
+
+  const payload={
+    name:$("editName").value.trim(),
+    price:Number($("editPrice").value),
+    description:$("editDescription").value.trim(),
+    image_url:$("editImageUrl").value.trim()||null,
+    category:$("editCategory").value.trim(),
+    serving_size:$("editServing").value.trim()||null,
+    calories:$("editCalories").value===""?null:Number($("editCalories").value),
+    protein:$("editProtein").value===""?null:Number($("editProtein").value),
+    fat:$("editFat").value===""?null:Number($("editFat").value),
+    carbs:$("editCarbs").value===""?null:Number($("editCarbs").value),
+    ingredients:csv($("editIngredients").value),
+    allergens:csv($("editAllergens").value),
+    vegetarian:$("editVegetarian").checked,
+    vegan:$("editVegan").checked,
+    gluten_free:$("editGlutenFree").checked,
+    bestseller:$("editBestseller").checked,
+    available:$("editAvailable").checked
+  };
+
+  if(!payload.name || !payload.category || $("editPrice").value==="" || Number.isNaN(payload.price)){
+    showMessage($("editMsg"),"Name, Kategorie und Preis sind erforderlich.","error");
+    return;
+  }
+
+  if(payload.price < 0){
+    showMessage($("editMsg"),"Der Preis darf nicht negativ sein.","error");
+    return;
+  }
+
+  $("saveEdit").disabled=true;
+
+  try{
+    if(isNew){
+      const maxExternal=Math.max(0,...currentItems.map(x=>Number(x.external_id)||0));
+      const maxSort=Math.max(0,...currentItems.map(x=>Number(x.sort_order)||0));
+
+      await insertItem({
+        restaurant_id:restaurantId,
+        external_id:maxExternal+1,
+        sort_order:maxSort+1,
+        ...payload
+      });
+
+      $("editModal").classList.add("hidden");
+      await loadItems();
+      showMessage($("adminMsg"),`"${payload.name}" wurde hinzugefügt.`,"success");
+    }else{
+      await patchItem(id,payload);
+      $("editModal").classList.add("hidden");
+      await loadItems();
+      showMessage($("adminMsg"),`"${payload.name}" wurde gespeichert.`,"success");
+    }
+  }catch(e){
+    showMessage($("editMsg"),(isNew?"Hinzufügen":"Speichern")+" fehlgeschlagen: "+e.message,"error");
+  }finally{
+    $("saveEdit").disabled=false;
+  }
+}
+
+function logout(){
+  sessionStorage.removeItem("gastlyo_access_token");
+  sessionStorage.removeItem("gastlyo_user_id");
+  location.reload();
+}
+
+$("loginBtn").onclick=login;
+$("password").addEventListener("keydown",e=>{if(e.key==="Enter")login()});
+$("logoutBtn").onclick=logout;
+$("refreshBtn").onclick=loadItems;
+$("addItemBtn").onclick=openAdd;
+$("dashboardTabBtn").onclick=showDashboard;
+$("menuTabBtn").onclick=showMenuManagement;
+$("analyticsRefreshBtn").onclick=loadAnalytics;
+$("cancelEdit").onclick=()=>$("editModal").classList.add("hidden");
+$("saveEdit").onclick=saveEdit;
+
+init();
+</script>
+
+</body>
+</html>

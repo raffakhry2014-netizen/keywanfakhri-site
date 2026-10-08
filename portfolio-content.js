@@ -30,7 +30,7 @@ ja: [["Gastlyo · スマートメニュー","お客様から始まるデジタ�
 };
 // Add future products here; the grid and detail view read the same registry.
 const projectRegistry = [
-{id:'gastlyo',copy:0,status:'available',area:'projects',demo:'https://www.gastlyo.de/',type:'hospitality'},
+{id:'gastlyo',copy:0,status:'available',area:'projects',demo:'/gastlyo/',type:'hospitality'},
 {id:'10x',copy:1,status:'available',area:'projects',type:'finance',demo:'https://keywanfakhri.com/projects/10x/'},
 {id:'6m',copy:2,status:'development',area:'projects',type:'finance'},
 {id:'tester',copy:3,status:'idea',area:'lab',type:'lab'},

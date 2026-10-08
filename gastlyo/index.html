@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#173F32" />
+<title>Gastlyo – Der KI-Kellner für Ihr Restaurant</title>
+<meta name="description" content="Gastlyo: digitale Speisekarte mit KI-Kellner KIWA – Empfehlungen, Allergene und Bestellung in 12 Sprachen. Demo." />
+<meta property="og:title" content="Gastlyo – Der KI-Kellner für Ihr Restaurant" />
+<meta property="og:description" content="Digitale Speisekarte mit KI-Kellner KIWA – in 12 Sprachen." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://keywanfakhri.com/gastlyo/" />
+<link rel="preload" href="/gastlyo/fonts/karla-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+
+<style>
+/* Self-hosted fonts (no Google Fonts request) */
+@font-face{font-family:'Karla';font-style:normal;font-weight:200 800;font-display:swap;src:url('/gastlyo/fonts/karla-latin-ext-wght-normal.woff2') format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Karla';font-style:normal;font-weight:200 800;font-display:swap;src:url('/gastlyo/fonts/karla-latin-wght-normal.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Playfair Display SC';font-style:normal;font-weight:700;font-display:swap;src:url('/gastlyo/fonts/playfair-display-sc-latin-ext-700-normal.woff2') format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Playfair Display SC';font-style:normal;font-weight:700;font-display:swap;src:url('/gastlyo/fonts/playfair-display-sc-latin-700-normal.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+
+:root{
+  --green:#173F32; --green-2:#24503F; --green-3:#0F2C23;
+  --bg:#FAF8F5; --surface:#FFFFFF; --line:#ECE7DF; --line-2:#E4DED4;
+  --ink:#1C1B19; --muted:#6B665E; --soft:#CFDDD6;
+  --amber-bg:#F6E8DA; --amber-ink:#8A4512; --mint:#E3EEE8; --badge:#B4501A;
+  --radius:18px; --nav-h:68px;
+  --display:"Playfair Display SC",Georgia,"Times New Roman",serif;
+  --body:"Karla",system-ui,-apple-system,"Segoe UI",Tahoma,"Noto Sans","Apple SD Gothic Neo","Malgun Gothic","PingFang SC","Microsoft YaHei","Hiragino Sans","Yu Gothic",sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;
+  padding-bottom:calc(var(--nav-h) + 16px + env(safe-area-inset-bottom))}
+html[lang="fa"] body,html[lang="ar"] body{font-family:system-ui,-apple-system,"Segoe UI",Tahoma,"Noto Sans Arabic",sans-serif}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer;touch-action:manipulation}
+img{display:block;max-width:100%}
+:focus-visible{outline:3px solid rgba(23,63,50,.45);outline-offset:2px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.wrap{width:min(1120px,100%);margin:0 auto;padding:0 20px}
+.no-scrollbar{scrollbar-width:none}.no-scrollbar::-webkit-scrollbar{display:none}
+[hidden]{display:none!important}
+
+/* demo note + top bar */
+.demo-note{background:var(--amber-bg);color:var(--amber-ink);font-size:12.5px;font-weight:600;text-align:center;padding:7px 16px;line-height:1.4}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:14px;padding-bottom:10px}
+.wordmark{font-family:var(--display);font-size:24px;color:var(--green);letter-spacing:.2px;text-decoration:none;line-height:1}
+.lang-btn{display:flex;align-items:center;gap:6px;height:42px;padding:0 13px;border-radius:999px;border:1px solid var(--line-2);background:var(--surface);font-weight:700;font-size:13px}
+.lang-btn svg{width:18px;height:18px}
+
+/* buttons */
+.icon-btn{width:40px;height:40px;flex:0 0 40px;border-radius:50%;border:0;background:var(--green);color:#fff;display:grid;place-items:center}
+.icon-btn svg{width:18px;height:18px}
+.icon-btn:disabled{background:#B9B3A9;cursor:not-allowed}
+.btn-primary{height:54px;border:0;border-radius:16px;background:var(--green);color:#fff;font-weight:700;font-size:16px;padding:0 20px}
+.btn-primary:hover{background:var(--green-3)}
+.btn-primary:disabled{background:#B9B3A9;cursor:not-allowed}
+.link-btn{border:0;background:none;color:var(--green);font-weight:700;font-size:14px;padding:8px 0}
+.chip{flex:0 0 auto;height:40px;padding:0 16px;border-radius:999px;border:1px solid var(--line-2);background:var(--surface);color:var(--ink);font-weight:700;font-size:14px;white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#fff}
+.chip-row{display:flex;gap:8px;overflow-x:auto}
+
+/* hero */
+.hero{background:var(--green);color:#F4EFE6;border-radius:24px;padding:22px 20px 20px;margin-top:4px}
+.hero-tagline{font-size:13px;color:var(--soft);margin:0}
+.hero h1{font-family:var(--display);font-weight:700;font-size:clamp(30px,6vw,44px);line-height:1.08;color:#fff;margin:4px 0 0}
+.kiwa-row{display:flex;gap:12px;align-items:flex-start;margin-top:18px}
+.avatar{flex:0 0 44px;width:44px;height:44px;border-radius:50%;background:var(--amber-bg);color:var(--green);display:grid;place-items:center}
+.avatar svg{width:22px;height:22px}
+.bubble-dark{background:var(--green-2);border-radius:16px;padding:12px 14px;font-size:14.5px;line-height:1.5;margin:0}
+.ask-form{display:flex;align-items:center;gap:6px;margin-top:14px;background:var(--surface);border-radius:16px;padding:5px 5px 5px 16px;padding-inline:16px 5px}
+.ask-form input{flex:1;min-width:0;border:0;outline:0;background:transparent;height:44px;font-size:15px;color:var(--ink)}
+.ask-form input::placeholder{color:var(--muted)}
+.home-chips{padding-top:16px}
+
+/* sections */
+.section-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:28px 0 12px}
+.section-head h2{margin:0;font-size:19px;font-weight:800}
+.page-title{font-family:var(--display);font-weight:700;font-size:30px;color:var(--green);margin:4px 0 14px;line-height:1.1}
+
+/* featured cards */
+.featured{display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;margin:0 -20px;padding-inline:20px}
+.fcard{flex:0 0 176px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column}
+.fcard .open{border:0;background:none;padding:0;text-align:start;display:block;width:100%}
+.fcard img{width:100%;height:132px;object-fit:cover;background:var(--line)}
+.fcard .txt{padding:10px 12px 4px}
+.fcard .name{font-weight:800;font-size:15px;line-height:1.25}
+.fcard .desc{margin-top:4px;font-size:12.5px;line-height:1.4;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.fcard .foot{display:flex;align-items:center;justify-content:space-between;padding:6px 12px 12px;margin-top:auto}
+.price{font-weight:800;white-space:nowrap}
+
+/* category tiles */
+.cat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.cat-tile{border:1px solid var(--line);background:var(--surface);border-radius:var(--radius);padding:0;overflow:hidden;text-align:start}
+.cat-tile img{width:100%;height:96px;object-fit:cover;background:var(--line)}
+.cat-tile span{display:block;padding:9px 12px 11px;font-weight:800;font-size:14px}
+@media(min-width:700px){.cat-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(min-width:1000px){.cat-grid{grid-template-columns:repeat(5,minmax(0,1fr))}}
+
+/* menu */
+.search{display:flex;align-items:center;gap:10px;height:50px;background:var(--surface);border:1px solid var(--line-2);border-radius:14px;padding:0 14px;color:var(--muted)}
+.search svg{width:18px;height:18px;flex:0 0 18px}
+.search input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:var(--ink);font-size:15px}
+.menu-chips{position:sticky;top:0;z-index:20;background:var(--bg);padding:12px 20px;margin:0 -20px}
+.cat-title{font-size:19px;font-weight:800;margin:22px 0 10px}
+.dish-list{display:grid;grid-template-columns:1fr;gap:10px}
+@media(min-width:760px){.dish-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:1060px){.dish-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.row{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:10px;display:flex;align-items:center;gap:12px}
+.row .open{flex:1;min-width:0;border:0;background:none;padding:0;display:flex;gap:12px;align-items:center;text-align:start}
+.row img{flex:0 0 88px;width:88px;height:88px;border-radius:12px;object-fit:cover;background:var(--line)}
+.row .name{font-weight:800;font-size:15px;line-height:1.3}
+.row .desc{margin-top:3px;font-size:13px;line-height:1.4;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.row .meta{margin-top:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.row.sold{opacity:.6}
+.pill{font-size:11.5px;font-weight:800;padding:3px 8px;border-radius:999px;background:var(--mint);color:var(--green);white-space:nowrap}
+.pill.warm{background:var(--amber-bg);color:var(--amber-ink)}
+.pill.dark{background:var(--ink);color:#fff}
+.status{margin:14px 0;border-radius:14px;padding:12px 14px;font-size:14px;background:var(--surface);border:1px solid var(--line-2);color:var(--muted)}
+.status.error{background:#FBEAEA;border-color:#EBC3C3;color:#8A1F1F}
+
+/* chat */
+.chat-head{display:flex;align-items:center;gap:12px;padding:4px 0 14px;border-bottom:1px solid var(--line)}
+.chat-head .avatar{background:var(--green);color:var(--amber-bg)}
+.chat-head strong{display:block;font-size:18px}
+.chat-head span{font-size:13px;color:var(--muted)}
+.chat{display:flex;flex-direction:column;gap:12px;padding:18px 0;max-width:720px}
+.chat>*{scroll-margin-bottom:190px}
+.msg{max-width:86%;padding:12px 14px;border-radius:18px;font-size:14.5px;line-height:1.55;white-space:pre-wrap;margin:0}
+.msg.bot{align-self:flex-start;background:var(--surface);border:1px solid var(--line);border-start-start-radius:6px}
+.msg.user{align-self:flex-end;background:var(--green);color:#fff;border-start-end-radius:6px}
+.chat-dishes{display:flex;flex-direction:column;gap:8px;align-self:stretch}
+.chat-dishes .row img{flex-basis:64px;width:64px;height:64px}
+.typing{display:inline-flex;gap:4px}.typing i{width:7px;height:7px;border-radius:50%;background:#B9B3A9;animation:blink 1.2s infinite}
+.typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,80%,100%{opacity:.3}40%{opacity:1}}
+.chat-input{position:sticky;bottom:calc(var(--nav-h) + 8px + env(safe-area-inset-bottom));background:var(--bg);padding:10px 0 4px;max-width:720px}
+.chat-input .ask-form{border:1px solid var(--line-2);margin-top:8px}
+
+/* order */
+.order-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.table-field{display:flex;align-items:center;gap:6px;background:var(--mint);color:var(--green);border-radius:999px;padding:0 6px 0 14px;padding-inline:14px 6px;height:40px;font-weight:800;font-size:14px}
+.table-field input{width:48px;height:30px;border:0;border-radius:999px;text-align:center;background:var(--surface);font-weight:800;color:var(--green)}
+.cart{display:flex;flex-direction:column;gap:10px;max-width:720px}
+.stepper{display:flex;align-items:center;gap:2px;border:1px solid var(--line-2);border-radius:999px;padding:2px;background:var(--surface)}
+.stepper button{width:36px;height:36px;border:0;border-radius:50%;background:none;display:grid;place-items:center}
+.stepper button svg{width:16px;height:16px}
+.stepper span{min-width:20px;text-align:center;font-weight:800}
+.note{width:100%;height:50px;border:1px solid var(--line-2);border-radius:14px;background:var(--surface);padding:0 14px;font-size:14.5px;outline:0}
+.total{display:flex;justify-content:space-between;align-items:baseline;margin:22px 0 14px}
+.total span{color:var(--muted)}.total strong{font-size:22px}
+.notice{display:flex;gap:10px;align-items:flex-start;background:var(--mint);color:var(--green);border-radius:16px;padding:14px 16px;font-weight:700;font-size:14px;margin-bottom:14px}
+.notice svg{width:20px;height:20px;flex:0 0 20px;margin-top:1px}
+.order-wrap{max-width:720px}
+.empty{padding:28px 16px;text-align:center;color:var(--muted);background:var(--surface);border:1px dashed #DCD5CA;border-radius:var(--radius)}
+
+/* sheets */
+.overlay{position:fixed;inset:0;background:rgba(28,27,25,.45);z-index:60;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--bg);width:min(560px,100%);max-height:92vh;overflow-y:auto;border-radius:24px 24px 0 0;position:relative;padding-bottom:env(safe-area-inset-bottom)}
+@media(min-width:700px){.overlay{align-items:center}.sheet{border-radius:24px;max-height:88vh}}
+.sheet-close{position:absolute;top:14px;inset-inline-end:14px;width:44px;height:44px;border-radius:50%;border:0;background:var(--surface);display:grid;place-items:center;z-index:2;box-shadow:0 2px 10px rgba(0,0,0,.12)}
+.sheet-close svg{width:20px;height:20px}
+.dish-img{width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--line)}
+.dish-body{padding:20px 20px 24px}
+.dish-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.dish-top h2{margin:0;font-size:24px;line-height:1.2;font-weight:800}
+.dish-top .price{font-size:20px}
+.dish-desc{margin:8px 0 0;color:var(--muted);font-size:15px;line-height:1.55}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:16px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 6px;text-align:center}
+.stat strong{display:block;font-size:16px}
+.stat span{font-size:11.5px;color:var(--muted)}
+.label{margin-top:18px;font-size:12px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--muted)}
+.label-text{margin:6px 0 0;font-size:14.5px}
+.al-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.al-chips span{font-size:13px;padding:5px 11px;border-radius:999px;border:1px solid var(--line-2);background:var(--surface)}
+.hint{margin-top:14px;font-size:12.5px;color:var(--muted);line-height:1.45}
+.pairs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.pair{border:1px solid var(--line);background:var(--surface);border-radius:16px;padding:0;overflow:hidden;text-align:start}
+.pair img{width:100%;height:92px;object-fit:cover;background:var(--line)}
+.pair div{padding:8px 10px 10px;font-size:13px}
+.pair strong{display:block}
+.pair span{color:var(--muted)}
+.add-bar{display:flex;gap:12px;align-items:center;margin-top:22px}
+.add-bar .stepper{height:54px;padding:0 6px;border-radius:16px}
+.add-bar .btn-primary{flex:1}
+.lang-list{padding:20px 14px 18px}
+.lang-list h2{margin:4px 8px 12px;font-size:18px}
+.lang-item{width:100%;height:50px;border:0;border-radius:14px;background:none;display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:16px;font-weight:700;text-align:start}
+.lang-item small{color:var(--muted);font-size:12px;font-weight:700}
+.lang-item[aria-current="true"]{background:var(--mint);color:var(--green)}
+
+/* bottom nav */
+.bottom-nav{position:fixed;left:0;right:0;bottom:0;z-index:50;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.bottom-nav .inner{width:min(560px,100%);margin:0 auto;height:var(--nav-h);display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
+.nav-btn{border:0;background:none;color:#8A857C;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11px;font-weight:700;min-width:0;padding:0 2px}
+.nav-btn svg{width:22px;height:22px}
+.nav-btn>span:last-child{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav-btn[aria-current="page"]{color:var(--green)}
+.nav-ico{position:relative;display:flex}
+.badge{position:absolute;top:-6px;inset-inline-end:-10px;min-width:18px;height:18px;border-radius:9px;background:var(--badge);color:#fff;font-size:11px;font-weight:800;display:grid;place-items:center;padding:0 4px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav-h) + 16px + env(safe-area-inset-bottom));z-index:70;width:min(520px,calc(100% - 32px));background:var(--ink);color:#fff;border-radius:16px;padding:13px 16px;font-weight:600;font-size:14px;display:flex;gap:10px;align-items:center;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+.toast svg{width:20px;height:20px;flex:0 0 20px}
+
+.legal-footer{text-align:center;padding:36px 16px 8px;font-size:13px;color:var(--muted)}
+.legal-footer a{color:inherit;margin:0 8px;text-decoration:none}
+.legal-footer a:hover{text-decoration:underline}
+@media(min-width:900px){.home-grid{display:grid;grid-template-columns:minmax(0,1fr);}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+
+<body>
+<div class="demo-note" id="demoNote" role="note"></div>
+
+<header class="wrap topbar">
+  <a class="wordmark" href="#" data-go="home">Gastlyo</a>
+  <button type="button" class="lang-btn" id="langBtn" aria-haspopup="dialog">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18"/></svg>
+    <span id="langCode">DE</span>
+  </button>
+</header>
+
+<main class="wrap">
+  <!-- HOME -->
+  <section id="view-home" data-view="home">
+    <div class="hero">
+      <p class="hero-tagline" id="tagline"></p>
+      <h1 id="restName">&nbsp;</h1>
+      <div class="kiwa-row">
+        <div class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></div>
+        <p class="bubble-dark" id="heroHello"></p>
+      </div>
+      <form class="ask-form" id="heroAsk">
+        <label class="sr-only" for="heroInput">KIWA</label>
+        <input id="heroInput" type="text" autocomplete="off" enterkeyhint="send" />
+        <button type="submit" class="icon-btn" id="heroSend"><svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6l-6 6"/></svg></button>
+      </form>
+    </div>
+    <div class="chip-row no-scrollbar home-chips" id="homeChips"></div>
+
+    <div class="section-head"><h2 id="popularTitle"></h2><button type="button" class="link-btn" data-go="menu" id="seeAll"></button></div>
+    <div class="featured no-scrollbar" id="featured"></div>
+
+    <div class="section-head"><h2 id="catsTitle"></h2></div>
+    <div class="cat-grid" id="catGrid"></div>
+  </section>
+
+  <!-- MENU -->
+  <section id="view-menu" data-view="menu" hidden>
+    <h1 class="page-title" id="menuTitle"></h1>
+    <label class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <span class="sr-only" id="searchLabel"></span>
+      <input id="searchInput" type="search" autocomplete="off" />
+    </label>
+    <div class="menu-chips chip-row no-scrollbar" id="catChips"></div>
+    <div id="status" class="status" hidden></div>
+    <div id="menuList"></div>
+  </section>
+
+  <!-- KIWA -->
+  <section id="view-kiwa" data-view="kiwa" hidden>
+    <div class="chat-head">
+      <div class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></div>
+      <div><strong>KIWA</strong><span id="kiwaSub"></span></div>
+    </div>
+    <div class="chat" id="chat" aria-live="polite"></div>
+    <div class="chat-input">
+      <div class="chip-row no-scrollbar" id="kiwaChips"></div>
+      <form class="ask-form" id="chatForm">
+        <label class="sr-only" for="chatInput">KIWA</label>
+        <input id="chatInput" type="text" autocomplete="off" enterkeyhint="send" />
+        <button type="submit" class="icon-btn" id="chatSend"><svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6l-6 6"/></svg></button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ORDER -->
+  <section id="view-order" data-view="order" hidden>
+    <div class="order-wrap">
+      <div class="order-head">
+        <h1 class="page-title" id="orderTitle"></h1>
+        <label class="table-field"><span id="tableLabel"></span><input id="tableInput" inputmode="numeric" maxlength="4" /></label>
+      </div>
+      <div id="orderNotice" class="notice" hidden role="status">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+        <span id="orderNoticeText"></span>
+      </div>
+      <div class="cart" id="cartList"></div>
+      <div id="orderBottom">
+        <label class="sr-only" for="noteInput" id="noteLabel"></label>
+        <input class="note" id="noteInput" type="text" autocomplete="off" style="margin-top:12px" />
+        <div class="total"><span id="subtotalLabel"></span><strong id="subtotal"></strong></div>
+        <button type="button" class="btn-primary" id="sendOrder" style="width:100%"></button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="legal-footer">© Gastlyo · <a href="/gastlyo/impressum/">Impressum</a> · <a href="/gastlyo/datenschutz/">Datenschutz</a></footer>
+</main>
+
+<nav class="bottom-nav" aria-label="Navigation">
+  <div class="inner">
+    <button type="button" class="nav-btn" data-go="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l8-7l8 7v9a1 1 0 0 1-1 1h-4v-6h-6v6H5a1 1 0 0 1-1-1z"/></svg><span id="navHome"></span></button>
+    <button type="button" class="nav-btn" data-go="menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2z"/><path d="M8 8h6M8 12h6"/></svg><span id="navMenu"></span></button>
+    <button type="button" class="nav-btn" data-go="kiwa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg><span>KIWA</span></button>
+    <button type="button" class="nav-btn" data-go="order"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><b class="badge" id="cartBadge" hidden>0</b></span><span id="navOrder"></span></button>
+    <button type="button" class="nav-btn" id="callBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><span id="navCall"></span></button>
+  </div>
+</nav>
+
+<div class="overlay" id="dishSheet" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="dishName" id="dishPanel"></div>
+</div>
+<div class="overlay" id="langSheet" hidden>
+  <div class="sheet lang-list" role="dialog" aria-modal="true" aria-labelledby="langTitle">
+    <h2 id="langTitle"></h2>
+    <div id="langItems"></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="i18n.js"></script>
+<script src="i18n-content.js"></script>
+<script src="i18n-extra.js"></script>
+
+<script>
+const RESTAURANT_SLUG="kiwan-fakhri";
+// Same languages and order as keywanfakhri.com
+const LANGS=[["de","Deutsch"],["en","English"],["fa","فارسی"],["ar","العربية"],["tr","Türkçe"],["it","Italiano"],["fr","Français"],["ko","한국어"],["zh","中文（简体）"],["ja","日本語"],["es","Español"],["sq","Shqip"]];
+const supportedLanguages=LANGS.map(l=>l[0]);
+const categoryOrder=["Starter","Salad","Burger","Main","Pasta","Vegan","Dessert","Cold Drink","Hot Drink"];
+const LOCALE={de:"de-DE",en:"en-IE",fa:"fa-IR",ar:"ar",tr:"tr-TR",it:"it-IT",fr:"fr-FR",ko:"ko-KR",zh:"zh-CN",ja:"ja-JP",es:"es-ES",sq:"sq-AL"};
+
+const STR={
+de:{demo:"Demo – kein echtes Restaurant. Speisekarte, Preise und Angaben sind Beispiele.",heroTitle:"Was möchtest du essen?",hello:"Hallo, ich bin KIWA – dein digitaler Kellner. Sag mir, worauf du Lust hast, dein Budget oder deine Ernährungswünsche.",askPh:"Frag KIWA, z. B. vegetarisch unter 15 €",lowcal:"Kalorienarm",veggie:"Vegetarisch",budget:"Unter 15 €",best:"Bestseller",qLow:"Empfiehl mir ein kalorienarmes Gericht.",qVeg:"Empfiehl mir ein vegetarisches Gericht.",qBud:"Was kannst du mir für unter 15 Euro empfehlen?",qBest:"Welche Bestseller empfiehlst du?",popular:"Beliebt bei unseren Gästen",seeAll:"Alle anzeigen",cats:"Kategorien",menu:"Speisekarte",searchPh:"Speisekarte durchsuchen",all:"Alle",soldOut:"Ausverkauft",noResults:"Keine passenden Gerichte gefunden.",loading:"Speisekarte wird geladen …",loadError:"Die Speisekarte konnte gerade nicht geladen werden. Bitte versuche es erneut.",home:"Start",order:"Bestellung",call:"Kellner",add:"Hinzufügen",added:"Zur Bestellung hinzugefügt",pairs:"Dazu passt",yourOrder:"Deine Bestellung",table:"Tisch",note:"Wünsche, z. B. ohne Zwiebeln",subtotal:"Zwischensumme",send:"Bestellung abschicken",demoSent:"Demo: In der Vollversion geht deine Bestellung jetzt direkt an die Küche.",emptyCart:"Noch nichts ausgewählt.",toMenu:"Zur Speisekarte",callToast:"Demo: In der Vollversion wird das Personal jetzt benachrichtigt.",kiwaSub:"Dein digitaler Kellner",close:"Schließen",allergyHint:"Bei Allergien bitte immer beim Personal nachfragen. Nährwerte sind Schätzwerte.",sendQ:"Senden",less:"Weniger",more:"Mehr"},
+en:{demo:"Demo – not a real restaurant. Menu, prices and details are examples.",heroTitle:"What would you like to eat?",hello:"Hi, I'm KIWA – your digital waiter. Tell me what you feel like, your budget or dietary preferences.",askPh:"Ask KIWA, e.g. vegetarian under €15",lowcal:"Low calorie",veggie:"Vegetarian",budget:"Under €15",best:"Bestsellers",qLow:"Recommend a low-calorie dish.",qVeg:"Recommend a vegetarian dish.",qBud:"What can you recommend for under 15 euros?",qBest:"Which bestsellers do you recommend?",popular:"Popular with our guests",seeAll:"See all",cats:"Categories",menu:"Menu",searchPh:"Search the menu",all:"All",soldOut:"Sold out",noResults:"No matching dishes found.",loading:"Loading menu …",loadError:"The menu could not be loaded. Please try again.",home:"Home",order:"Order",call:"Waiter",add:"Add",added:"Added to your order",pairs:"Goes well with",yourOrder:"Your order",table:"Table",note:"Requests, e.g. no onions",subtotal:"Subtotal",send:"Send order",demoSent:"Demo: in the full version your order now goes straight to the kitchen.",emptyCart:"Nothing selected yet.",toMenu:"Go to menu",callToast:"Demo: in the full version the staff is notified now.",kiwaSub:"Your digital waiter",close:"Close",allergyHint:"If you have allergies, please always check with our staff. Nutrition values are estimates.",sendQ:"Send",less:"Less",more:"More"},
+fa:{demo:"نسخه نمایشی – این یک رستوران واقعی نیست. منو، قیمت‌ها و اطلاعات نمونه هستند.",heroTitle:"چی دوست داری بخوری؟",hello:"سلام، من KIWA هستم – گارسون دیجیتال تو. بگو چی دلت می‌خواد، بودجه‌ات چقدره یا چه رژیمی داری.",askPh:"از KIWA بپرس، مثلاً گیاهی زیر ۱۵ یورو",lowcal:"کم‌کالری",veggie:"گیاهی",budget:"زیر ۱۵ یورو",best:"پرفروش‌ها",qLow:"یک غذای کم‌کالری پیشنهاد بده.",qVeg:"یک غذای گیاهی پیشنهاد بده.",qBud:"زیر ۱۵ یورو چی پیشنهاد می‌دی؟",qBest:"کدوم غذاهای پرفروش رو پیشنهاد می‌دی؟",popular:"محبوب مهمان‌های ما",seeAll:"همه",cats:"دسته‌بندی‌ها",menu:"منو",searchPh:"جستجو در منو",all:"همه",soldOut:"ناموجود",noResults:"غذای مطابقی پیدا نشد.",loading:"در حال بارگذاری منو …",loadError:"منو در حال حاضر بارگذاری نشد. دوباره تلاش کن.",home:"خانه",order:"سفارش",call:"گارسون",add:"افزودن",added:"به سفارش اضافه شد",pairs:"همراه مناسب",yourOrder:"سفارش تو",table:"میز",note:"توضیحات، مثلاً بدون پیاز",subtotal:"جمع جزء",send:"ثبت سفارش",demoSent:"نسخه نمایشی: در نسخه کامل سفارشت مستقیم به آشپزخانه می‌رود.",emptyCart:"هنوز چیزی انتخاب نشده.",toMenu:"رفتن به منو",callToast:"نسخه نمایشی: در نسخه کامل، کارکنان فوراً خبردار می‌شوند.",kiwaSub:"گارسون دیجیتال تو",close:"بستن",allergyHint:"اگر حساسیت غذایی داری، حتماً از کارکنان بپرس. ارزش‌های غذایی تقریبی هستند.",sendQ:"ارسال",less:"کمتر",more:"بیشتر"},
+ar:{demo:"نسخة تجريبية – ليس مطعمًا حقيقيًا. القائمة والأسعار والمعلومات أمثلة فقط.",heroTitle:"ماذا ترغب أن تأكل؟",hello:"مرحباً، أنا KIWA – نادلك الرقمي. أخبرني بما تشتهيه أو ميزانيتك أو تفضيلاتك الغذائية.",askPh:"اسأل KIWA، مثلاً نباتي بأقل من 15 €",lowcal:"قليل السعرات",veggie:"نباتي",budget:"أقل من 15 €",best:"الأكثر مبيعًا",qLow:"اقترح لي طبقًا قليل السعرات.",qVeg:"اقترح لي طبقًا نباتيًا.",qBud:"ماذا تقترح بأقل من 15 يورو؟",qBest:"ما الأطباق الأكثر مبيعًا التي تقترحها؟",popular:"المفضلة لدى ضيوفنا",seeAll:"عرض الكل",cats:"الفئات",menu:"القائمة",searchPh:"ابحث في القائمة",all:"الكل",soldOut:"غير متوفر",noResults:"لم يتم العثور على أطباق مطابقة.",loading:"جارٍ تحميل القائمة …",loadError:"تعذر تحميل القائمة حالياً. حاول مرة أخرى.",home:"الرئيسية",order:"الطلب",call:"النادل",add:"إضافة",added:"تمت الإضافة إلى طلبك",pairs:"يناسبه",yourOrder:"طلبك",table:"طاولة",note:"ملاحظات، مثلاً بدون بصل",subtotal:"المجموع الفرعي",send:"إرسال الطلب",demoSent:"تجريبي: في النسخة الكاملة يصل طلبك مباشرة إلى المطبخ.",emptyCart:"لم يتم اختيار شيء بعد.",toMenu:"إلى القائمة",callToast:"تجريبي: في النسخة الكاملة يتم إبلاغ الموظفين فوراً.",kiwaSub:"نادلك الرقمي",close:"إغلاق",allergyHint:"في حال وجود حساسية، يرجى دائماً سؤال الموظفين. القيم الغذائية تقديرية.",sendQ:"إرسال",less:"أقل",more:"أكثر"},
+tr:{demo:"Demo – gerçek bir restoran değildir. Menü, fiyatlar ve bilgiler örnektir.",heroTitle:"Ne yemek istersin?",hello:"Merhaba, ben KIWA – dijital garsonun. Canının ne istediğini, bütçeni veya beslenme tercihlerini söyle.",askPh:"KIWA'ya sor, ör. 15 € altı vejetaryen",lowcal:"Düşük kalorili",veggie:"Vejetaryen",budget:"15 € altı",best:"Çok satanlar",qLow:"Bana düşük kalorili bir yemek öner.",qVeg:"Bana vejetaryen bir yemek öner.",qBud:"15 euronun altında ne önerirsin?",qBest:"En çok satanlardan hangilerini önerirsin?",popular:"Misafirlerimizin favorileri",seeAll:"Tümü",cats:"Kategoriler",menu:"Menü",searchPh:"Menüde ara",all:"Tümü",soldOut:"Tükendi",noResults:"Eşleşen yemek bulunamadı.",loading:"Menü yükleniyor …",loadError:"Menü şu anda yüklenemedi. Lütfen tekrar dene.",home:"Ana sayfa",order:"Sipariş",call:"Garson",add:"Ekle",added:"Siparişine eklendi",pairs:"Yanına yakışır",yourOrder:"Siparişin",table:"Masa",note:"İstekler, ör. soğansız",subtotal:"Ara toplam",send:"Siparişi gönder",demoSent:"Demo: Tam sürümde siparişin doğrudan mutfağa gider.",emptyCart:"Henüz bir şey seçilmedi.",toMenu:"Menüye git",callToast:"Demo: Tam sürümde personel hemen bilgilendirilir.",kiwaSub:"Dijital garsonun",close:"Kapat",allergyHint:"Alerjin varsa lütfen her zaman personele danış. Besin değerleri tahminidir.",sendQ:"Gönder",less:"Azalt",more:"Artır"},
+it:{demo:"Demo – non è un vero ristorante. Menu, prezzi e informazioni sono esempi.",heroTitle:"Cosa ti va di mangiare?",hello:"Ciao, sono KIWA – il tuo cameriere digitale. Dimmi cosa desideri, il tuo budget o le tue preferenze alimentari.",askPh:"Chiedi a KIWA, es. vegetariano sotto 15 €",lowcal:"Poche calorie",veggie:"Vegetariano",budget:"Sotto 15 €",best:"Più venduti",qLow:"Consigliami un piatto con poche calorie.",qVeg:"Consigliami un piatto vegetariano.",qBud:"Cosa mi consigli sotto i 15 euro?",qBest:"Quali piatti più venduti consigli?",popular:"I preferiti dei nostri ospiti",seeAll:"Vedi tutti",cats:"Categorie",menu:"Menù",searchPh:"Cerca nel menù",all:"Tutti",soldOut:"Esaurito",noResults:"Nessun piatto trovato.",loading:"Caricamento del menù …",loadError:"Impossibile caricare il menù. Riprova.",home:"Home",order:"Ordine",call:"Cameriere",add:"Aggiungi",added:"Aggiunto al tuo ordine",pairs:"Si abbina con",yourOrder:"Il tuo ordine",table:"Tavolo",note:"Richieste, es. senza cipolla",subtotal:"Subtotale",send:"Invia ordine",demoSent:"Demo: nella versione completa il tuo ordine arriva subito in cucina.",emptyCart:"Ancora nessuna scelta.",toMenu:"Vai al menù",callToast:"Demo: nella versione completa il personale viene avvisato subito.",kiwaSub:"Il tuo cameriere digitale",close:"Chiudi",allergyHint:"In caso di allergie chiedi sempre al personale. I valori nutrizionali sono stime.",sendQ:"Invia",less:"Meno",more:"Più"},
+fr:{demo:"Démo – ce n’est pas un vrai restaurant. Menu, prix et informations sont des exemples.",heroTitle:"Qu’aimeriez-vous manger ?",hello:"Bonjour, je suis KIWA – votre serveur numérique. Dites-moi vos envies, votre budget ou vos préférences alimentaires.",askPh:"Demandez à KIWA, ex. végétarien à moins de 15 €",lowcal:"Peu calorique",veggie:"Végétarien",budget:"Moins de 15 €",best:"Meilleures ventes",qLow:"Recommande-moi un plat peu calorique.",qVeg:"Recommande-moi un plat végétarien.",qBud:"Que peux-tu me recommander à moins de 15 euros ?",qBest:"Quels best-sellers recommandes-tu ?",popular:"Les préférés de nos clients",seeAll:"Tout voir",cats:"Catégories",menu:"Carte",searchPh:"Rechercher dans la carte",all:"Tous",soldOut:"Épuisé",noResults:"Aucun plat correspondant.",loading:"Chargement de la carte …",loadError:"La carte n’a pas pu être chargée. Veuillez réessayer.",home:"Accueil",order:"Commande",call:"Serveur",add:"Ajouter",added:"Ajouté à votre commande",pairs:"Se marie avec",yourOrder:"Votre commande",table:"Table",note:"Souhaits, ex. sans oignons",subtotal:"Sous-total",send:"Envoyer la commande",demoSent:"Démo : dans la version complète, votre commande part directement en cuisine.",emptyCart:"Rien de sélectionné.",toMenu:"Voir la carte",callToast:"Démo : dans la version complète, le personnel est prévenu immédiatement.",kiwaSub:"Votre serveur numérique",close:"Fermer",allergyHint:"En cas d’allergie, demandez toujours au personnel. Les valeurs nutritionnelles sont des estimations.",sendQ:"Envoyer",less:"Moins",more:"Plus"},
+ko:{demo:"데모 – 실제 레스토랑이 아닙니다. 메뉴, 가격 및 정보는 예시입니다.",heroTitle:"무엇을 드시고 싶으세요?",hello:"안녕하세요, 디지털 웨이터 KIWA입니다. 원하시는 음식, 예산 또는 식단 선호를 알려주세요.",askPh:"KIWA에게 물어보세요. 예: 15€ 이하 채식",lowcal:"저칼로리",veggie:"채식",budget:"15€ 이하",best:"베스트셀러",qLow:"저칼로리 메뉴를 추천해 주세요.",qVeg:"채식 메뉴를 추천해 주세요.",qBud:"15유로 이하로 무엇을 추천하시나요?",qBest:"어떤 베스트셀러를 추천하시나요?",popular:"손님들이 좋아하는 메뉴",seeAll:"전체 보기",cats:"카테고리",menu:"메뉴",searchPh:"메뉴 검색",all:"전체",soldOut:"품절",noResults:"일치하는 메뉴가 없습니다.",loading:"메뉴를 불러오는 중 …",loadError:"메뉴를 불러올 수 없습니다. 다시 시도해 주세요.",home:"홈",order:"주문",call:"직원 호출",add:"담기",added:"주문에 추가되었습니다",pairs:"함께 즐기기",yourOrder:"내 주문",table:"테이블",note:"요청사항, 예: 양파 빼주세요",subtotal:"소계",send:"주문하기",demoSent:"데모: 정식 버전에서는 주문이 바로 주방으로 전달됩니다.",emptyCart:"아직 선택한 메뉴가 없습니다.",toMenu:"메뉴 보기",callToast:"데모: 정식 버전에서는 직원에게 즉시 알림이 갑니다.",kiwaSub:"디지털 웨이터",close:"닫기",allergyHint:"알레르기가 있으시면 반드시 직원에게 확인해 주세요. 영양 정보는 추정치입니다.",sendQ:"보내기",less:"빼기",more:"더하기"},
+zh:{demo:"演示 – 并非真实餐厅。菜单、价格和信息均为示例。",heroTitle:"今天想吃点什么？",hello:"您好，我是 KIWA——您的数字服务员。告诉我您的口味、预算或饮食偏好。",askPh:"问问 KIWA，例如 15 € 以下的素食",lowcal:"低卡",veggie:"素食",budget:"15 € 以下",best:"招牌菜",qLow:"推荐一道低卡菜品。",qVeg:"推荐一道素食菜品。",qBud:"15 欧元以下有什么推荐？",qBest:"你推荐哪些招牌菜？",popular:"客人最爱",seeAll:"查看全部",cats:"分类",menu:"菜单",searchPh:"搜索菜单",all:"全部",soldOut:"已售罄",noResults:"未找到匹配的菜品。",loading:"正在加载菜单 …",loadError:"菜单暂时无法加载，请重试。",home:"首页",order:"订单",call:"服务员",add:"加入",added:"已加入订单",pairs:"推荐搭配",yourOrder:"您的订单",table:"桌号",note:"备注，例如：不要洋葱",subtotal:"小计",send:"提交订单",demoSent:"演示：在完整版中，您的订单会直接发送到厨房。",emptyCart:"尚未选择菜品。",toMenu:"查看菜单",callToast:"演示：在完整版中，服务员会立即收到通知。",kiwaSub:"您的数字服务员",close:"关闭",allergyHint:"如有过敏，请务必向服务员确认。营养数值为估算值。",sendQ:"发送",less:"减少",more:"增加"},
+ja:{demo:"デモ – 実在のレストランではありません。メニュー、価格、情報は例です。",heroTitle:"何を召し上がりますか？",hello:"こんにちは、デジタルウェイターの KIWA です。食べたいもの、予算、食事のご希望を教えてください。",askPh:"KIWA に質問（例：15€以下のベジタリアン）",lowcal:"低カロリー",veggie:"ベジタリアン",budget:"15€以下",best:"人気メニュー",qLow:"低カロリーの料理をおすすめしてください。",qVeg:"ベジタリアン料理をおすすめしてください。",qBud:"15ユーロ以下で何がおすすめですか？",qBest:"おすすめの人気メニューは？",popular:"お客様に人気",seeAll:"すべて表示",cats:"カテゴリー",menu:"メニュー",searchPh:"メニューを検索",all:"すべて",soldOut:"売り切れ",noResults:"該当する料理が見つかりません。",loading:"メニューを読み込み中 …",loadError:"メニューを読み込めませんでした。もう一度お試しください。",home:"ホーム",order:"注文",call:"スタッフ",add:"追加",added:"注文に追加しました",pairs:"相性の良い一品",yourOrder:"ご注文",table:"テーブル",note:"ご要望（例：玉ねぎ抜き）",subtotal:"小計",send:"注文を送信",demoSent:"デモ：製品版では、ご注文がそのままキッチンに届きます。",emptyCart:"まだ選択されていません。",toMenu:"メニューを見る",callToast:"デモ：製品版では、スタッフにすぐ通知されます。",kiwaSub:"デジタルウェイター",close:"閉じる",allergyHint:"アレルギーのある方は必ずスタッフにご確認ください。栄養成分は推定値です。",sendQ:"送信",less:"減らす",more:"増やす"},
+es:{demo:"Demo – no es un restaurante real. Menú, precios y datos son ejemplos.",heroTitle:"¿Qué te apetece comer?",hello:"Hola, soy KIWA, tu camarero digital. Dime qué te apetece, tu presupuesto o tus preferencias alimentarias.",askPh:"Pregunta a KIWA, p. ej. vegetariano por menos de 15 €",lowcal:"Bajo en calorías",veggie:"Vegetariano",budget:"Menos de 15 €",best:"Más vendidos",qLow:"Recomiéndame un plato bajo en calorías.",qVeg:"Recomiéndame un plato vegetariano.",qBud:"¿Qué me recomiendas por menos de 15 euros?",qBest:"¿Qué platos más vendidos recomiendas?",popular:"Favoritos de nuestros clientes",seeAll:"Ver todo",cats:"Categorías",menu:"Carta",searchPh:"Buscar en la carta",all:"Todo",soldOut:"Agotado",noResults:"No se encontraron platos.",loading:"Cargando la carta …",loadError:"No se pudo cargar la carta. Inténtalo de nuevo.",home:"Inicio",order:"Pedido",call:"Camarero",add:"Añadir",added:"Añadido a tu pedido",pairs:"Combina con",yourOrder:"Tu pedido",table:"Mesa",note:"Peticiones, p. ej. sin cebolla",subtotal:"Subtotal",send:"Enviar pedido",demoSent:"Demo: en la versión completa tu pedido va directamente a la cocina.",emptyCart:"Aún no hay nada seleccionado.",toMenu:"Ver la carta",callToast:"Demo: en la versión completa se avisa al personal al instante.",kiwaSub:"Tu camarero digital",close:"Cerrar",allergyHint:"Si tienes alergias, consulta siempre al personal. Los valores nutricionales son estimaciones.",sendQ:"Enviar",less:"Menos",more:"Más"},
+sq:{demo:"Demo – nuk është restorant i vërtetë. Menuja, çmimet dhe të dhënat janë shembuj.",heroTitle:"Çfarë dëshironi të hani?",hello:"Përshëndetje, unë jam KIWA – kamarieri juaj dixhital. Më thoni çfarë ju pëlqen, buxhetin ose preferencat ushqimore.",askPh:"Pyesni KIWA, p.sh. vegjetariane nën 15 €",lowcal:"Pak kalori",veggie:"Vegjetariane",budget:"Nën 15 €",best:"Më të shiturat",qLow:"Më rekomando një pjatë me pak kalori.",qVeg:"Më rekomando një pjatë vegjetariane.",qBud:"Çfarë më rekomandon nën 15 euro?",qBest:"Cilat nga më të shiturat më rekomandon?",popular:"Të preferuarat e mysafirëve",seeAll:"Shiko të gjitha",cats:"Kategoritë",menu:"Menuja",searchPh:"Kërko në menu",all:"Të gjitha",soldOut:"E shitur",noResults:"Nuk u gjet asnjë pjatë.",loading:"Po ngarkohet menuja …",loadError:"Menuja nuk u ngarkua. Provoni përsëri.",home:"Kreu",order:"Porosia",call:"Kamarieri",add:"Shto",added:"U shtua në porosi",pairs:"Shkon mirë me",yourOrder:"Porosia juaj",table:"Tavolina",note:"Kërkesa, p.sh. pa qepë",subtotal:"Nëntotali",send:"Dërgo porosinë",demoSent:"Demo: në versionin e plotë porosia shkon direkt në kuzhinë.",emptyCart:"Ende asnjë zgjedhje.",toMenu:"Te menuja",callToast:"Demo: në versionin e plotë stafi njoftohet menjëherë.",kiwaSub:"Kamarieri juaj dixhital",close:"Mbyll",allergyHint:"Nëse keni alergji, pyesni gjithmonë stafin. Vlerat ushqyese janë të përafërta.",sendQ:"Dërgo",less:"Më pak",more:"Më shumë"}
+};
+
+const ICON={
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
+  minus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/></svg>',
+  close:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  bell:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>'
+};
+
+let lang="en", allItems=[], byId=new Map(), restaurantId=null, supabaseConfig=null;
+let currentCategory="all", chat=[], chatBusy=false, toastTimer=null, lastFocus=null;
+let cart=readJSON(sessionStorage,"gastlyo_cart",{});
+
+const $=id=>document.getElementById(id);
+function readJSON(store,key,fallback){try{return JSON.parse(store.getItem(key))||fallback}catch{return fallback}}
+function save(store,key,val){try{store.setItem(key,typeof val==="string"?val:JSON.stringify(val))}catch{}}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function S(){return STR[lang]||STR.en}
+function UI(){return (I18N.ui&&(I18N.ui[lang]||I18N.ui.en))||{}}
+function stripEmoji(s){return String(s||"").replace(/^[^\p{L}\p{N}]+/u,"").trim()}
+function fmt(n){try{return new Intl.NumberFormat(LOCALE[lang]||"de-DE",{style:"currency",currency:"EUR"}).format(Number(n)||0)}catch{return "€"+(Number(n)||0).toFixed(2)}}
+function sessionId(){let id=sessionStorage.getItem("gastlyo_analytics_session");if(!id){id=(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random());save(sessionStorage,"gastlyo_analytics_session",id)}return id}
+
+/* ---- content translation (same data as before) ---- */
+const C=()=>(window.I18N&&I18N.content)||{};
+function nameOf(item){return I18N.itemNames?.[String(item.external_id)]?.[lang]||item.name}
+function descOf(item){if(lang==="en")return item.description||"";return C().descriptions?.[item.description]?.[lang]||item.description||""}
+function trList(list,dict){if(!Array.isArray(list))return[];if(lang==="en")return list;return list.map(x=>C()[dict]?.[x]?.[lang]||x)}
+function sep(){return ["fa","ar"].includes(lang)?"، ":(["zh","ja"].includes(lang)?"、":", ")}
+function unitOf(key,fb){if(lang==="en")return fb;return C().units?.[key]?.[lang]||fb}
+function servingOf(s){return C().serving?C().serving(s,lang):s}
+function catLabel(cat){return stripEmoji(UI().categories?.[cat]||cat)}
+function imgOf(item){return String(item.image_url||`images/menu-${item.external_id}.webp`).replace(/menu-0+(\d)/,"menu-$1")}
+function tagsOf(item){
+  const tg=UI().tags||{},out=[];
+  if(item.vegan)out.push([tg.vegan,""]);else if(item.vegetarian)out.push([tg.vegetarian,""]);
+  if(item.gluten_free)out.push([tg.gluten_free,""]);
+  if(item.spicy_level>0)out.push([item.spicy_level===1?tg.mild:item.spicy_level===2?tg.medium:tg.hot,"warm"]);
+  if(item.bestseller)out.push([tg.bestseller,"warm"]);
+  return out.filter(t=>t[0]).map(([t,c])=>[stripEmoji(t),c]);
+}
+
+/* ---- analytics (unchanged behaviour) ---- */
+async function trackEvent(eventType,extra={}){
+  try{
+    if(!supabaseConfig?.supabaseUrl||!supabaseConfig?.supabaseAnonKey||!restaurantId)return;
+    await fetch(`${supabaseConfig.supabaseUrl}/rest/v1/analytics_events`,{method:"POST",
+      headers:{apikey:supabaseConfig.supabaseAnonKey,"Content-Type":"application/json","Prefer":"return=minimal"},
+      body:JSON.stringify({restaurant_id:restaurantId,event_type:eventType,menu_item_id:extra.menu_item_id||null,menu_item_name:extra.menu_item_name||null,language:extra.language||lang,session_id:sessionId()})});
+  }catch(e){console.debug("Analytics skipped:",e)}
+}
+
+/* ---- data ---- */
+async function jsonFetch(url,options={}){
+  const r=await fetch(url,options);let d=null;try{d=await r.json()}catch{}
+  if(!r.ok)throw new Error(d?.message||d?.error||`HTTP ${r.status}`);return d;
+}
+async function loadMenu(){
+  showStatus(S().loading);
+  supabaseConfig=await jsonFetch("/gastlyo/api/config",{cache:"no-store"});
+  if(!supabaseConfig.supabaseUrl||!supabaseConfig.supabaseAnonKey)throw new Error("Supabase configuration missing.");
+  const headers={apikey:supabaseConfig.supabaseAnonKey};
+  const rs=await jsonFetch(`${supabaseConfig.supabaseUrl}/rest/v1/restaurants?slug=eq.${encodeURIComponent(RESTAURANT_SLUG)}&select=id,name`,{headers});
+  const r=rs?.[0];if(!r)throw new Error("Restaurant not found.");
+  restaurantId=r.id;$("restName").textContent=r.name||"";
+  const items=await jsonFetch(`${supabaseConfig.supabaseUrl}/rest/v1/menu_items?restaurant_id=eq.${r.id}&select=*&order=sort_order.asc,external_id.asc`,{headers});
+  allItems=items||[];byId=new Map(allItems.map(i=>[String(i.id),i]));
+  // drop cart entries that no longer exist
+  for(const k of Object.keys(cart))if(!byId.has(k))delete cart[k];
+  hideStatus();renderAll();
+  if(!sessionStorage.getItem("gastlyo_menu_view_tracked")){save(sessionStorage,"gastlyo_menu_view_tracked","1");trackEvent("menu_view")}
+}
+function showStatus(text,type){const el=$("status");el.textContent=text;el.className="status"+(type?" "+type:"");el.hidden=false}
+function hideStatus(){$("status").hidden=true}
+
+/* ---- rendering helpers ---- */
+function addBtn(item){
+  const dis=item.available===false;
+  return `<button type="button" class="icon-btn" data-add="${esc(item.id)}" aria-label="${esc(S().add)}: ${esc(nameOf(item))}"${dis?" disabled":""}>${ICON.plus}</button>`;
+}
+function rowHTML(item,opts={}){
+  const sold=item.available===false;
+  const tags=opts.compact?[]:tagsOf(item).slice(0,2);
+  return `<div class="row${sold?" sold":""}">
+    <button type="button" class="open" data-open="${esc(item.id)}">
+      <img src="${esc(imgOf(item))}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
+      <div style="min-width:0">
+        <div class="name">${esc(nameOf(item))}</div>
+        ${opts.compact?"":`<div class="desc">${esc(descOf(item))}</div>`}
+        <div class="meta"><span class="price">${fmt(item.price)}</span>${sold?`<span class="pill dark">${esc(S().soldOut)}</span>`:""}${tags.map(t=>`<span class="pill ${t[1]}">${esc(t[0])}</span>`).join("")}</div>
+      </div>
+    </button>
+    ${addBtn(item)}
+  </div>`;
+}
+
+function renderHome(){
+  const s=S();
+  const chips=[["lowcal","qLow"],["veggie","qVeg"],["budget","qBud"],["best","qBest"]];
+  const chipHTML=chips.map(([k,q])=>`<button type="button" class="chip" data-ask="${esc(s[q])}">${esc(s[k])}</button>`).join("");
+  $("homeChips").innerHTML=chipHTML;$("kiwaChips").innerHTML=chipHTML;
+  let feat=allItems.filter(i=>i.bestseller&&i.available!==false);
+  if(feat.length<4)feat=feat.concat(allItems.filter(i=>i.available!==false&&!feat.includes(i))).slice(0,8);
+  $("featured").innerHTML=feat.slice(0,10).map(item=>`
+    <div class="fcard">
+      <button type="button" class="open" data-open="${esc(item.id)}">
+        <img src="${esc(imgOf(item))}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
+        <div class="txt"><div class="name">${esc(nameOf(item))}</div><div class="desc">${esc(descOf(item))}</div></div>
+      </button>
+      <div class="foot"><span class="price">${fmt(item.price)}</span>${addBtn(item)}</div>
+    </div>`).join("");
+  const cats=categoryOrder.filter(c=>allItems.some(i=>i.category===c));
+  $("catGrid").innerHTML=cats.map(c=>{const first=allItems.find(i=>i.category===c);
+    return `<button type="button" class="cat-tile" data-cat="${esc(c)}"><img src="${esc(imgOf(first))}" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>${esc(catLabel(c))}</span></button>`}).join("");
+}
+
+function renderMenu(){
+  const s=S(),q=$("searchInput").value.trim().toLowerCase();
+  const cats=categoryOrder.filter(c=>allItems.some(i=>i.category===c));
+  $("catChips").innerHTML=[`<button type="button" class="chip" data-filter="all" aria-pressed="${currentCategory==="all"}">${esc(s.all)}</button>`]
+    .concat(cats.map(c=>`<button type="button" class="chip" data-filter="${esc(c)}" aria-pressed="${currentCategory===c}">${esc(catLabel(c))}</button>`)).join("");
+  if(!allItems.length){$("menuList").innerHTML="";return}
+  const list=allItems.filter(item=>{
+    if(currentCategory!=="all"&&item.category!==currentCategory)return false;
+    if(!q)return true;
+    return [nameOf(item),item.name,item.description,descOf(item),item.category,catLabel(item.category),...trList(item.ingredients,"ingredients"),...(item.ingredients||[]),...(item.tags||[])].join(" ").toLowerCase().includes(q);
+  });
+  if(!list.length){$("menuList").innerHTML=`<div class="empty">${esc(s.noResults)}</div>`;return}
+  $("menuList").innerHTML=categoryOrder.map(c=>{
+    const items=list.filter(i=>i.category===c);if(!items.length)return"";
+    return `<h2 class="cat-title">${esc(catLabel(c))}</h2><div class="dish-list">${items.map(i=>rowHTML(i)).join("")}</div>`;
+  }).join("");
+}
+
+function mentioned(text){
+  const t=String(text||"").toLowerCase();if(!t)return[];
+  return allItems.filter(i=>{const a=nameOf(i).toLowerCase(),b=String(i.name||"").toLowerCase();return (a.length>2&&t.includes(a))||(b.length>2&&t.includes(b))}).slice(0,3);
+}
+function renderChat(){
+  const s=S();
+  const parts=[`<p class="msg bot">${esc(s.hello)}</p>`];
+  for(const m of chat){
+    if(m.role==="user")parts.push(`<p class="msg user">${esc(m.text)}</p>`);
+    else if(m.role==="typing")parts.push(`<p class="msg bot" aria-label="${esc(UI().thinking||"…")}"><span class="typing"><i></i><i></i><i></i></span></p>`);
+    else{
+      parts.push(`<p class="msg bot">${esc(m.text)}</p>`);
+      const ds=(m.ids||[]).map(id=>byId.get(id)).filter(Boolean);
+      if(ds.length)parts.push(`<div class="chat-dishes">${ds.map(i=>rowHTML(i,{compact:true})).join("")}</div>`);
+    }
+  }
+  $("chat").innerHTML=parts.join("");
+}
+
+function cartCount(){return Object.values(cart).reduce((a,b)=>a+b,0)}
+function renderCart(){
+  const s=S(),ids=Object.keys(cart).filter(id=>byId.has(id));
+  const n=cartCount();$("cartBadge").hidden=!n;$("cartBadge").textContent=n;
+  $("orderBottom").hidden=!ids.length;
+  if(!ids.length){
+    $("cartList").innerHTML=`<div class="empty">${esc(s.emptyCart)}<div style="margin-top:12px"><button type="button" class="link-btn" data-go="menu">${esc(s.toMenu)}</button></div></div>`;
+    return;
+  }
+  let sum=0;
+  $("cartList").innerHTML=ids.map(id=>{const i=byId.get(id),q=cart[id];sum+=q*Number(i.price);
+    return `<div class="row">
+      <button type="button" class="open" data-open="${esc(id)}"><img src="${esc(imgOf(i))}" alt="" loading="lazy" style="flex-basis:64px;width:64px;height:64px" onerror="this.style.visibility='hidden'">
+        <div style="min-width:0"><div class="name">${esc(nameOf(i))}</div><div class="desc">${fmt(q*Number(i.price))}</div></div></button>
+      <div class="stepper"><button type="button" data-dec="${esc(id)}" aria-label="${esc(s.less)}">${ICON.minus}</button><span>${q}</span><button type="button" data-inc="${esc(id)}" aria-label="${esc(s.more)}">${ICON.plus}</button></div>
+    </div>`}).join("");
+  $("subtotal").textContent=fmt(sum);
+}
+
+function renderAll(){renderHome();renderMenu();renderChat();renderCart()}
+
+/* ---- cart ---- */
+function addToCart(id,n=1){
+  const item=byId.get(String(id));if(!item||item.available===false)return;
+  cart[id]=(cart[id]||0)+n;if(cart[id]<=0)delete cart[id];
+  save(sessionStorage,"gastlyo_cart",cart);$("orderNotice").hidden=true;renderCart();
+  if(n>0)toast(`${nameOf(item)} · ${S().added}`,ICON.check);
+}
+
+/* ---- dish sheet ---- */
+let sheetQty=1,sheetId=null;
+function openDish(id){
+  const item=byId.get(String(id));if(!item)return;
+  sheetId=String(id);sheetQty=1;lastFocus=document.activeElement;
+  trackEvent("item_click",{menu_item_id:item.id,menu_item_name:item.name});
+  drawDish();$("dishSheet").hidden=false;document.body.style.overflow="hidden";
+  $("dishPanel").scrollTop=0;$("dishPanel").querySelector(".sheet-close").focus();
+}
+function drawDish(){
+  const item=byId.get(sheetId),s=S(),u=UI(),sold=item.available===false;
+  const al=Array.isArray(item.allergens)&&item.allergens.length?trList(item.allergens,"allergens"):[];
+  const pairs=pairsFor(item);
+  const info=[item.serving_size?`${u.portion||"Portion"}: ${servingOf(item.serving_size)}`:"",item.prep_time?`${u.prep||"Prep"}: ~${item.prep_time} ${u.minutes||"min"}`:""].filter(Boolean).join(" · ");
+  $("dishPanel").innerHTML=`
+    <button type="button" class="sheet-close" data-close aria-label="${esc(s.close)}">${ICON.close}</button>
+    <img class="dish-img" src="${esc(imgOf(item))}" alt="${esc(nameOf(item))}" onerror="this.style.display='none'">
+    <div class="dish-body">
+      <div class="dish-top"><h2 id="dishName">${esc(nameOf(item))}</h2><span class="price">${fmt(item.price)}</span></div>
+      <p class="dish-desc">${esc(descOf(item))}</p>
+      <div class="tags">${sold?`<span class="pill dark">${esc(s.soldOut)}</span>`:""}${tagsOf(item).map(t=>`<span class="pill ${t[1]}">${esc(t[0])}</span>`).join("")}</div>
+      <div class="stats">
+        <div class="stat"><strong>${item.calories??"–"}</strong><span>kcal</span></div>
+        <div class="stat"><strong>${item.protein??"–"} g</strong><span>${esc(unitOf("protein","protein"))}</span></div>
+        <div class="stat"><strong>${item.fat??"–"} g</strong><span>${esc(unitOf("fat","fat"))}</span></div>
+        <div class="stat"><strong>${item.carbs??"–"} g</strong><span>${esc(unitOf("carbs","carbs"))}</span></div>
+      </div>
+      ${Array.isArray(item.ingredients)&&item.ingredients.length?`<div class="label">${esc(u.ingredients||"Ingredients")}</div><p class="label-text">${esc(trList(item.ingredients,"ingredients").join(sep()))}</p>`:""}
+      <div class="label">${esc(u.allergens||"Allergens")}</div>
+      ${al.length?`<div class="al-chips">${al.map(a=>`<span>${esc(a)}</span>`).join("")}</div>`:`<p class="label-text">${esc(u.no_allergens||"")}</p>`}
+      ${info?`<p class="label-text" style="margin-top:14px;color:var(--muted)">${esc(info)}</p>`:""}
+      <p class="hint">${esc(s.allergyHint)}</p>
+      ${pairs.length?`<div class="label" style="margin-top:22px">${esc(s.pairs)}</div><div class="pairs" style="margin-top:10px">${pairs.map(p=>`
+        <button type="button" class="pair" data-open="${esc(p.id)}"><img src="${esc(imgOf(p))}" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><div><strong>${esc(nameOf(p))}</strong><span>+ ${fmt(p.price)}</span></div></button>`).join("")}</div>`:""}
+      <div class="add-bar">
+        <div class="stepper"><button type="button" data-sq="-1" aria-label="${esc(s.less)}"${sold?" disabled":""}>${ICON.minus}</button><span>${sheetQty}</span><button type="button" data-sq="1" aria-label="${esc(s.more)}"${sold?" disabled":""}>${ICON.plus}</button></div>
+        <button type="button" class="btn-primary" data-sheet-add${sold?" disabled":""}>${esc(sold?s.soldOut:s.add)} · ${fmt(Number(item.price)*sheetQty)}</button>
+      </div>
+    </div>`;
+}
+function pairsFor(item){
+  const drinks=["Cold Drink","Hot Drink"],sweets=["Dessert"];
+  const wanted=drinks.includes(item.category)?["Dessert"]:sweets.includes(item.category)?["Hot Drink"]:["Cold Drink","Dessert"];
+  const pick=[];
+  for(const c of wanted){
+    const pool=allItems.filter(i=>i.category===c&&i.available!==false&&i.id!==item.id);
+    const best=pool.find(i=>i.bestseller)||pool[0];if(best)pick.push(best);
+  }
+  return pick.slice(0,2);
+}
+function closeSheet(id){$(id).hidden=true;document.body.style.overflow="";if(lastFocus&&lastFocus.focus)lastFocus.focus()}
+
+/* ---- language ---- */
+function openLang(){
+  lastFocus=document.activeElement;
+  $("langTitle").textContent=UI().language||"Language";
+  $("langItems").innerHTML=LANGS.map(([c,n])=>`<button type="button" class="lang-item" data-lang="${c}" lang="${c}" aria-current="${c===lang}"><span>${esc(n)}</span><small>${c.toUpperCase()}</small></button>`).join("");
+  $("langSheet").hidden=false;document.body.style.overflow="hidden";
+  ($("langItems").querySelector('[aria-current="true"]')||$("langItems").firstElementChild).focus();
+}
+function applyLanguage(l){
+  lang=supportedLanguages.includes(l)?l:"en";save(localStorage,"restaurant-language",lang);
+  const rtl=["fa","ar"].includes(lang);document.documentElement.lang=lang;document.documentElement.dir=rtl?"rtl":"ltr";
+  document.querySelectorAll("svg.flip").forEach(e=>e.style.transform=rtl?"scaleX(-1)":"");
+  const s=S(),u=UI();
+  $("langCode").textContent=lang.toUpperCase();$("langBtn").setAttribute("aria-label",u.language||"Language");
+  $("demoNote").textContent=s.demo;$("tagline").textContent=u.tagline||"";
+  $("heroHello").textContent=s.hello;$("heroInput").placeholder=s.askPh;$("chatInput").placeholder=s.askPh;
+  $("heroSend").setAttribute("aria-label",s.sendQ);$("chatSend").setAttribute("aria-label",s.sendQ);
+  $("popularTitle").textContent=s.popular;$("seeAll").textContent=s.seeAll;$("catsTitle").textContent=s.cats;
+  $("menuTitle").textContent=s.menu;$("searchInput").placeholder=s.searchPh;$("searchLabel").textContent=s.searchPh;
+  $("kiwaSub").textContent=s.kiwaSub;$("orderTitle").textContent=s.yourOrder;$("tableLabel").textContent=s.table;
+  $("noteInput").placeholder=s.note;$("noteLabel").textContent=s.note;$("subtotalLabel").textContent=s.subtotal;$("sendOrder").textContent=s.send;
+  $("orderNoticeText").textContent=s.demoSent;
+  $("navHome").textContent=s.home;$("navMenu").textContent=s.menu;$("navOrder").textContent=s.order;$("navCall").textContent=s.call;
+  renderAll();
+  if(!$("dishSheet").hidden)drawDish();
+}
+
+/* ---- KIWA ---- */
+async function ask(message){
+  message=String(message||"").trim();
+  if(!message||chatBusy)return;
+  if(currentView()!=="kiwa")go("kiwa");
+  chatBusy=true;$("chatSend").disabled=true;
+  chat.push({role:"user",text:message},{role:"typing"});renderChat();scrollChat();
+  let reply,ids=[];
+  try{
+    const r=await fetch("/gastlyo/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message,language:lang,sessionId:sessionId()})});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok)throw new Error(d.error||"Server error");
+    reply=d.answer||UI().error;ids=mentioned(reply).map(i=>String(i.id));
+  }catch(e){console.error(e);reply=UI().error||"Error"}
+  chat=chat.filter(m=>m.role!=="typing");chat.push({role:"bot",text:reply,ids});
+  chatBusy=false;$("chatSend").disabled=false;renderChat();scrollChat();
+}
+function scrollChat(){requestAnimationFrame(()=>{const last=$("chat").lastElementChild;if(last)last.scrollIntoView({block:"end",behavior:"smooth"})})}
+
+/* ---- toast ---- */
+function toast(text,icon){const t=$("toast");t.innerHTML=(icon||"")+`<span>${esc(text)}</span>`;t.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.hidden=true,2600)}
+
+/* ---- routing ---- */
+const VIEWS=["home","menu","kiwa","order"];
+function currentView(){const h=location.hash.replace("#","");return VIEWS.includes(h)?h:"home"}
+function go(v){if(v==="home"){if(location.hash){history.pushState(null,"",location.pathname+location.search);showView()}else showView()}else if(location.hash!=="#"+v){location.hash=v}else showView()}
+function showView(){
+  const v=currentView();
+  document.querySelectorAll("[data-view]").forEach(s=>s.hidden=s.dataset.view!==v);
+  document.querySelectorAll(".nav-btn[data-go]").forEach(b=>b.dataset.go===v?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current"));
+  window.scrollTo(0,0);
+  if(v==="kiwa"&&!chat.length)setTimeout(()=>$("chatInput").focus({preventScroll:true}),50);
+}
+window.addEventListener("hashchange",showView);
+window.addEventListener("popstate",showView);
+
+/* ---- events (delegated) ---- */
+document.addEventListener("click",e=>{
+  const t=e.target.closest("button,a");if(!t)return;
+  const d=t.dataset;
+  if(d.go!==undefined&&d.go){e.preventDefault();if(!$("dishSheet").hidden)closeSheet("dishSheet");go(d.go);return}
+  if(d.open){openDish(d.open);return}
+  if(d.add){addToCart(d.add,1);return}
+  if(d.inc){addToCart(d.inc,1);return}
+  if(d.dec){addToCart(d.dec,-1);return}
+  if(d.cat){currentCategory=d.cat;go("menu");renderMenu();return}
+  if(d.filter){currentCategory=d.filter;renderMenu();return}
+  if(d.ask){ask(d.ask);return}
+  if(d.lang){applyLanguage(d.lang);trackEvent("language_change",{language:d.lang});closeSheet("langSheet");return}
+  if(d.close!==undefined){closeSheet("dishSheet");return}
+  if(d.sq){sheetQty=Math.max(1,sheetQty+Number(d.sq));drawDish();return}
+  if(d.sheetAdd!==undefined){addToCart(sheetId,sheetQty);closeSheet("dishSheet");return}
+});
+["dishSheet","langSheet"].forEach(id=>$(id).addEventListener("click",e=>{if(e.target.id===id)closeSheet(id)}));
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){if(!$("dishSheet").hidden)closeSheet("dishSheet");else if(!$("langSheet").hidden)closeSheet("langSheet")}});
+$("langBtn").addEventListener("click",openLang);
+$("callBtn").addEventListener("click",()=>toast(S().callToast,ICON.bell));
+$("searchInput").addEventListener("input",renderMenu);
+$("heroAsk").addEventListener("submit",e=>{e.preventDefault();const v=$("heroInput").value;$("heroInput").value="";ask(v)});
+$("chatForm").addEventListener("submit",e=>{e.preventDefault();const v=$("chatInput").value;$("chatInput").value="";ask(v)});
+$("sendOrder").addEventListener("click",()=>{if(!cartCount())return;$("orderNotice").hidden=false;$("orderNotice").scrollIntoView({block:"nearest",behavior:"smooth"})});
+
+/* table number: ?table=7 or ?tisch=7 */
+(function(){
+  const p=new URLSearchParams(location.search),t=p.get("table")||p.get("tisch");
+  if(t)save(sessionStorage,"gastlyo_table",t.slice(0,4));
+  $("tableInput").value=sessionStorage.getItem("gastlyo_table")||"";
+  $("tableInput").addEventListener("input",e=>save(sessionStorage,"gastlyo_table",e.target.value));
+})();
+
+/* ---- start ---- */
+function detectLanguage(){
+  const q=new URLSearchParams(location.search).get("lang");if(q&&supportedLanguages.includes(q))return q;
+  const saved=localStorage.getItem("restaurant-language");if(saved&&supportedLanguages.includes(saved))return saved;
+  for(const l of (navigator.languages||[navigator.language||"en"])){const b=String(l).toLowerCase().split("-")[0];if(supportedLanguages.includes(b))return b}
+  return "en";
+}
+applyLanguage(detectLanguage());
+showView();
+loadMenu().catch(err=>{console.error("Menu load error:",err);showStatus(S().loadError,"error");if(currentView()==="home"){$("featured").innerHTML=`<div class="status error" style="flex:1">${esc(S().loadError)}</div>`}});
+</script>
+</body>
+</html>
