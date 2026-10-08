@@ -1,8 +1,8 @@
 // Gastlyo on keywanfakhri.com/gastlyo/ — forwards the two Gastlyo API calls
-// (menu config and KIWA chat) to the Gastlyo backend on Vercel.
+// (menu config, demo menus and KIWA chat) to the Gastlyo backend on Vercel.
 // No secrets live here: the Vercel project keeps the Supabase and OpenAI keys.
 const BACKEND = "https://kf-restaurant-steel.vercel.app/api/";
-const ALLOWED = { config: ["GET"], chat: ["POST"] };
+const ALLOWED = { config: ["GET"], chat: ["POST"], menu: ["GET"] };
 
 export async function onRequest({ request, params }) {
   const name = Array.isArray(params.path) ? params.path.join("/") : String(params.path || "");
@@ -18,7 +18,8 @@ export async function onRequest({ request, params }) {
   }
 
   try {
-    const upstream = await fetch(BACKEND + name, init);
+    const query = new URL(request.url).search;
+    const upstream = await fetch(BACKEND + name + (request.method === "GET" ? query : ""), init);
     return new Response(upstream.body, {
       status: upstream.status,
       headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" }

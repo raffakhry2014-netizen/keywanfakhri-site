@@ -4,12 +4,8 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <meta name="theme-color" content="#173F32" />
-<title>Gastlyo – Der KI-Kellner für Ihr Restaurant</title>
-<meta name="description" content="Gastlyo: digitale Speisekarte mit KI-Kellner KIWA – Empfehlungen und Bestellung in 12 Sprachen. Demo." />
-<meta property="og:title" content="Gastlyo – Der KI-Kellner für Ihr Restaurant" />
-<meta property="og:description" content="Digitale Speisekarte mit KI-Kellner KIWA – in 12 Sprachen." />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://keywanfakhri.com/gastlyo/" />
+<title>Bella Vista – Caffè &amp; Ristorante · Gastlyo Demo</title>
+<meta name="description" content="Demo: digitale Speisekarte mit KI-Kellner KIWA für ein italienisches Café – in 12 Sprachen. Fiktives Lokal." />
 <link rel="preload" href="/gastlyo/fonts/karla-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
 
 <style>
@@ -209,14 +205,38 @@ img{display:block;max-width:100%}
 .legal-footer a:hover{text-decoration:underline}
 @media(min-width:900px){.home-grid{display:grid;grid-template-columns:minmax(0,1fr);}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* café demo: icon tiles instead of photos */
+.tile{display:grid;place-items:center;background:var(--t-bg,#F6E8DA);color:var(--t-ink,#8A4512)}
+.tile svg{width:42%;height:42%;max-width:56px;max-height:56px}
+.t-food{--t-bg:#F6E8DA;--t-ink:#8A4512}
+.t-coffee{--t-bg:#EFE4D8;--t-ink:#5B3A1E}
+.t-soft{--t-bg:#E3EEE8;--t-ink:#173F32}
+.t-bar{--t-bg:#F4E1E4;--t-ink:#7A2335}
+.fcard .tile{width:100%;height:120px}
+.row .tile{flex:0 0 64px;width:64px;height:64px;border-radius:14px}
+.row .tile svg{width:30px;height:30px}
+.cat-tile .tile{width:100%;height:84px}
+.cat-tile .tile svg{width:34px;height:34px}
+.pair .tile{width:100%;height:72px}
+.pair .tile svg{width:28px;height:28px}
+.dish-hero{width:100%;height:150px;border-radius:24px 24px 0 0}
+.dish-hero svg{width:72px;height:72px}
+.special{display:flex;gap:14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:12px;margin-top:4px}
+.special .tile{flex:0 0 76px;width:76px;height:76px;border-radius:16px}
+.special .tile svg{width:34px;height:34px}
+.special .open{flex:1;min-width:0;border:0;background:none;padding:0;display:flex;gap:14px;align-items:center;text-align:start}
+.eyebrow{font-size:11.5px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--amber-ink)}
+.cat-note{margin:-4px 0 10px;font-size:13px;color:var(--muted)}
+.size{font-size:12.5px;color:var(--muted)}
+
 </style>
 </head>
-
 <body>
 <div class="demo-note" id="demoNote" role="note"></div>
 
 <header class="wrap topbar">
-  <a class="wordmark" href="#" data-go="home">Gastlyo</a>
+  <a class="wordmark" href="#" data-go="home">Bella Vista</a>
   <button type="button" class="lang-btn" id="langBtn" aria-haspopup="dialog">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18"/></svg>
     <span id="langCode">DE</span>
@@ -227,8 +247,8 @@ img{display:block;max-width:100%}
   <!-- HOME -->
   <section id="view-home" data-view="home">
     <div class="hero">
-      <p class="hero-tagline" id="tagline"></p>
-      <h1 id="restName">&nbsp;</h1>
+      <p class="hero-tagline">Caffè &amp; Ristorante</p>
+      <h1>Bella Vista</h1>
       <div class="kiwa-row">
         <div class="avatar" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg></div>
         <p class="bubble-dark" id="heroHello"></p>
@@ -240,6 +260,9 @@ img{display:block;max-width:100%}
       </form>
     </div>
     <div class="chip-row no-scrollbar home-chips" id="homeChips"></div>
+
+    <div class="section-head"><h2 id="specialTitle"></h2></div>
+    <div id="special"></div>
 
     <div class="section-head"><h2 id="popularTitle"></h2><button type="button" class="link-btn" data-go="menu" id="seeAll"></button></div>
     <div class="featured no-scrollbar" id="featured"></div>
@@ -323,16 +346,14 @@ img{display:block;max-width:100%}
 </div>
 <div class="toast" id="toast" role="status" hidden></div>
 
-<script src="i18n.js"></script>
-<script src="i18n-content.js"></script>
-<script src="i18n-extra.js"></script>
+<script src="/gastlyo/i18n.js"></script>
+<script src="/gastlyo/i18n-extra.js"></script>
+<script src="i18n-caffe.js"></script>
 
 <script>
-const RESTAURANT_SLUG="kiwan-fakhri";
-// Same languages and order as keywanfakhri.com
+const MENU_ID="caffe-demo";
 const LANGS=[["de","Deutsch"],["en","English"],["fa","فارسی"],["ar","العربية"],["tr","Türkçe"],["it","Italiano"],["fr","Français"],["ko","한국어"],["zh","中文（简体）"],["ja","日本語"],["es","Español"],["sq","Shqip"]];
 const supportedLanguages=LANGS.map(l=>l[0]);
-const categoryOrder=["Starter","Salad","Burger","Main","Pasta","Vegan","Dessert","Cold Drink","Hot Drink"];
 const LOCALE={de:"de-DE",en:"en-IE",fa:"fa-IR",ar:"ar",tr:"tr-TR",it:"it-IT",fr:"fr-FR",ko:"ko-KR",zh:"zh-CN",ja:"ja-JP",es:"es-ES",sq:"sq-AL"};
 
 const STR={
@@ -350,6 +371,23 @@ es:{demo:"Demo – no es un restaurante real. Menú, precios y datos son ejemplo
 sq:{demo:"Demo – nuk është restorant i vërtetë. Menuja, çmimet dhe të dhënat janë shembuj.",heroTitle:"Çfarë dëshironi të hani?",hello:"Përshëndetje, unë jam KIWA – kamarieri juaj dixhital. Më thoni çfarë ju pëlqen, buxhetin ose preferencat ushqimore.",askPh:"Pyesni KIWA, p.sh. vegjetariane nën 15 €",lowcal:"Pak kalori",veggie:"Vegjetariane",budget:"Nën 15 €",best:"Më të shiturat",qLow:"Më rekomando një pjatë me pak kalori.",qVeg:"Më rekomando një pjatë vegjetariane.",qBud:"Çfarë më rekomandon nën 15 euro?",qBest:"Cilat nga më të shiturat më rekomandon?",popular:"Të preferuarat e mysafirëve",seeAll:"Shiko të gjitha",cats:"Kategoritë",menu:"Menuja",searchPh:"Kërko në menu",all:"Të gjitha",soldOut:"E shitur",noResults:"Nuk u gjet asnjë pjatë.",loading:"Po ngarkohet menuja …",loadError:"Menuja nuk u ngarkua. Provoni përsëri.",home:"Kreu",order:"Porosia",call:"Kamarieri",add:"Shto",added:"U shtua në porosi",pairs:"Shkon mirë me",yourOrder:"Porosia juaj",table:"Tavolina",note:"Kërkesa, p.sh. pa qepë",subtotal:"Nëntotali",send:"Dërgo porosinë",demoSent:"Demo: në versionin e plotë porosia shkon direkt në kuzhinë.",emptyCart:"Ende asnjë zgjedhje.",toMenu:"Te menuja",callToast:"Demo: në versionin e plotë stafi njoftohet menjëherë.",kiwaSub:"Kamarieri juaj dixhital",close:"Mbyll",sendQ:"Dërgo",less:"Më pak",more:"Më shumë"}
 };
 
+// Café-specific texts (chips, sections, "from" prices)
+const CS={
+de:{special:"Gericht der Woche",popular:"Empfehlungen des Hauses",c1:"Frühstück",q1:"Was empfiehlst du mir zum Frühstück?",c2:"Vegetarisch",q2:"Empfiehl mir ein vegetarisches Gericht.",c3:"Unter 10 €",q3:"Was kann ich für unter 10 Euro essen?",c4:"Ohne Alkohol",q4:"Welche alkoholfreien Aperitifs oder Cocktails habt ihr?",hello:"Ciao! Ich bin KIWA, der digitale Kellner. Sag mir, worauf du Lust hast – Frühstück, Pizza, Aperitivo oder etwas unter 10 €."},
+en:{special:"Dish of the week",popular:"House recommendations",c1:"Breakfast",q1:"What do you recommend for breakfast?",c2:"Vegetarian",q2:"Recommend a vegetarian dish.",c3:"Under €10",q3:"What can I eat for under 10 euros?",c4:"Alcohol-free",q4:"Which alcohol-free aperitifs or cocktails do you have?",hello:"Ciao! I'm KIWA, the digital waiter. Tell me what you feel like – breakfast, pizza, aperitivo or something under €10."},
+fa:{special:"غذای هفته",popular:"پیشنهاد سرآشپز",c1:"صبحانه",q1:"برای صبحانه چی پیشنهاد می‌کنی؟",c2:"گیاهی",q2:"یک غذای گیاهی پیشنهاد بده.",c3:"زیر ۱۰ یورو",q3:"زیر ۱۰ یورو چی می‌تونم بخورم؟",c4:"بدون الکل",q4:"چه آپریتیو یا کوکتل بدون الکلی دارید؟",hello:"چائو! من KIWA هستم، گارسون دیجیتال. بگو چی میل داری – صبحانه، پیتزا، آپریتیو یا چیزی زیر ۱۰ یورو."},
+ar:{special:"طبق الأسبوع",popular:"توصيات المطبخ",c1:"الفطور",q1:"ماذا تقترح للفطور؟",c2:"نباتي",q2:"اقترح لي طبقًا نباتيًا.",c3:"أقل من 10 €",q3:"ماذا يمكنني أن آكل بأقل من 10 يورو؟",c4:"بدون كحول",q4:"ما المشروبات الفاتحة للشهية أو الكوكتيلات الخالية من الكحول لديكم؟",hello:"تشاو! أنا KIWA، النادل الرقمي. أخبرني بما تشتهيه – فطور، بيتزا، أبيريتيفو أو شيء بأقل من 10 €."},
+tr:{special:"Haftanın yemeği",popular:"Şefin önerileri",c1:"Kahvaltı",q1:"Kahvaltı için ne önerirsin?",c2:"Vejetaryen",q2:"Bana vejetaryen bir yemek öner.",c3:"10 € altı",q3:"10 euronun altında ne yiyebilirim?",c4:"Alkolsüz",q4:"Hangi alkolsüz aperitif veya kokteylleriniz var?",hello:"Ciao! Ben KIWA, dijital garson. Canın ne istiyor – kahvaltı, pizza, aperitivo ya da 10 € altı bir şey?"},
+it:{special:"Piatto della settimana",popular:"Consigli della casa",c1:"Colazione",q1:"Cosa mi consigli per colazione?",c2:"Vegetariano",q2:"Consigliami un piatto vegetariano.",c3:"Sotto 10 €",q3:"Cosa posso mangiare con meno di 10 euro?",c4:"Analcolico",q4:"Quali aperitivi o cocktail analcolici avete?",hello:"Ciao! Sono KIWA, il cameriere digitale. Dimmi cosa ti va – colazione, pizza, aperitivo o qualcosa sotto i 10 €."},
+fr:{special:"Plat de la semaine",popular:"Suggestions de la maison",c1:"Petit-déjeuner",q1:"Que me recommandes-tu pour le petit-déjeuner ?",c2:"Végétarien",q2:"Recommande-moi un plat végétarien.",c3:"Moins de 10 €",q3:"Que puis-je manger pour moins de 10 euros ?",c4:"Sans alcool",q4:"Quels apéritifs ou cocktails sans alcool avez-vous ?",hello:"Ciao ! Je suis KIWA, le serveur numérique. Dis-moi ce qui te fait envie – petit-déjeuner, pizza, aperitivo ou quelque chose à moins de 10 €."},
+ko:{special:"이번 주 요리",popular:"하우스 추천",c1:"아침 식사",q1:"아침 식사로 무엇을 추천하나요?",c2:"채식",q2:"채식 메뉴를 추천해 주세요.",c3:"10€ 이하",q3:"10유로 이하로 무엇을 먹을 수 있나요?",c4:"무알코올",q4:"무알코올 아페리티프나 칵테일이 있나요?",hello:"차오! 디지털 웨이터 KIWA입니다. 아침 식사, 피자, 아페리티보, 10€ 이하 메뉴 등 원하는 것을 말씀해 주세요."},
+zh:{special:"本周特选",popular:"店家推荐",c1:"早餐",q1:"早餐你推荐什么？",c2:"素食",q2:"推荐一道素食。",c3:"10 € 以下",q3:"10 欧元以下能吃什么？",c4:"无酒精",q4:"你们有哪些无酒精开胃酒或鸡尾酒？",hello:"Ciao！我是 KIWA，数字服务员。告诉我你想吃什么——早餐、披萨、开胃酒，或 10 € 以下的选择。"},
+ja:{special:"今週のひと皿",popular:"お店のおすすめ",c1:"朝食",q1:"朝食のおすすめは？",c2:"ベジタリアン",q2:"ベジタリアン料理をおすすめしてください。",c3:"10€以下",q3:"10ユーロ以下で何が食べられますか？",c4:"ノンアルコール",q4:"ノンアルコールのアペリティフやカクテルはありますか？",hello:"チャオ！デジタルウェイターの KIWA です。朝食、ピザ、アペリティーヴォ、10€以下など、ご希望を教えてください。"},
+es:{special:"Plato de la semana",popular:"Recomendaciones de la casa",c1:"Desayuno",q1:"¿Qué me recomiendas para desayunar?",c2:"Vegetariano",q2:"Recomiéndame un plato vegetariano.",c3:"Menos de 10 €",q3:"¿Qué puedo comer por menos de 10 euros?",c4:"Sin alcohol",q4:"¿Qué aperitivos o cócteles sin alcohol tenéis?",hello:"¡Ciao! Soy KIWA, el camarero digital. Dime qué te apetece: desayuno, pizza, aperitivo o algo por menos de 10 €."},
+sq:{special:"Pjata e javës",popular:"Rekomandimet e shtëpisë",c1:"Mëngjes",q1:"Çfarë më rekomandon për mëngjes?",c2:"Vegjetariane",q2:"Më rekomando një pjatë vegjetariane.",c3:"Nën 10 €",q3:"Çfarë mund të ha nën 10 euro?",c4:"Pa alkool",q4:"Çfarë aperitivësh ose koktejsh pa alkool keni?",hello:"Ciao! Unë jam KIWA, kamarieri dixhital. Më thuaj çfarë dëshiron – mëngjes, pica, aperitiv apo diçka nën 10 €."}
+};
+function fromPrice(p){return ({de:`ab ${p}`,en:`from ${p}`,it:`da ${p}`,fr:`dès ${p}`,es:`desde ${p}`,tr:`${p}'dan itibaren`,ar:`ابتداءً من ${p}`,fa:`از ${p}`,ko:`${p}부터`,zh:`${p}起`,ja:`${p}〜`,sq:`nga ${p}`})[lang]||`ab ${p}`}
+
 const ICON={
   plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
   minus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/></svg>',
@@ -357,296 +395,229 @@ const ICON={
   check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
   bell:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>'
 };
+// line icons per category (stroke, 24x24)
+const P={
+  star:'<path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/>',
+  sun:'<circle cx="12" cy="13" r="4"/><path d="M12 4v2M4.9 7.1l1.4 1.4M19.1 7.1l-1.4 1.4M3 15h2M19 15h2M2 19h20"/>',
+  plate:'<circle cx="12" cy="13" r="6.5"/><circle cx="12" cy="13" r="3"/><path d="M3 4v6M3 7h1.5M21 4v16"/>',
+  leaf:'<path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14z"/><path d="M5 19l8-8"/>',
+  bowl:'<path d="M3 11h18a9 9 0 0 1-18 0z"/><path d="M9 4c-1 1.5 1 2.5 0 4M13 3.5c-1 1.5 1 2.5 0 4"/>',
+  bread:'<path d="M4 11a5 4 0 0 1 16 0v1.5a1.5 1.5 0 0 1-1.5 1.5H18v5H6v-5h-.5A1.5 1.5 0 0 1 4 12.5z"/><path d="M9 9l1 2M13 8.5l1 2"/>',
+  pizza:'<path d="M12 21L3.5 6a14 14 0 0 1 17 0z"/><path d="M5 8.5a11 11 0 0 1 14 0"/><circle cx="10" cy="11.5" r="1"/><circle cx="14" cy="12.5" r="1"/><circle cx="12" cy="16" r="1"/>',
+  cup:'<path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 11h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M8 3.5c-.8 1.2.8 2 0 3.2M12 3.5c-.8 1.2.8 2 0 3.2"/>',
+  bottle:'<path d="M10 3h4v4l1.5 2.5V20a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1V9.5L10 7z"/><path d="M8.5 13h7"/>',
+  spritz:'<path d="M7 3h10l-1.5 10a3.5 3.5 0 0 1-7 0z"/><path d="M12 16.5V21M8.5 21h7"/><path d="M7.6 7.5h8.8"/><circle cx="17.5" cy="4.5" r="2"/>',
+  martini:'<path d="M4 4h16l-8 9z"/><path d="M12 13v8M8 21h8"/><path d="M16 4l3-2"/>',
+  wine:'<path d="M7 3h10v4a5 5 0 0 1-10 0z"/><path d="M12 12v9M8.5 21h7"/><path d="M7.3 6h9.4"/>',
+  shot:'<path d="M6 4h12l-2 16H8z"/><path d="M7 9h10"/>'
+};
+const CAT_STYLE={special:["star","t-food"],breakfast:["sun","t-coffee"],antipasti:["plate","t-food"],salads:["leaf","t-soft"],pasta:["bowl","t-food"],focaccia:["bread","t-food"],pizza:["pizza","t-food"],hot:["cup","t-coffee"],cold:["bottle","t-soft"],aperitivo:["spritz","t-bar"],cocktails:["martini","t-bar"],mocktails:["martini","t-soft"],wine_beer:["wine","t-bar"],digestivo:["shot","t-bar"]};
+function tile(cat,extra=""){const [ic,cl]=CAT_STYLE[cat]||["plate","t-food"];return `<span class="tile ${cl} ${extra}" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${P[ic]}</svg></span>`}
 
-let lang="en", allItems=[], byId=new Map(), restaurantId=null, supabaseConfig=null;
-let currentCategory="all", chat=[], chatBusy=false, toastTimer=null, lastFocus=null;
-let cart=readJSON(sessionStorage,"gastlyo_cart",{});
-
+let lang="de",allItems=[],byId=new Map(),categoryOrder=[],chat=[],chatBusy=false,toastTimer=null,lastFocus=null,currentCategory="all";
+let cart=readJSON(sessionStorage,"gastlyo_caffe_cart",{});
 const $=id=>document.getElementById(id);
-function readJSON(store,key,fallback){try{return JSON.parse(store.getItem(key))||fallback}catch{return fallback}}
+function readJSON(store,key,fb){try{return JSON.parse(store.getItem(key))||fb}catch{return fb}}
 function save(store,key,val){try{store.setItem(key,typeof val==="string"?val:JSON.stringify(val))}catch{}}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function S(){return STR[lang]||STR.en}
+function S(){return Object.assign({},STR.en,STR[lang]||{},CS.en,CS[lang]||{})}
 function UI(){return (I18N.ui&&(I18N.ui[lang]||I18N.ui.en))||{}}
 function stripEmoji(s){return String(s||"").replace(/^[^\p{L}\p{N}]+/u,"").trim()}
-function fmt(n){try{return new Intl.NumberFormat(LOCALE[lang]||"de-DE",{style:"currency",currency:"EUR"}).format(Number(n)||0)}catch{return "€"+(Number(n)||0).toFixed(2)}}
-function sessionId(){let id=sessionStorage.getItem("gastlyo_analytics_session");if(!id){id=(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random());save(sessionStorage,"gastlyo_analytics_session",id)}return id}
+function money(n){try{return new Intl.NumberFormat(LOCALE[lang]||"de-DE",{style:"currency",currency:"EUR"}).format(Number(n)||0)}catch{return (Number(n)||0).toFixed(2)+" €"}}
+function priceOf(item,mult=1){const p=money(item.price*mult);return item.from&&mult===1?fromPrice(p):p}
+function sessionId(){let id=sessionStorage.getItem("gastlyo_analytics_session");if(!id){id=(crypto.randomUUID?crypto.randomUUID():String(Date.now()));save(sessionStorage,"gastlyo_analytics_session",id)}return id}
 
-/* ---- content translation (same data as before) ---- */
-const C=()=>(window.I18N&&I18N.content)||{};
-function nameOf(item){return I18N.itemNames?.[String(item.external_id)]?.[lang]||item.name}
-function descOf(item){if(lang==="en")return item.description||"";return C().descriptions?.[item.description]?.[lang]||item.description||""}
-function trList(list,dict){if(!Array.isArray(list))return[];if(lang==="en")return list;return list.map(x=>C()[dict]?.[x]?.[lang]||x)}
+/* ---- translation ---- */
+const CI=window.CAFFE_I18N||{categories:{},notes:{},names:{},terms:{},pieces:{}};
+function nameOf(i){return lang==="de"?i.name:(CI.names[i.name]?.[lang]||i.name)}
 function sep(){return ["fa","ar"].includes(lang)?"، ":(["zh","ja"].includes(lang)?"、":", ")}
-function unitOf(key,fb){if(lang==="en")return fb;return C().units?.[key]?.[lang]||fb}
-function servingOf(s){return C().serving?C().serving(s,lang):s}
-function catLabel(cat){return stripEmoji(UI().categories?.[cat]||cat)}
-function imgOf(item){return String(item.image_url||`images/menu-${item.external_id}.webp`).replace(/menu-0+(\d)/,"menu-$1")}
-function tagsOf(item){
+function descOf(i){const d=i.d||[];if(!d.length)return "";return d.map(t=>lang==="de"?t:(CI.terms[t]?.[lang]||t)).join(sep())}
+function sizeOf(i){if(!i.size)return "";let s=i.size;if(lang!=="de"){s=s.replace("Stück",CI.pieces[lang]||"pcs");if(["en","ko","zh","ja"].includes(lang))s=s.replace(/(\d),(\d)/g,"$1.$2")}return s}
+function catLabel(c){return CI.categories[c]?.[lang]||({special:"Gericht der Woche",breakfast:"Frühstück",antipasti:"Antipasti",salads:"Salate & Beilagen",pasta:"Pasta",focaccia:"Focaccia",pizza:"Pizza",hot:"Kaffee & warme Getränke",cold:"Kalte Getränke",aperitivo:"Aperitivo",cocktails:"Cocktails",mocktails:"Alkoholfreie Cocktails",wine_beer:"Wein & Bier",digestivo:"Digestivi & Gin"})[c]||c}
+function catNote(c,notes){if(!notes||!notes[c])return "";return lang==="de"?notes[c]:(CI.notes[c]?.[lang]||notes[c])}
+function tagsOf(i){
   const tg=UI().tags||{},out=[];
-  if(item.vegan)out.push([tg.vegan,""]);else if(item.vegetarian)out.push([tg.vegetarian,""]);
-  if(item.gluten_free)out.push([tg.gluten_free,""]);
-  if(item.spicy_level>0)out.push([item.spicy_level===1?tg.mild:item.spicy_level===2?tg.medium:tg.hot,"warm"]);
-  if(item.bestseller)out.push([tg.bestseller,"warm"]);
+  if(i.vegan)out.push([tg.vegan,""]);else if(i.veg&&!["hot","cold","aperitivo","cocktails","mocktails","wine_beer","digestivo"].includes(i.cat))out.push([tg.vegetarian,""]);
+  if(i.spicy>0)out.push([i.spicy===1?tg.mild:i.spicy===2?tg.medium:tg.hot,"warm"]);
+  if(i.best)out.push([tg.bestseller||"Bestseller","warm"]);
   return out.filter(t=>t[0]).map(([t,c])=>[stripEmoji(t),c]);
 }
 
-/* ---- analytics (unchanged behaviour) ---- */
-async function trackEvent(eventType,extra={}){
-  try{
-    if(!supabaseConfig?.supabaseUrl||!supabaseConfig?.supabaseAnonKey||!restaurantId)return;
-    await fetch(`${supabaseConfig.supabaseUrl}/rest/v1/analytics_events`,{method:"POST",
-      headers:{apikey:supabaseConfig.supabaseAnonKey,"Content-Type":"application/json","Prefer":"return=minimal"},
-      body:JSON.stringify({restaurant_id:restaurantId,event_type:eventType,menu_item_id:extra.menu_item_id||null,menu_item_name:extra.menu_item_name||null,language:extra.language||lang,session_id:sessionId()})});
-  }catch(e){console.debug("Analytics skipped:",e)}
-}
-
 /* ---- data ---- */
-async function jsonFetch(url,options={}){
-  const r=await fetch(url,options);let d=null;try{d=await r.json()}catch{}
-  if(!r.ok)throw new Error(d?.message||d?.error||`HTTP ${r.status}`);return d;
-}
+let NOTES={};
 async function loadMenu(){
   showStatus(S().loading);
-  supabaseConfig=await jsonFetch("/gastlyo/api/config",{cache:"no-store"});
-  if(!supabaseConfig.supabaseUrl||!supabaseConfig.supabaseAnonKey)throw new Error("Supabase configuration missing.");
-  const headers={apikey:supabaseConfig.supabaseAnonKey};
-  const rs=await jsonFetch(`${supabaseConfig.supabaseUrl}/rest/v1/restaurants?slug=eq.${encodeURIComponent(RESTAURANT_SLUG)}&select=id,name`,{headers});
-  const r=rs?.[0];if(!r)throw new Error("Restaurant not found.");
-  restaurantId=r.id;$("restName").textContent=r.name||"";
-  const items=await jsonFetch(`${supabaseConfig.supabaseUrl}/rest/v1/menu_items?restaurant_id=eq.${r.id}&select=*&order=sort_order.asc,external_id.asc`,{headers});
-  allItems=items||[];byId=new Map(allItems.map(i=>[String(i.id),i]));
-  // drop cart entries that no longer exist
+  const r=await fetch("/gastlyo/api/menu?r="+MENU_ID,{cache:"no-store"});
+  if(!r.ok)throw new Error("HTTP "+r.status);
+  const data=await r.json();
+  NOTES=data.restaurant?.notes||{};
+  const keys={pasta:"pasta",pizza:"pizza",hot:"hot"};NOTES=Object.fromEntries(Object.entries(NOTES).filter(([k])=>keys[k]));
+  categoryOrder=data.categories||[];
+  allItems=(data.items||[]).map(i=>({...i,id:String(i.id)}));
+  byId=new Map(allItems.map(i=>[i.id,i]));
   for(const k of Object.keys(cart))if(!byId.has(k))delete cart[k];
   hideStatus();renderAll();
-  if(!sessionStorage.getItem("gastlyo_menu_view_tracked")){save(sessionStorage,"gastlyo_menu_view_tracked","1");trackEvent("menu_view")}
 }
-function showStatus(text,type){const el=$("status");el.textContent=text;el.className="status"+(type?" "+type:"");el.hidden=false}
+function showStatus(t,type){const el=$("status");el.textContent=t;el.className="status"+(type?" "+type:"");el.hidden=false}
 function hideStatus(){$("status").hidden=true}
 
-/* ---- rendering helpers ---- */
-function addBtn(item){
-  const dis=item.available===false;
-  return `<button type="button" class="icon-btn" data-add="${esc(item.id)}" aria-label="${esc(S().add)}: ${esc(nameOf(item))}"${dis?" disabled":""}>${ICON.plus}</button>`;
-}
-function rowHTML(item,opts={}){
-  const sold=item.available===false;
-  const tags=opts.compact?[]:tagsOf(item).slice(0,2);
-  return `<div class="row${sold?" sold":""}">
-    <button type="button" class="open" data-open="${esc(item.id)}">
-      <img src="${esc(imgOf(item))}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
+/* ---- rendering ---- */
+function addBtn(i){return `<button type="button" class="icon-btn" data-add="${esc(i.id)}" aria-label="${esc(S().add)}: ${esc(nameOf(i))}">${ICON.plus}</button>`}
+function rowHTML(i,opts={}){
+  const tags=opts.compact?[]:tagsOf(i).slice(0,2),desc=descOf(i),size=sizeOf(i);
+  return `<div class="row">
+    <button type="button" class="open" data-open="${esc(i.id)}">${tile(i.cat)}
       <div style="min-width:0">
-        <div class="name">${esc(nameOf(item))}</div>
-        ${opts.compact?"":`<div class="desc">${esc(descOf(item))}</div>`}
-        <div class="meta"><span class="price">${fmt(item.price)}</span>${sold?`<span class="pill dark">${esc(S().soldOut)}</span>`:""}${tags.map(t=>`<span class="pill ${t[1]}">${esc(t[0])}</span>`).join("")}</div>
+        <div class="name">${esc(nameOf(i))}</div>
+        ${!opts.compact&&desc?`<div class="desc">${esc(desc)}</div>`:""}
+        <div class="meta"><span class="price">${esc(priceOf(i))}</span>${size?`<span class="size">${esc(size)}</span>`:""}${tags.map(t=>`<span class="pill ${t[1]}">${esc(t[0])}</span>`).join("")}</div>
       </div>
-    </button>
-    ${addBtn(item)}
-  </div>`;
+    </button>${addBtn(i)}</div>`;
 }
-
 function renderHome(){
   const s=S();
-  const chips=[["lowcal","qLow"],["veggie","qVeg"],["budget","qBud"],["best","qBest"]];
-  const chipHTML=chips.map(([k,q])=>`<button type="button" class="chip" data-ask="${esc(s[q])}">${esc(s[k])}</button>`).join("");
-  $("homeChips").innerHTML=chipHTML;$("kiwaChips").innerHTML=chipHTML;
-  let feat=allItems.filter(i=>i.bestseller&&i.available!==false);
-  if(feat.length<4)feat=feat.concat(allItems.filter(i=>i.available!==false&&!feat.includes(i))).slice(0,8);
-  $("featured").innerHTML=feat.slice(0,10).map(item=>`
+  const chips=[["c1","q1"],["c2","q2"],["c3","q3"],["c4","q4"]].map(([c,q])=>`<button type="button" class="chip" data-ask="${esc(s[q])}">${esc(s[c])}</button>`).join("");
+  $("homeChips").innerHTML=chips;$("kiwaChips").innerHTML=chips;
+  const sp=allItems.find(i=>i.cat==="special");
+  $("specialTitle").parentElement.hidden=!sp;
+  $("special").innerHTML=sp?`<div class="special"><button type="button" class="open" data-open="${esc(sp.id)}">${tile("special")}<div style="min-width:0"><div class="eyebrow">${esc(s.special)}</div><div class="name" style="font-weight:800;font-size:16px;margin-top:2px">${esc(nameOf(sp))}</div><div class="desc" style="font-size:13px;color:var(--muted);margin-top:2px">${esc(descOf(sp))}</div><div class="price" style="margin-top:6px">${esc(priceOf(sp))}</div></div></button>${addBtn(sp)}</div>`:"";
+  const feat=allItems.filter(i=>i.best&&i.cat!=="special");
+  $("featured").innerHTML=feat.map(i=>`
     <div class="fcard">
-      <button type="button" class="open" data-open="${esc(item.id)}">
-        <img src="${esc(imgOf(item))}" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
-        <div class="txt"><div class="name">${esc(nameOf(item))}</div><div class="desc">${esc(descOf(item))}</div></div>
+      <button type="button" class="open" data-open="${esc(i.id)}">${tile(i.cat)}
+        <div class="txt"><div class="name">${esc(nameOf(i))}</div><div class="desc">${esc(descOf(i)||catLabel(i.cat))}</div></div>
       </button>
-      <div class="foot"><span class="price">${fmt(item.price)}</span>${addBtn(item)}</div>
+      <div class="foot"><span class="price">${esc(priceOf(i))}</span>${addBtn(i)}</div>
     </div>`).join("");
-  const cats=categoryOrder.filter(c=>allItems.some(i=>i.category===c));
-  $("catGrid").innerHTML=cats.map(c=>{const first=allItems.find(i=>i.category===c);
-    return `<button type="button" class="cat-tile" data-cat="${esc(c)}"><img src="${esc(imgOf(first))}" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><span>${esc(catLabel(c))}</span></button>`}).join("");
+  const cats=categoryOrder.filter(c=>c!=="special"&&allItems.some(i=>i.cat===c));
+  $("catGrid").innerHTML=cats.map(c=>`<button type="button" class="cat-tile" data-cat="${esc(c)}">${tile(c)}<span>${esc(catLabel(c))}</span></button>`).join("");
 }
-
 function renderMenu(){
   const s=S(),q=$("searchInput").value.trim().toLowerCase();
-  const cats=categoryOrder.filter(c=>allItems.some(i=>i.category===c));
+  const cats=categoryOrder.filter(c=>allItems.some(i=>i.cat===c));
   $("catChips").innerHTML=[`<button type="button" class="chip" data-filter="all" aria-pressed="${currentCategory==="all"}">${esc(s.all)}</button>`]
     .concat(cats.map(c=>`<button type="button" class="chip" data-filter="${esc(c)}" aria-pressed="${currentCategory===c}">${esc(catLabel(c))}</button>`)).join("");
   if(!allItems.length){$("menuList").innerHTML="";return}
-  const list=allItems.filter(item=>{
-    if(currentCategory!=="all"&&item.category!==currentCategory)return false;
+  const list=allItems.filter(i=>{
+    if(currentCategory!=="all"&&i.cat!==currentCategory)return false;
     if(!q)return true;
-    return [nameOf(item),item.name,item.description,descOf(item),item.category,catLabel(item.category),...trList(item.ingredients,"ingredients"),...(item.ingredients||[]),...(item.tags||[])].join(" ").toLowerCase().includes(q);
+    return [i.name,nameOf(i),descOf(i),(i.d||[]).join(" "),catLabel(i.cat)].join(" ").toLowerCase().includes(q);
   });
   if(!list.length){$("menuList").innerHTML=`<div class="empty">${esc(s.noResults)}</div>`;return}
-  $("menuList").innerHTML=categoryOrder.map(c=>{
-    const items=list.filter(i=>i.category===c);if(!items.length)return"";
-    return `<h2 class="cat-title">${esc(catLabel(c))}</h2><div class="dish-list">${items.map(i=>rowHTML(i)).join("")}</div>`;
+  $("menuList").innerHTML=cats.map(c=>{
+    const items=list.filter(i=>i.cat===c);if(!items.length)return "";
+    const note=catNote(c,NOTES);
+    return `<h2 class="cat-title">${esc(catLabel(c))}</h2>${note?`<p class="cat-note">${esc(note)}</p>`:""}<div class="dish-list">${items.map(i=>rowHTML(i)).join("")}</div>`;
   }).join("");
 }
-
 function mentioned(text){
   const t=String(text||"").toLowerCase();if(!t)return[];
-  return allItems.filter(i=>{const a=nameOf(i).toLowerCase(),b=String(i.name||"").toLowerCase();return (a.length>2&&t.includes(a))||(b.length>2&&t.includes(b))}).slice(0,3);
+  const hits=allItems.filter(i=>{const a=nameOf(i).toLowerCase(),b=i.name.toLowerCase(),c=b.replace(/^(pizza|focaccia) /,"");return t.includes(a)||t.includes(b)||(c.length>4&&t.includes(c))});
+  return hits.slice(0,3);
 }
 function renderChat(){
-  const s=S();
-  const parts=[`<p class="msg bot">${esc(s.hello)}</p>`];
+  const s=S(),parts=[`<p class="msg bot">${esc(s.hello)}</p>`];
   for(const m of chat){
     if(m.role==="user")parts.push(`<p class="msg user">${esc(m.text)}</p>`);
     else if(m.role==="typing")parts.push(`<p class="msg bot" aria-label="${esc(UI().thinking||"…")}"><span class="typing"><i></i><i></i><i></i></span></p>`);
-    else{
-      parts.push(`<p class="msg bot">${esc(m.text)}</p>`);
-      const ds=(m.ids||[]).map(id=>byId.get(id)).filter(Boolean);
-      if(ds.length)parts.push(`<div class="chat-dishes">${ds.map(i=>rowHTML(i,{compact:true})).join("")}</div>`);
-    }
+    else{parts.push(`<p class="msg bot">${esc(m.text)}</p>`);const ds=(m.ids||[]).map(id=>byId.get(id)).filter(Boolean);if(ds.length)parts.push(`<div class="chat-dishes">${ds.map(i=>rowHTML(i,{compact:true})).join("")}</div>`)}
   }
   $("chat").innerHTML=parts.join("");
 }
-
 function cartCount(){return Object.values(cart).reduce((a,b)=>a+b,0)}
 function renderCart(){
   const s=S(),ids=Object.keys(cart).filter(id=>byId.has(id));
   const n=cartCount();$("cartBadge").hidden=!n;$("cartBadge").textContent=n;
   $("orderBottom").hidden=!ids.length;
-  if(!ids.length){
-    $("cartList").innerHTML=`<div class="empty">${esc(s.emptyCart)}<div style="margin-top:12px"><button type="button" class="link-btn" data-go="menu">${esc(s.toMenu)}</button></div></div>`;
-    return;
-  }
+  if(!ids.length){$("cartList").innerHTML=`<div class="empty">${esc(s.emptyCart)}<div style="margin-top:12px"><button type="button" class="link-btn" data-go="menu">${esc(s.toMenu)}</button></div></div>`;return}
   let sum=0;
-  $("cartList").innerHTML=ids.map(id=>{const i=byId.get(id),q=cart[id];sum+=q*Number(i.price);
-    return `<div class="row">
-      <button type="button" class="open" data-open="${esc(id)}"><img src="${esc(imgOf(i))}" alt="" loading="lazy" style="flex-basis:64px;width:64px;height:64px" onerror="this.style.visibility='hidden'">
-        <div style="min-width:0"><div class="name">${esc(nameOf(i))}</div><div class="desc">${fmt(q*Number(i.price))}</div></div></button>
-      <div class="stepper"><button type="button" data-dec="${esc(id)}" aria-label="${esc(s.less)}">${ICON.minus}</button><span>${q}</span><button type="button" data-inc="${esc(id)}" aria-label="${esc(s.more)}">${ICON.plus}</button></div>
-    </div>`}).join("");
-  $("subtotal").textContent=fmt(sum);
+  $("cartList").innerHTML=ids.map(id=>{const i=byId.get(id),q=cart[id];sum+=q*i.price;
+    return `<div class="row"><button type="button" class="open" data-open="${esc(id)}">${tile(i.cat)}<div style="min-width:0"><div class="name">${esc(nameOf(i))}</div><div class="desc">${esc(money(q*i.price))}</div></div></button>
+      <div class="stepper"><button type="button" data-dec="${esc(id)}" aria-label="${esc(s.less)}">${ICON.minus}</button><span>${q}</span><button type="button" data-inc="${esc(id)}" aria-label="${esc(s.more)}">${ICON.plus}</button></div></div>`}).join("");
+  $("subtotal").textContent=money(sum);
 }
-
 function renderAll(){renderHome();renderMenu();renderChat();renderCart()}
 
 /* ---- cart ---- */
-function addToCart(id,n=1){
-  const item=byId.get(String(id));if(!item||item.available===false)return;
-  cart[id]=(cart[id]||0)+n;if(cart[id]<=0)delete cart[id];
-  save(sessionStorage,"gastlyo_cart",cart);$("orderNotice").hidden=true;renderCart();
-  if(n>0)toast(`${nameOf(item)} · ${S().added}`,ICON.check);
-}
+function addToCart(id,n=1){const i=byId.get(String(id));if(!i)return;cart[id]=(cart[id]||0)+n;if(cart[id]<=0)delete cart[id];save(sessionStorage,"gastlyo_caffe_cart",cart);$("orderNotice").hidden=true;renderCart();if(n>0)toast(`${nameOf(i)} · ${S().added}`,ICON.check)}
 
 /* ---- dish sheet ---- */
 let sheetQty=1,sheetId=null;
-function openDish(id){
-  const item=byId.get(String(id));if(!item)return;
-  sheetId=String(id);sheetQty=1;lastFocus=document.activeElement;
-  trackEvent("item_click",{menu_item_id:item.id,menu_item_name:item.name});
-  drawDish();$("dishSheet").hidden=false;document.body.style.overflow="hidden";
-  $("dishPanel").scrollTop=0;$("dishPanel").querySelector(".sheet-close").focus();
+function openDish(id){const i=byId.get(String(id));if(!i)return;sheetId=String(id);sheetQty=1;lastFocus=document.activeElement;drawDish();$("dishSheet").hidden=false;document.body.style.overflow="hidden";$("dishPanel").scrollTop=0;$("dishPanel").querySelector(".sheet-close").focus()}
+function pairsFor(i){
+  const drinks=["hot","cold","aperitivo","cocktails","mocktails","wine_beer","digestivo"];
+  let want;
+  if(i.cat==="breakfast")want=[["hot",84],["cold",110]];
+  else if(drinks.includes(i.cat))want=[["antipasti",20],["focaccia",54]];
+  else if(["pizza","pasta","special","focaccia"].includes(i.cat))want=[["aperitivo",122],["hot",80]];
+  else want=[["focaccia",54],["aperitivo",122]];
+  return want.map(([c,id])=>byId.get(String(id))||allItems.find(x=>x.cat===c)).filter(x=>x&&x.id!==i.id).slice(0,2);
 }
 function drawDish(){
-  const item=byId.get(sheetId),s=S(),u=UI(),sold=item.available===false;
-  const pairs=pairsFor(item);
-  const info=[item.serving_size?`${u.portion||"Portion"}: ${servingOf(item.serving_size)}`:"",item.prep_time?`${u.prep||"Prep"}: ~${item.prep_time} ${u.minutes||"min"}`:""].filter(Boolean).join(" · ");
+  const i=byId.get(sheetId),s=S(),desc=descOf(i),size=sizeOf(i),pairs=pairsFor(i),note=catNote(i.cat,NOTES);
   $("dishPanel").innerHTML=`
     <button type="button" class="sheet-close" data-close aria-label="${esc(s.close)}">${ICON.close}</button>
-    <img class="dish-img" src="${esc(imgOf(item))}" alt="${esc(nameOf(item))}" onerror="this.style.display='none'">
+    ${tile(i.cat,"dish-hero")}
     <div class="dish-body">
-      <div class="dish-top"><h2 id="dishName">${esc(nameOf(item))}</h2><span class="price">${fmt(item.price)}</span></div>
-      <p class="dish-desc">${esc(descOf(item))}</p>
-      <div class="tags">${sold?`<span class="pill dark">${esc(s.soldOut)}</span>`:""}${tagsOf(item).map(t=>`<span class="pill ${t[1]}">${esc(t[0])}</span>`).join("")}</div>
-      <div class="stats">
-        <div class="stat"><strong>${item.calories??"–"}</strong><span>kcal</span></div>
-        <div class="stat"><strong>${item.protein??"–"} g</strong><span>${esc(unitOf("protein","protein"))}</span></div>
-        <div class="stat"><strong>${item.fat??"–"} g</strong><span>${esc(unitOf("fat","fat"))}</span></div>
-        <div class="stat"><strong>${item.carbs??"–"} g</strong><span>${esc(unitOf("carbs","carbs"))}</span></div>
-      </div>
-      ${Array.isArray(item.ingredients)&&item.ingredients.length?`<div class="label">${esc(u.ingredients||"Ingredients")}</div><p class="label-text">${esc(trList(item.ingredients,"ingredients").join(sep()))}</p>`:""}
-      ${info?`<p class="label-text" style="margin-top:14px;color:var(--muted)">${esc(info)}</p>`:""}
-      ${pairs.length?`<div class="label" style="margin-top:22px">${esc(s.pairs)}</div><div class="pairs" style="margin-top:10px">${pairs.map(p=>`
-        <button type="button" class="pair" data-open="${esc(p.id)}"><img src="${esc(imgOf(p))}" alt="" loading="lazy" onerror="this.style.visibility='hidden'"><div><strong>${esc(nameOf(p))}</strong><span>+ ${fmt(p.price)}</span></div></button>`).join("")}</div>`:""}
+      <div class="eyebrow">${esc(catLabel(i.cat))}</div>
+      <div class="dish-top" style="margin-top:4px"><h2 id="dishName">${esc(nameOf(i))}</h2><span class="price">${esc(priceOf(i))}</span></div>
+      ${desc?`<p class="dish-desc">${esc(desc)}</p>`:""}
+      ${size?`<p class="label-text" style="color:var(--muted)">${esc(size)}</p>`:""}
+      <div class="tags">${tagsOf(i).map(t=>`<span class="pill ${t[1]}">${esc(t[0])}</span>`).join("")}</div>
+      ${note?`<p class="hint">${esc(note)}</p>`:""}
+      ${pairs.length?`<div class="label" style="margin-top:22px">${esc(s.pairs)}</div><div class="pairs" style="margin-top:10px">${pairs.map(p=>`<button type="button" class="pair" data-open="${esc(p.id)}">${tile(p.cat)}<div><strong>${esc(nameOf(p))}</strong><span>+ ${esc(priceOf(p))}</span></div></button>`).join("")}</div>`:""}
       <div class="add-bar">
-        <div class="stepper"><button type="button" data-sq="-1" aria-label="${esc(s.less)}"${sold?" disabled":""}>${ICON.minus}</button><span>${sheetQty}</span><button type="button" data-sq="1" aria-label="${esc(s.more)}"${sold?" disabled":""}>${ICON.plus}</button></div>
-        <button type="button" class="btn-primary" data-sheet-add${sold?" disabled":""}>${esc(sold?s.soldOut:s.add)} · ${fmt(Number(item.price)*sheetQty)}</button>
+        <div class="stepper"><button type="button" data-sq="-1" aria-label="${esc(s.less)}">${ICON.minus}</button><span>${sheetQty}</span><button type="button" data-sq="1" aria-label="${esc(s.more)}">${ICON.plus}</button></div>
+        <button type="button" class="btn-primary" data-sheet-add>${esc(s.add)} · ${esc(money(i.price*sheetQty))}</button>
       </div>
     </div>`;
-}
-function pairsFor(item){
-  const drinks=["Cold Drink","Hot Drink"],sweets=["Dessert"];
-  const wanted=drinks.includes(item.category)?["Dessert"]:sweets.includes(item.category)?["Hot Drink"]:["Cold Drink","Dessert"];
-  const pick=[];
-  for(const c of wanted){
-    const pool=allItems.filter(i=>i.category===c&&i.available!==false&&i.id!==item.id);
-    const best=pool.find(i=>i.bestseller)||pool[0];if(best)pick.push(best);
-  }
-  return pick.slice(0,2);
 }
 function closeSheet(id){$(id).hidden=true;document.body.style.overflow="";if(lastFocus&&lastFocus.focus)lastFocus.focus()}
 
 /* ---- language ---- */
-function openLang(){
-  lastFocus=document.activeElement;
-  $("langTitle").textContent=UI().language||"Language";
-  $("langItems").innerHTML=LANGS.map(([c,n])=>`<button type="button" class="lang-item" data-lang="${c}" lang="${c}" aria-current="${c===lang}"><span>${esc(n)}</span><small>${c.toUpperCase()}</small></button>`).join("");
-  $("langSheet").hidden=false;document.body.style.overflow="hidden";
-  ($("langItems").querySelector('[aria-current="true"]')||$("langItems").firstElementChild).focus();
-}
+function openLang(){lastFocus=document.activeElement;$("langTitle").textContent=UI().language||"Language";$("langItems").innerHTML=LANGS.map(([c,n])=>`<button type="button" class="lang-item" data-lang="${c}" lang="${c}" aria-current="${c===lang}"><span>${esc(n)}</span><small>${c.toUpperCase()}</small></button>`).join("");$("langSheet").hidden=false;document.body.style.overflow="hidden";($("langItems").querySelector('[aria-current="true"]')||$("langItems").firstElementChild).focus()}
 function applyLanguage(l){
   lang=supportedLanguages.includes(l)?l:"en";save(localStorage,"restaurant-language",lang);
   const rtl=["fa","ar"].includes(lang);document.documentElement.lang=lang;document.documentElement.dir=rtl?"rtl":"ltr";
   document.querySelectorAll("svg.flip").forEach(e=>e.style.transform=rtl?"scaleX(-1)":"");
   const s=S(),u=UI();
   $("langCode").textContent=lang.toUpperCase();$("langBtn").setAttribute("aria-label",u.language||"Language");
-  $("demoNote").textContent=s.demo;$("tagline").textContent=u.tagline||"";
-  $("heroHello").textContent=s.hello;$("heroInput").placeholder=s.askPh;$("chatInput").placeholder=s.askPh;
+  $("demoNote").textContent=s.demo;$("heroHello").textContent=s.hello;$("heroInput").placeholder=s.askPh;$("chatInput").placeholder=s.askPh;
   $("heroSend").setAttribute("aria-label",s.sendQ);$("chatSend").setAttribute("aria-label",s.sendQ);
-  $("popularTitle").textContent=s.popular;$("seeAll").textContent=s.seeAll;$("catsTitle").textContent=s.cats;
+  $("specialTitle").textContent=s.special;$("popularTitle").textContent=s.popular;$("seeAll").textContent=s.seeAll;$("catsTitle").textContent=s.cats;
   $("menuTitle").textContent=s.menu;$("searchInput").placeholder=s.searchPh;$("searchLabel").textContent=s.searchPh;
   $("kiwaSub").textContent=s.kiwaSub;$("orderTitle").textContent=s.yourOrder;$("tableLabel").textContent=s.table;
-  $("noteInput").placeholder=s.note;$("noteLabel").textContent=s.note;$("subtotalLabel").textContent=s.subtotal;$("sendOrder").textContent=s.send;
-  $("orderNoticeText").textContent=s.demoSent;
+  $("noteInput").placeholder=s.note;$("noteLabel").textContent=s.note;$("subtotalLabel").textContent=s.subtotal;$("sendOrder").textContent=s.send;$("orderNoticeText").textContent=s.demoSent;
   $("navHome").textContent=s.home;$("navMenu").textContent=s.menu;$("navOrder").textContent=s.order;$("navCall").textContent=s.call;
-  renderAll();
-  if(!$("dishSheet").hidden)drawDish();
+  renderAll();if(!$("dishSheet").hidden)drawDish();
 }
 
 /* ---- KIWA ---- */
 async function ask(message){
-  message=String(message||"").trim();
-  if(!message||chatBusy)return;
+  message=String(message||"").trim();if(!message||chatBusy)return;
   if(currentView()!=="kiwa")go("kiwa");
-  chatBusy=true;$("chatSend").disabled=true;
-  chat.push({role:"user",text:message},{role:"typing"});renderChat();scrollChat();
+  chatBusy=true;$("chatSend").disabled=true;chat.push({role:"user",text:message},{role:"typing"});renderChat();scrollChat();
   let reply,ids=[];
   try{
-    const r=await fetch("/gastlyo/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message,language:lang,sessionId:sessionId()})});
-    const d=await r.json().catch(()=>({}));
-    if(!r.ok)throw new Error(d.error||"Server error");
-    reply=d.answer||UI().error;ids=mentioned(reply).map(i=>String(i.id));
+    const r=await fetch("/gastlyo/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message,language:lang,sessionId:sessionId(),restaurant:MENU_ID})});
+    const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||"Server error");
+    reply=d.answer||UI().error;ids=mentioned(reply).map(i=>i.id);
   }catch(e){console.error(e);reply=UI().error||"Error"}
-  chat=chat.filter(m=>m.role!=="typing");chat.push({role:"bot",text:reply,ids});
-  chatBusy=false;$("chatSend").disabled=false;renderChat();scrollChat();
+  chat=chat.filter(m=>m.role!=="typing");chat.push({role:"bot",text:reply,ids});chatBusy=false;$("chatSend").disabled=false;renderChat();scrollChat();
 }
 function scrollChat(){requestAnimationFrame(()=>{const last=$("chat").lastElementChild;if(last)last.scrollIntoView({block:"end",behavior:"smooth"})})}
-
-/* ---- toast ---- */
 function toast(text,icon){const t=$("toast");t.innerHTML=(icon||"")+`<span>${esc(text)}</span>`;t.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.hidden=true,2600)}
 
 /* ---- routing ---- */
 const VIEWS=["home","menu","kiwa","order"];
 function currentView(){const h=location.hash.replace("#","");return VIEWS.includes(h)?h:"home"}
-function go(v){if(v==="home"){if(location.hash){history.pushState(null,"",location.pathname+location.search);showView()}else showView()}else if(location.hash!=="#"+v){location.hash=v}else showView()}
-function showView(){
-  const v=currentView();
-  document.querySelectorAll("[data-view]").forEach(s=>s.hidden=s.dataset.view!==v);
-  document.querySelectorAll(".nav-btn[data-go]").forEach(b=>b.dataset.go===v?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current"));
-  window.scrollTo(0,0);
-  if(v==="kiwa"&&!chat.length)setTimeout(()=>$("chatInput").focus({preventScroll:true}),50);
-}
-window.addEventListener("hashchange",showView);
-window.addEventListener("popstate",showView);
+function go(v){if(v==="home"){if(location.hash){history.pushState(null,"",location.pathname+location.search)}showView()}else if(location.hash!=="#"+v){location.hash=v}else showView()}
+function showView(){const v=currentView();document.querySelectorAll("[data-view]").forEach(s=>s.hidden=s.dataset.view!==v);document.querySelectorAll(".nav-btn[data-go]").forEach(b=>b.dataset.go===v?b.setAttribute("aria-current","page"):b.removeAttribute("aria-current"));window.scrollTo(0,0);if(v==="kiwa"&&!chat.length)setTimeout(()=>$("chatInput").focus({preventScroll:true}),50)}
+window.addEventListener("hashchange",showView);window.addEventListener("popstate",showView);
 
-/* ---- events (delegated) ---- */
 document.addEventListener("click",e=>{
-  const t=e.target.closest("button,a");if(!t)return;
-  const d=t.dataset;
-  if(d.go!==undefined&&d.go){e.preventDefault();if(!$("dishSheet").hidden)closeSheet("dishSheet");go(d.go);return}
+  const t=e.target.closest("button,a");if(!t)return;const d=t.dataset;
+  if(d.go){e.preventDefault();if(!$("dishSheet").hidden)closeSheet("dishSheet");go(d.go);return}
   if(d.open){openDish(d.open);return}
   if(d.add){addToCart(d.add,1);return}
   if(d.inc){addToCart(d.inc,1);return}
@@ -654,7 +625,7 @@ document.addEventListener("click",e=>{
   if(d.cat){currentCategory=d.cat;go("menu");renderMenu();return}
   if(d.filter){currentCategory=d.filter;renderMenu();return}
   if(d.ask){ask(d.ask);return}
-  if(d.lang){applyLanguage(d.lang);trackEvent("language_change",{language:d.lang});closeSheet("langSheet");return}
+  if(d.lang){applyLanguage(d.lang);closeSheet("langSheet");return}
   if(d.close!==undefined){closeSheet("dishSheet");return}
   if(d.sq){sheetQty=Math.max(1,sheetQty+Number(d.sq));drawDish();return}
   if(d.sheetAdd!==undefined){addToCart(sheetId,sheetQty);closeSheet("dishSheet");return}
@@ -667,25 +638,16 @@ $("searchInput").addEventListener("input",renderMenu);
 $("heroAsk").addEventListener("submit",e=>{e.preventDefault();const v=$("heroInput").value;$("heroInput").value="";ask(v)});
 $("chatForm").addEventListener("submit",e=>{e.preventDefault();const v=$("chatInput").value;$("chatInput").value="";ask(v)});
 $("sendOrder").addEventListener("click",()=>{if(!cartCount())return;$("orderNotice").hidden=false;$("orderNotice").scrollIntoView({block:"nearest",behavior:"smooth"})});
+(function(){const p=new URLSearchParams(location.search),t=p.get("table")||p.get("tisch");if(t)save(sessionStorage,"gastlyo_table",t.slice(0,4));$("tableInput").value=sessionStorage.getItem("gastlyo_table")||"";$("tableInput").addEventListener("input",e=>save(sessionStorage,"gastlyo_table",e.target.value))})();
 
-/* table number: ?table=7 or ?tisch=7 */
-(function(){
-  const p=new URLSearchParams(location.search),t=p.get("table")||p.get("tisch");
-  if(t)save(sessionStorage,"gastlyo_table",t.slice(0,4));
-  $("tableInput").value=sessionStorage.getItem("gastlyo_table")||"";
-  $("tableInput").addEventListener("input",e=>save(sessionStorage,"gastlyo_table",e.target.value));
-})();
-
-/* ---- start ---- */
 function detectLanguage(){
   const q=new URLSearchParams(location.search).get("lang");if(q&&supportedLanguages.includes(q))return q;
   const saved=localStorage.getItem("restaurant-language");if(saved&&supportedLanguages.includes(saved))return saved;
-  for(const l of (navigator.languages||[navigator.language||"en"])){const b=String(l).toLowerCase().split("-")[0];if(supportedLanguages.includes(b))return b}
-  return "en";
+  for(const l of (navigator.languages||[navigator.language||"de"])){const b=String(l).toLowerCase().split("-")[0];if(supportedLanguages.includes(b))return b}
+  return "de";
 }
-applyLanguage(detectLanguage());
-showView();
-loadMenu().catch(err=>{console.error("Menu load error:",err);showStatus(S().loadError,"error");if(currentView()==="home"){$("featured").innerHTML=`<div class="status error" style="flex:1">${esc(S().loadError)}</div>`}});
+applyLanguage(detectLanguage());showView();
+loadMenu().catch(err=>{console.error(err);showStatus(S().loadError,"error")});
 </script>
 </body>
 </html>
