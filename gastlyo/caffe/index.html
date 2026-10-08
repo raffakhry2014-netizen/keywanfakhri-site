@@ -512,8 +512,16 @@ function renderMenu(){
 }
 function mentioned(text){
   const t=String(text||"").toLowerCase();if(!t)return[];
-  const hits=allItems.filter(i=>{const a=nameOf(i).toLowerCase(),b=i.name.toLowerCase(),c=b.replace(/^(pizza|focaccia) /,"");return t.includes(a)||t.includes(b)||(c.length>4&&t.includes(c))});
-  return hits.slice(0,3);
+  const hits=[];
+  for(const i of allItems){
+    const names=[nameOf(i),i.name].map(x=>x.toLowerCase()).filter(x=>x.length>2);
+    let pos=-1;for(const n of names){const k=t.indexOf(n);if(k>=0&&(pos<0||k<pos))pos=k}
+    if(pos>=0)hits.push({i,pos,len:Math.max(...names.map(n=>t.includes(n)?n.length:0))});
+  }
+  // drop hits whose name sits inside a longer matched name (e.g. "Margherita" inside "Joo Margherita")
+  const keep=hits.filter(h=>!hits.some(o=>o!==h&&o.len>h.len&&o.pos<=h.pos&&o.pos+o.len>=h.pos+h.len));
+  keep.sort((a,b)=>a.pos-b.pos);
+  return keep.slice(0,3).map(h=>h.i);
 }
 function renderChat(){
   const s=S(),parts=[`<p class="msg bot">${esc(s.hello)}</p>`];
