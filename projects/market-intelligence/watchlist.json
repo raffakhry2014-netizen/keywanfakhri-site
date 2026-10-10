@@ -1,0 +1,207 @@
+{
+  "reviewed_at": "2026-10-05T13:10:00Z",
+  "assets": [
+    {
+      "id": "gold",
+      "name": "Gold",
+      "symbol": "TVC:GOLD",
+      "description": "USD / troy ounce \u00b7 CFD reference",
+      "category": "Commodities"
+    },
+    {
+      "id": "silver",
+      "name": "Silver",
+      "symbol": "TVC:SILVER",
+      "description": "USD / troy ounce \u00b7 CFD reference",
+      "category": "Commodities"
+    },
+    {
+      "id": "copper",
+      "name": "Copper",
+      "symbol": "FX:COPPER",
+      "description": "USD / pound \u00b7 FXCM CFD reference",
+      "category": "Commodities"
+    },
+    {
+      "id": "platinum",
+      "name": "Platinum",
+      "symbol": "TVC:PLATINUM",
+      "description": "USD / troy ounce \u00b7 CFD reference",
+      "category": "Commodities"
+    },
+    {
+      "id": "aluminium",
+      "name": "Aluminium",
+      "symbol": "CAPITALCOM:ALUMINUM",
+      "description": "USD quote \u00b7 Capital.com CFD reference; see source for contract units",
+      "category": "Commodities"
+    },
+    {
+      "id": "brent",
+      "name": "Brent crude",
+      "symbol": "TVC:UKOIL",
+      "description": "USD / barrel \u00b7 Brent CFD reference",
+      "category": "Commodities"
+    },
+    {
+      "id": "wti",
+      "name": "WTI crude",
+      "symbol": "TVC:USOIL",
+      "description": "USD / barrel \u00b7 WTI CFD reference",
+      "category": "Commodities"
+    },
+    {
+      "id": "gas",
+      "name": "Natural gas",
+      "symbol": "CAPITALCOM:NATURALGAS",
+      "description": "USD quote \u00b7 Capital.com CFD reference; see source for contract units",
+      "category": "Commodities"
+    },
+    {
+      "id": "spy",
+      "name": "SPY \u00b7 S&P 500",
+      "symbol": "AMEX:SPY",
+      "description": "US large-cap equities",
+      "category": "ETFs"
+    },
+    {
+      "id": "qqq",
+      "name": "QQQ \u00b7 Nasdaq 100",
+      "symbol": "NASDAQ:QQQ",
+      "description": "Nasdaq 100 equities",
+      "category": "ETFs"
+    },
+    {
+      "id": "vti",
+      "name": "VTI \u00b7 Total US market",
+      "symbol": "AMEX:VTI",
+      "description": "Broad US equities",
+      "category": "ETFs"
+    },
+    {
+      "id": "vxus",
+      "name": "VXUS \u00b7 International",
+      "symbol": "NASDAQ:VXUS",
+      "description": "Equities outside the US",
+      "category": "ETFs"
+    },
+    {
+      "id": "vwo",
+      "name": "VWO \u00b7 Emerging markets",
+      "symbol": "AMEX:VWO",
+      "description": "Emerging-market equities",
+      "category": "ETFs"
+    },
+    {
+      "id": "efa",
+      "name": "EFA \u00b7 Developed markets",
+      "symbol": "AMEX:EFA",
+      "description": "Developed equities outside US and Canada",
+      "category": "ETFs"
+    },
+    {
+      "id": "iwm",
+      "name": "IWM \u00b7 Small caps",
+      "symbol": "AMEX:IWM",
+      "description": "Russell 2000 equities",
+      "category": "ETFs"
+    },
+    {
+      "id": "bnd",
+      "name": "BND \u00b7 US bonds",
+      "symbol": "NASDAQ:BND",
+      "description": "Broad US investment-grade bonds",
+      "category": "ETFs"
+    },
+    {
+      "id": "tlt",
+      "name": "TLT \u00b7 Long Treasuries",
+      "symbol": "NASDAQ:TLT",
+      "description": "US Treasury bonds with 20+ year maturity",
+      "category": "ETFs"
+    },
+    {
+      "id": "gld",
+      "name": "GLD \u00b7 Gold",
+      "symbol": "AMEX:GLD",
+      "description": "Physically backed gold trust",
+      "category": "ETFs"
+    },
+    {
+      "id": "btc",
+      "name": "Bitcoin",
+      "symbol": "BITSTAMP:BTCUSD",
+      "description": "BTC / USD \u00b7 Bitstamp",
+      "category": "Crypto"
+    },
+    {
+      "id": "eth",
+      "name": "Ethereum",
+      "symbol": "BITSTAMP:ETHUSD",
+      "description": "ETH / USD \u00b7 Bitstamp",
+      "category": "Crypto"
+    },
+    {
+      "id": "bnb",
+      "name": "BNB",
+      "symbol": "BINANCE:BNBUSDT",
+      "description": "BNB / USDT \u00b7 Binance",
+      "category": "Crypto"
+    },
+    {
+      "id": "xrp",
+      "name": "XRP",
+      "symbol": "BITSTAMP:XRPUSD",
+      "description": "XRP / USD \u00b7 Bitstamp",
+      "category": "Crypto"
+    },
+    {
+      "id": "sol",
+      "name": "Solana",
+      "symbol": "COINBASE:SOLUSD",
+      "description": "SOL / USD \u00b7 Coinbase",
+      "category": "Crypto"
+    },
+    {
+      "id": "ada",
+      "name": "Cardano",
+      "symbol": "COINBASE:ADAUSD",
+      "description": "ADA / USD \u00b7 Coinbase",
+      "category": "Crypto"
+    },
+    {
+      "id": "link",
+      "name": "Chainlink",
+      "symbol": "COINBASE:LINKUSD",
+      "description": "LINK / USD \u00b7 Coinbase",
+      "category": "Crypto"
+    },
+    {
+      "id": "avax",
+      "name": "Avalanche",
+      "symbol": "COINBASE:AVAXUSD",
+      "description": "AVAX / USD \u00b7 Coinbase",
+      "category": "Crypto"
+    },
+    {
+      "id": "dot",
+      "name": "Polkadot",
+      "symbol": "COINBASE:DOTUSD",
+      "description": "DOT / USD \u00b7 Coinbase",
+      "category": "Crypto"
+    },
+    {
+      "id": "doge",
+      "name": "Dogecoin",
+      "symbol": "COINBASE:DOGEUSD",
+      "description": "DOGE / USD \u00b7 Coinbase",
+      "category": "Crypto"
+    }
+  ],
+  "weekly": {
+    "published_at": null
+  },
+  "monthly": {
+    "published_at": null
+  }
+}
