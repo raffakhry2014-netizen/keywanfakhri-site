@@ -4,7 +4,7 @@
 //   GITHUB_TOKEN    (Secret)  – Fine-grained Token, nur dieses Repository, "Contents: Read and write"
 //   DB              (D1-Binding) – Datenbank für die Statistik
 //   GITHUB_REPO     (optional) – Standard: raffakhry2014-netizen/keywanfakhri-site
-import { SCHEMA } from "../track.js";
+import { SCHEMA, aiInfo } from "../track.js";
 
 const COOKIE = "keyone_admin";
 const SESSION_HOURS = 12;
@@ -82,15 +82,18 @@ async function stats(env, days) {
   await env.DB.exec(SCHEMA.replace(/\n\s*/g, " "));
   const since = new Date(Date.now() - (days - 1) * 864e5).toISOString().slice(0, 10);
   const q = (sql) => env.DB.prepare(sql).bind(since).all().then(r => r.results);
-  const [daily, pages, clicks, langs, refs, countries] = await Promise.all([
+  const [daily, pages, clicks, langs, refs, countries, aiBots, aiPages] = await Promise.all([
     q(`SELECT day, type, SUM(n) AS n FROM stats WHERE day >= ? GROUP BY day, type ORDER BY day`),
     q(`SELECT path, SUM(n) AS n FROM stats WHERE day >= ? AND type='view' GROUP BY path ORDER BY n DESC LIMIT 60`),
     q(`SELECT target, path, SUM(n) AS n FROM stats WHERE day >= ? AND type='click' GROUP BY target, path ORDER BY n DESC LIMIT 100`),
     q(`SELECT lang AS k, SUM(n) AS n FROM stats WHERE day >= ? AND type='view' GROUP BY lang ORDER BY n DESC`),
     q(`SELECT ref AS k, SUM(n) AS n FROM stats WHERE day >= ? AND type='view' AND ref<>'' GROUP BY ref ORDER BY n DESC LIMIT 20`),
-    q(`SELECT country AS k, SUM(n) AS n FROM stats WHERE day >= ? AND type='view' GROUP BY country ORDER BY n DESC LIMIT 20`)
+    q(`SELECT country AS k, SUM(n) AS n FROM stats WHERE day >= ? AND type='view' GROUP BY country ORDER BY n DESC LIMIT 20`),
+    q(`SELECT target AS k, SUM(n) AS n, MAX(day) AS last FROM stats WHERE day >= ? AND type='ai' GROUP BY target ORDER BY n DESC LIMIT 40`),
+    q(`SELECT path AS k, SUM(n) AS n FROM stats WHERE day >= ? AND type='ai' GROUP BY path ORDER BY n DESC LIMIT 30`)
   ]);
-  return { configured: true, since, days, daily, pages, clicks, langs, refs, countries };
+  const ai = { bots: aiBots.map(b => ({ ...b, ...aiInfo(b.k) })), pages: aiPages };
+  return { configured: true, since, days, daily, pages, clicks, langs, refs, countries, ai };
 }
 
 // ---------- Router ----------

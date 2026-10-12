@@ -141,7 +141,7 @@ td.l{direction:ltr;text-align:right;word-break:break-all}
         <button class="btn ghost" id="reloadStats">بروزرسانی</button>
       </div>
       <div class="grid g4" style="margin-bottom:16px">
-        <div class="tile"><span>بازدید صفحات</span><b id="tViews">–</b><small id="tViewsSub"></small></div>
+        <div class="tile"><span>بازدید واقعی (انسان)</span><b id="tViews">–</b><small id="tViewsSub"></small></div>
         <div class="tile"><span>کلیک‌ها</span><b id="tClicks">–</b><small id="tClicksSub"></small></div>
         <div class="tile"><span>پربازدیدترین پروژه</span><b id="tProject" style="font-size:20px">–</b><small id="tProjectSub"></small></div>
         <div class="tile"><span>بیشترین ورودی از</span><b id="tRef" style="font-size:20px">–</b><small id="tRefSub"></small></div>
@@ -150,6 +150,19 @@ td.l{direction:ltr;text-align:right;word-break:break-all}
         <h2>روند روزانه</h2>
         <svg class="chart" id="chart" role="img" aria-label="نمودار بازدید و کلیک روزانه"></svg>
         <div class="legend"><span><i style="background:var(--accent)"></i>بازدید</span><span><i style="background:var(--c2)"></i>کلیک</span></div>
+      </div>
+      <div class="card" style="margin-bottom:16px">
+        <h2>ربات‌ها و ایجنت‌های هوش مصنوعی <small style="color:var(--muted);font-weight:400">— جدا از آمار بالا، در آن حساب نمی‌شوند</small></h2>
+        <div class="grid g4" style="margin-bottom:16px">
+          <div class="tile"><span>بازدید هوش مصنوعی</span><b id="tAi">–</b><small id="tAiSub"></small></div>
+          <div class="tile"><span>برای آموزش مدل</span><b id="tAiTrain">–</b><small>جمع‌آوری داده</small></div>
+          <div class="tile"><span>جستجوی هوش مصنوعی</span><b id="tAiSearch">–</b><small>ایندکس برای جواب‌دادن</small></div>
+          <div class="tile"><span>به درخواست یک کاربر</span><b id="tAiUser">–</b><small>کسی از هوش مصنوعی درباره‌ی سایت پرسیده</small></div>
+        </div>
+        <div class="grid g2">
+          <div><h2 style="font-size:14px">کدام ربات‌ها</h2><div id="sAiBots"></div></div>
+          <div><h2 style="font-size:14px">کدام صفحه‌ها را خوانده‌اند</h2><div id="sAiPages"></div></div>
+        </div>
       </div>
       <div class="grid g2">
         <div class="card"><h2>پروژه‌ها</h2><div id="sProjects"></div></div>
@@ -296,12 +309,20 @@ async function loadStats(){
   list($("#sRefs"),s.refs,{label:r=>esc(r.k),ltr:true});
   let dn;try{dn=new Intl.DisplayNames(["fa"],{type:"region"});}catch(e){}
   list($("#sCountries"),s.countries,{label:r=>esc(r.k?(dn?dn.of(r.k):r.k):"نامشخص")});
+  // AI
+  const ai=s.ai||{bots:[],pages:[]},KIND={train:"آموزش مدل",search:"جستجوی هوش مصنوعی",user:"درخواست کاربر",agent:"ایجنت مرورگر",other:"سایر"};
+  const aiSum=k=>ai.bots.filter(b=>!k||(k==="user"?(b.kind==="user"||b.kind==="agent"):b.kind===k)).reduce((a,b)=>a+b.n,0);
+  const aiTotal=aiSum();$("#tAi").textContent=fmt(aiTotal);
+  $("#tAiSub").textContent=(aiTotal+vp)?`${fmt(Math.round(aiTotal/(aiTotal+vp)*100))}٪ کل بازدیدها`:"";
+  $("#tAiTrain").textContent=fmt(aiSum("train"));$("#tAiSearch").textContent=fmt(aiSum("search"));$("#tAiUser").textContent=fmt(aiSum("user"));
+  $("#sAiBots").innerHTML=ai.bots.length?`<table><thead><tr><th>ربات</th><th>نوع</th><th>دفعات</th></tr></thead><tbody>${ai.bots.map(b=>`<tr><td><span style="direction:ltr;unicode-bidi:isolate">${esc(b.k)}</span> <small style="color:var(--muted)">${esc(b.org||"")}</small><div class="bar"><i style="width:${Math.max(2,b.n/ai.bots[0].n*100)}%"></i></div></td><td>${KIND[b.kind]||KIND.other}</td><td class="num">${fmt(b.n)}</td></tr>`).join("")}</tbody></table>`:'<div class="empty">هنوز هیچ ربات هوش مصنوعی ثبت نشده.</div>';
+  list($("#sAiPages"),ai.pages,{label:r=>esc(pageName(r.k)),max:15});
   drawChart(s);
 }
 function drawChart(s){
   const svg=$("#chart"),W=svg.clientWidth||800,H=220,pad={l:36,r:10,t:10,b:26};
   const daysArr=[];const start=new Date(s.since+"T00:00:00Z");for(let i=0;i<s.days;i++){daysArr.push(new Date(start.getTime()+i*864e5).toISOString().slice(0,10));}
-  const v={},c={};s.daily.forEach(d=>{(d.type==="view"?v:c)[d.day]=d.n;});
+  const v={},c={};s.daily.forEach(d=>{if(d.type==="view")v[d.day]=d.n;else if(d.type==="click")c[d.day]=d.n;});
   const raw=Math.max(4,...daysArr.map(d=>Math.max(v[d]||0,c[d]||0)));const unit=Math.pow(10,Math.floor(Math.log10(raw/4)));const stepv=[1,2,5,10].map(m=>m*unit).find(s=>s*4>=raw);const max=stepv*4;
   const x=i=>pad.l+(W-pad.l-pad.r)*(daysArr.length===1?.5:i/(daysArr.length-1)), y=n=>H-pad.b-(H-pad.t-pad.b)*n/max;
   const bw=Math.max(2,Math.min(18,(W-pad.l-pad.r)/daysArr.length*.6));

@@ -18,3 +18,4 @@ Einmalige Einrichtung in Cloudflare Pages (Projekt `keywanfakhri-site` → Setti
 - D1-Binding `DB` – Datenbank für die Statistik (Tabelle wird automatisch angelegt)
 
 Statistik: `track.js` → `functions/api/track.js` (anonyme Tageszähler, keine Cookies, keine IP).
+KI-Bots/-Agenten (GPTBot, ClaudeBot, PerplexityBot, ChatGPT Agent …) werden in `functions/_middleware.js` erkannt und getrennt als Typ `ai` gezählt – sie erscheinen im Panel in einem eigenen Bereich, nicht in den Besucherzahlen.
