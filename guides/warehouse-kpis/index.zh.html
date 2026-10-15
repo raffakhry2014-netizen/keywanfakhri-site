@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="zh" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>仓库 KPI：10 个最重要的指标及计算公式 | KeyOne</title>
+<meta name="description" content="详解 10 个最重要的仓库 KPI：准时交付率、拣货准确率、库存周转率、库存可用天数、库存准确率等——附公式和实用建议。">
+<link rel="canonical" href="https://keywanfakhri.com/guides/warehouse-kpis/?lang=zh">
+<link rel="alternate" hreflang="de" href="https://keywanfakhri.com/guides/warehouse-kpis/"><link rel="alternate" hreflang="en" href="https://keywanfakhri.com/guides/warehouse-kpis/?lang=en"><link rel="alternate" hreflang="fa" href="https://keywanfakhri.com/guides/warehouse-kpis/?lang=fa"><link rel="alternate" hreflang="ar" href="https://keywanfakhri.com/guides/warehouse-kpis/?lang=ar"><link rel="alternate" hreflang="tr" href="https://keywanfakhri.com/guides/warehouse-kpis/?lang=tr"><link rel="alternate" hreflang="it" href="https://keywanfakhri.com/guides/warehouse-kpis/?lang=it"><link rel="alternate" hreflang="fr" href="https://keywanfakhri.com/guides/warehouse-kpis/?lang=fr"><link rel="alternate" hreflang="ko" href="https://keywanfakhri.com/guides/warehouse-kpis/?lang=ko"><link rel="alternate" hreflang="zh" href="https://keywanfakhri.com/guides/warehouse-kpis/?lang=zh"><link rel="alternate" hreflang="ja" href="https://keywanfakhri.com/guides/warehouse-kpis/?lang=ja"><link rel="alternate" hreflang="es" href="https://keywanfakhri.com/guides/warehouse-kpis/?lang=es"><link rel="alternate" hreflang="sq" href="https://keywanfakhri.com/guides/warehouse-kpis/?lang=sq"><link rel="alternate" hreflang="x-default" href="https://keywanfakhri.com/guides/warehouse-kpis/">
+<meta property="og:type" content="article"><meta property="og:site_name" content="KeyOne — Keywan Fakhri"><meta property="og:title" content="仓库 KPI：10 个最重要的指标及计算公式 | KeyOne"><meta property="og:description" content="详解 10 个最重要的仓库 KPI：准时交付率、拣货准确率、库存周转率、库存可用天数、库存准确率等——附公式和实用建议。"><meta property="og:url" content="https://keywanfakhri.com/guides/warehouse-kpis/?lang=zh"><meta property="og:image" content="https://keywanfakhri.com/templates/img/hero-en.jpg"><meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#087e7c">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23098287'/%3E%3Cpath d='M9 7v18m14-18L10 18m5-5 9 12' stroke='%23191919' stroke-width='3' fill='none'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/fonts/fonts.css"><link rel="stylesheet" href="/legal.css">
+<style>:root{--accent:#087e7c;--accent-d:#066562;--ink:#162d2e;--muted:#5b6b6c;--line:#dce5e4;--pale:#eef7f5}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;font-family:'DM Sans',Arial,sans-serif;color:var(--ink);background:#fff;-webkit-text-size-adjust:100%;line-height:1.6}
+html[dir=rtl] body{font-family:'Vazirmatn','DM Sans',Arial,sans-serif}
+a{color:inherit;text-underline-offset:4px}
+a:focus-visible,button:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 40px}
+header.top{border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:84px;flex-wrap:wrap}
+.brand{position:relative;display:block;flex:none;width:172px;height:56px;overflow:hidden;direction:ltr}
+.brand img{position:absolute;width:272px;height:auto;max-width:none;left:-48px;top:-41px}
+.nav{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.nav a{text-decoration:none;font-size:15px;padding:8px 0}.nav a:hover{color:var(--accent)}
+.nav select{border:1px solid var(--line);background:#fff;border-radius:6px;padding:9px 10px;color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+.crumbs{font-size:13px;color:var(--muted);padding-top:20px}.crumbs a{text-decoration:none}.crumbs a:hover{color:var(--accent)}
+.hero{padding:34px 0 26px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:1.6px;color:var(--accent);margin:0 0 14px;text-transform:uppercase}
+html[dir=rtl] .eyebrow{letter-spacing:0}
+h1{font-family:Manrope,'DM Sans',Arial,sans-serif;font-size:clamp(30px,4vw,50px);font-weight:600;line-height:1.14;letter-spacing:-1.4px;margin:0;max-width:900px}
+h2{font-family:Manrope,'DM Sans',Arial,sans-serif;font-size:clamp(22px,2.4vw,28px);font-weight:600;letter-spacing:-.5px;margin:0 0 18px;line-height:1.25}
+h3{font-size:16.5px;margin:10px 0 6px}
+html[dir=rtl] h1,html[dir=rtl] h2{font-family:'Vazirmatn',Arial,sans-serif;letter-spacing:0}
+.lead{font-size:18.5px;line-height:1.7;color:var(--muted);max-width:780px;margin:18px 0 0}
+.meta{font-size:13.5px;color:var(--muted);margin:14px 0 0}
+.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:50px;padding:0 22px;border-radius:8px;font-weight:700;font-size:15.5px;text-decoration:none;border:1.5px solid var(--accent)}
+.btn.primary{background:var(--accent);color:#fff}.btn.primary:hover{background:var(--accent-d)}
+.btn.ghost{color:var(--accent-d);background:#fff}.btn.ghost:hover{background:var(--pale)}
+.btn svg{width:20px;height:20px}
+.shot{margin:18px auto 10px}.shot img{display:block;width:100%;height:auto;border-radius:16px;box-shadow:0 40px 80px -40px rgba(11,26,38,.6),0 0 0 1px rgba(11,26,38,.1)}
+.block{padding:46px 0 10px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{border:1px solid var(--line);border-radius:12px;padding:20px 20px 16px;background:#fff}
+.card svg{width:24px;height:24px}.card p{margin:0;color:var(--muted);font-size:15px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+.text{color:var(--muted);font-size:16.5px;margin:0}
+.steps{margin:0;padding-inline-start:22px}.steps li{margin:0 0 10px;font-size:16px}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%}th,td{padding:14px 18px;border-bottom:1px solid var(--line);text-align:start;vertical-align:top}
+tr:last-child th,tr:last-child td{border-bottom:0}th{width:30%;font-size:15px}td span{display:block;color:var(--muted);font-size:14.5px;margin-top:6px}
+code{font-family:'IBM Plex Mono',Consolas,monospace;font-size:13.5px;background:var(--pale);border:1px solid #d6ebe6;border-radius:6px;padding:3px 8px;display:inline-block;direction:ltr;unicode-bidi:plaintext}
+details{border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin:0 0 10px}
+summary{cursor:pointer;font-weight:700;font-size:16px}details p{margin:10px 0 0;color:var(--muted)}
+.cta{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;background:var(--pale);border:1px solid #d6ebe6;border-radius:16px;padding:28px 32px;margin-top:40px}
+.cta h2{margin:0}
+.rel{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.rel a{display:block;border:1px solid var(--line);border-radius:12px;padding:16px 18px;text-decoration:none}
+.rel a:hover{border-color:var(--accent)}.rel b{display:block;color:var(--accent-d);margin-bottom:4px}.rel span{font-size:14.5px;color:var(--muted)}
+.art{max-width:820px}
+.toc{background:var(--pale);border:1px solid #d6ebe6;border-radius:12px;padding:16px 22px;margin:10px 0 20px}
+.toc ol{margin:0;padding-inline-start:22px;columns:2;column-gap:30px}.toc li{margin:4px 0}.toc a{text-decoration:none}.toc a:hover{color:var(--accent)}
+.kpi{padding:26px 0 6px;border-top:1px solid var(--line)}
+.kpi h2{display:flex;align-items:baseline;gap:12px;margin-bottom:12px}
+.kpi .n{font-size:14px;font-weight:700;color:var(--accent);font-family:Manrope,Arial,sans-serif}
+.kpi p{font-size:16.5px;margin:0 0 12px}
+.formula{margin:0 0 14px}
+.tip{background:#fffaf2;border:1px solid #f3dfbf;border-radius:10px;padding:12px 16px;color:#5a4a2e}
+.tip b{color:#c47a12}
+.tools .rel{grid-template-columns:1fr 1fr;margin-top:16px}
+footer.foot{border-top:1px solid var(--line);padding:26px 0 18px;margin-top:56px;font-size:13.5px;color:var(--muted)}
+footer.foot .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+@media (max-width:900px){.wrap{padding:0 16px}.grid,.rel,.two,.tools .rel{grid-template-columns:1fr}.two{gap:10px}.toc ol{columns:1}header.top .wrap{min-height:70px;padding-top:8px;padding-bottom:8px}.nav{gap:12px}th{width:auto;display:block;border-bottom:0;padding-bottom:0}td{display:block}}
+@media (max-width:520px){.btn{width:100%;justify-content:center}}
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "仓库 KPI：10 个最重要的指标及计算公式", "description": "详解 10 个最重要的仓库 KPI：准时交付率、拣货准确率、库存周转率、库存可用天数、库存准确率等——附公式和实用建议。", "inLanguage": "zh", "datePublished": "2026-10-15", "dateModified": "2026-10-15", "author": {"@type": "Person", "name": "Keywan Fakhri", "url": "https://keywanfakhri.com/about/", "jobTitle": "Industrial Engineer (M.Sc.)"}, "publisher": {"@type": "Organization", "name": "KeyOne", "logo": {"@type": "ImageObject", "url": "https://keywanfakhri.com/keyone-logo.png"}}, "mainEntityOfPage": "https://keywanfakhri.com/guides/warehouse-kpis/?lang=zh", "image": "https://keywanfakhri.com/templates/img/hero-en.jpg"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "准时交付率和完美订单率有什么区别？", "acceptedAnswer": {"@type": "Answer", "text": "准时交付率通常只衡量时间。完美订单率还会检查数量、质量和单据。"}}, {"@type": "Question", "name": "一个仓库需要多少个 KPI？", "acceptedAnswer": {"@type": "Answer", "text": "对管理层来说五到八个就够了。数字越多并不意味着决策越好。"}}, {"@type": "Question", "name": "仓库 KPI 应该多久衡量一次？", "acceptedAnswer": {"@type": "Answer", "text": "运营类 KPI 每天或每周，成本和库存类 KPI 每月。"}}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "首页", "item": "https://keywanfakhri.com/?lang=zh"}, {"@type": "ListItem", "position": 2, "name": "指南", "item": "https://keywanfakhri.com/guides/warehouse-kpis/?lang=zh"}]}</script>
+</head>
+<body>
+<header class="top"><div class="wrap">
+ <a class="brand" href="/?lang=zh" aria-label="KeyOne — by Keywan Fakhri"><img src="/keyone-logo.png" alt="KeyOne — by Keywan Fakhri" width="1774" height="887"></a>
+ <nav class="nav" aria-label="Navigation">
+  <a href="/?lang=zh#projects">项目</a><a href="/templates/?lang=zh">Excel 模板</a><a href="/about/?lang=zh">关于我</a><a href="/contact/?lang=zh">联系</a>
+  <label class="sr" for="lang">语言</label><select id="lang" aria-label="语言" onchange="try{localStorage.setItem('keyone-language',this.value)}catch(e){};location.href='/guides/warehouse-kpis/'+(this.value==='de'?'?lang=de':'?lang='+this.value)"><option value="de">Deutsch</option><option value="en">English</option><option value="fa">فارسی</option><option value="ar">العربية</option><option value="tr">Türkçe</option><option value="it">Italiano</option><option value="fr">Français</option><option value="ko">한국어</option><option value="zh" selected>中文（简体）</option><option value="ja">日本語</option><option value="es">Español</option><option value="sq">Shqip</option></select>
+ </nav>
+</div></header>
+<main id="main">
+<nav class="crumbs wrap" aria-label="Breadcrumb"><a href="/?lang=zh">首页</a> › <span>指南</span></nav>
+<article class="wrap art">
+ <header class="hero"><p class="eyebrow">指南 · KPI</p><h1>仓库 KPI：10 个最重要的指标及计算公式</h1><p class="lead">管理仓库只需要少量但正确的指标。下面是我在实践中最常用的十个 KPI，每个都附有公式、含义和一线实践建议。</p><p class="meta">作者 Keywan Fakhri，工业工程硕士，德国康斯坦茨 · 更新：2026年10月15日</p></header>
+ <nav class="toc"><ol><li><a href="#kpi1">准时交付率</a></li><li><a href="#kpi2">完美订单率</a></li><li><a href="#kpi3">拣货准确率</a></li><li><a href="#kpi4">拣货效率</a></li><li><a href="#kpi5">库存周转率</a></li><li><a href="#kpi6">库存可用天数</a></li><li><a href="#kpi7">库存准确率</a></li><li><a href="#kpi8">订单处理周期</a></li><li><a href="#kpi9">仓库利用率</a></li><li><a href="#kpi10">单均成本</a></li></ol></nav>
+ <section class="kpi" id="kpi1"><h2><span class="n">01</span>准时交付率</h2><p class="formula"><code>准时订单 ÷ 已交付订单总数 × 100</code></p><p>衡量承诺交期的达成程度，往往是客户最关心的数字。</p><p class="tip"><b>✓</b> 以承诺日期而非客户期望日期衡量，否则会把仓库问题和销售问题混在一起。</p></section><section class="kpi" id="kpi2"><h2><span class="n">02</span>完美订单率</h2><p class="formula"><code>无差错订单（准时、完整、无损、单据正确） ÷ 全部订单</code></p><p>最严格的质量指标：只有一切都正确的订单才计入。</p><p class="tip"><b>✓</b> 同时记录错误类型，就能看出哪种原因拉低最多。</p></section><section class="kpi" id="kpi3"><h2><span class="n">03</span>拣货准确率</h2><p class="formula"><code>正确拣货行数 ÷ 全部拣货行数</code></p><p>衡量拣货差错率。每个差错都意味着退货、补发和信任损失。</p><p class="tip"><b>✓</b> 管理良好的仓库通常远高于 99 %。若低于此，检查库位标识和扫描枪使用情况。</p></section><section class="kpi" id="kpi4"><h2><span class="n">04</span>拣货效率</h2><p class="formula"><code>拣货行数 ÷ 工时</code></p><p>拣货生产率——人员规划和成本比较的基础。</p><p class="tip"><b>✓</b> 只比较相似的订单结构：单件拣货和整托拣货的效率完全不同。</p></section><section class="kpi" id="kpi5"><h2><span class="n">05</span>库存周转率</h2><p class="formula"><code>年度耗用成本 ÷ 平均库存</code></p><p>库存每年更新的次数。周转越快，占用资金越少。</p><p class="tip"><b>✓</b> 按物料组（ABC）分别计算——总数会掩盖呆滞物料。</p></section><section class="kpi" id="kpi6"><h2><span class="n">06</span>库存可用天数</h2><p class="formula"><code>当前库存 ÷ 日均消耗</code></p><p>按正常消耗，库存还能用多少天。</p><p class="tip"><b>✓</b> 结合补货提前期一起看，能在缺货发生前发现问题。</p></section><section class="kpi" id="kpi7"><h2><span class="n">07</span>库存准确率</h2><p class="formula"><code>无差异库位 ÷ 盘点库位</code></p><p>系统库存与实物库存的一致程度。</p><p class="tip"><b>✓</b> 定期循环盘点可在不停仓的情况下保持高准确率。</p></section><section class="kpi" id="kpi8"><h2><span class="n">08</span>订单处理周期</h2><p class="formula"><code>发货时间 − 接单时间</code></p><p>订单离开仓库的速度。</p><p class="tip"><b>✓</b> 把时间拆分为等待、拣货和包装——通常等待占比最大。</p></section><section class="kpi" id="kpi9"><h2><span class="n">09</span>仓库利用率</h2><p class="formula"><code>已占用库位 ÷ 可用库位</code></p><p>显示容量的使用程度。</p><p class="tip"><b>✓</b> 利用率超过约 85–90 % 后，由于移库和查找时间增加，效率往往明显下降。</p></section><section class="kpi" id="kpi10"><h2><span class="n">10</span>单均成本</h2><p class="formula"><code>仓储成本（人工、场地、物料） ÷ 订单数</code></p><p>把绩效与成本联系起来——适合价格谈判和自营/外包决策。</p><p class="tip"><b>✓</b> 每月使用相同的成本口径，否则无法比较。</p></section>
+ <section class="kpi"><h2>应该从哪些 KPI 开始？</h2><p>先从三到四个能可靠衡量的 KPI 开始——通常是准时交付率、拣货准确率、拣货效率和单均成本。等这些数字每月都稳定后，再增加其他指标。</p></section>
+ <section class="kpi tools"><h2>仓库 KPI 免费模板</h2><p>准时交付率、拣货准确率和延迟原因可由 Warehouse Intelligence 模板自动计算。需要带目标和同比对比的日报、周报和月报时，请使用 Executive Reporting Center。</p>
+  <div class="rel"><a href="/templates/warehouse-intelligence/?lang=zh"><b>Warehouse Intelligence</b><span>Excel 仓库 KPI 仪表板 – 免费模板</span></a><a href="/templates/executive-reporting-center/?lang=zh"><b>Executive Reporting Center</b><span>管理报告 Excel 模板 – 免费</span></a></div></section>
+</article>
+<section class="block wrap art"><h2>常见问题</h2><details><summary>准时交付率和完美订单率有什么区别？</summary><p>准时交付率通常只衡量时间。完美订单率还会检查数量、质量和单据。</p></details><details><summary>一个仓库需要多少个 KPI？</summary><p>对管理层来说五到八个就够了。数字越多并不意味着决策越好。</p></details><details><summary>仓库 KPI 应该多久衡量一次？</summary><p>运营类 KPI 每天或每周，成本和库存类 KPI 每月。</p></details></section></main>
+<footer class="foot"><div class="wrap"><span>© KeyOne · by Keywan Fakhri</span><span dir="ltr">keywanfakhri1@gmail.com</span></div></footer>
+<nav class="keyone-legal" aria-label="Legal"><a data-legal-impressum href="/impressum/">Impressum</a><a data-legal-privacy href="/datenschutz/">Datenschutzerklärung</a></nav>
+<script>try{localStorage.setItem('keyone-language','zh')}catch(e){}</script>
+<script src="/legal.js"></script><script src="/track.js" defer></script>
+</body></html>
