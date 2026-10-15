@@ -1,0 +1,26 @@
+# keywanfakhri.com – KeyOne by Keywan Fakhri
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /gastlyo/admin/
+
+# AI search and assistants are welcome
+User-agent: GPTBot
+Allow: /
+User-agent: OAI-SearchBot
+Allow: /
+User-agent: ChatGPT-User
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: Claude-SearchBot
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+User-agent: Applebot-Extended
+Allow: /
+
+Sitemap: https://keywanfakhri.com/sitemap.xml

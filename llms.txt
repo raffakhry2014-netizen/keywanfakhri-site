@@ -1,0 +1,28 @@
+# KeyOne — Keywan Fakhri
+
+> KeyOne is the personal product studio of Keywan Fakhri (Rahmatallah Fakhri Fakhrabadi), an industrial engineer (M.Sc. Wirtschaftsingenieur) based in Konstanz, Germany, with 8+ years of experience in logistics, warehouse management and inventory optimization. He builds practical tools that connect process engineering with data, software and AI – for companies, warehouses, restaurants and cafés.
+
+The website is available in 12 languages (de, en, fa, ar, tr, it, fr, ko, zh, ja, es, sq) via the `?lang=` parameter.
+
+## Free Excel templates
+- [Excel templates overview](https://keywanfakhri.com/templates/?lang=en): free downloadable dashboards for warehouse and operations reporting, free for internal use.
+- [Warehouse Intelligence](https://keywanfakhri.com/templates/?lang=en#warehouse-intelligence): warehouse KPI dashboard in Excel – on-time delivery, picking accuracy, delay root causes (Pareto), order status and activity heatmap. 12 languages switchable inside Excel, up to 2,000 orders, protected formulas, no macros. Direct download: https://keywanfakhri.com/templates/files/KeyOne_Warehouse_Intelligence.xlsx
+- [Executive Reporting Center](https://keywanfakhri.com/templates/?lang=en#executive-reporting-center): multi-year operations reporting in Excel – daily, weekly, monthly, quarterly and yearly views, comparison with base year and targets by department, monthly heatmap, year-over-year comparison, statistics and a one-page management report. 12 languages, up to 10,000 rows. Direct download: https://keywanfakhri.com/templates/files/KeyOne_Executive_Reporting_Center.xlsx
+
+## Logistics & process engineering tools
+- [Lagerplaner 2D/3D](https://keywanfakhri.com/projects/lagerplaner/?lang=en): free online warehouse planner – enter items and get storage technology, area, staff, forklifts and equipment with a 2D plan and 3D model.
+- [Logistics dashboard – KPI demo](https://keywanfakhri.com/projects/logistics/?lang=en): interactive demo with fifteen logistics KPIs, targets and monthly trends (simulated data).
+- [Prozessatlas](https://keywanfakhri.com/projects/prozessatlas/?lang=en): process atlas linking business processes and KPIs.
+
+## Hospitality
+- [Smart restaurant solutions](https://keywanfakhri.com/projects/restaurant/?lang=en): digital solutions for cafés and restaurants – communication, menu, orders and administration.
+- [Gastlyo](https://keywanfakhri.com/gastlyo/): digital menu with AI waiter in 12 languages.
+
+## Financial analysis (educational demos, fictional data, no investment advice)
+- [10X model demo](https://keywanfakhri.com/projects/10x/?lang=en)
+- [6M screening demo](https://keywanfakhri.com/projects/6m/?lang=en)
+
+## About & contact
+- [About Keywan Fakhri](https://keywanfakhri.com/about/?lang=en)
+- [Contact](https://keywanfakhri.com/contact/?lang=en) – e-mail: keywanfakhri1@gmail.com – LinkedIn: https://www.linkedin.com/in/rahmatallah-keywan-fakhri/
+- Custom Excel dashboards, KPI reporting, warehouse planning and AI automation projects on request.
