@@ -4,7 +4,7 @@ import { detectAI, recordAI } from "./api/track.js";
 
 const AI_FILES = ["/robots.txt", "/llms.txt", "/sitemap.xml"];
 const isPage = p => !/^\/(api|admin|cms)(\/|$)/.test(p) && (/(\/|\.html)$/.test(p) || !/\.[a-z0-9]+$/i.test(p) || AI_FILES.includes(p));
-const LOCALIZED = ["/about", "/projects/6m", "/projects/prozessatlas", "/templates/warehouse-intelligence", "/templates/executive-reporting-center", "/guides/warehouse-kpis", "/guides"];
+const LOCALIZED = ["/about", "/projects/6m", "/projects/prozessatlas", "/templates/warehouse-intelligence", "/templates/executive-reporting-center", "/guides/warehouse-kpis", "/guides", "/templates/restaurant-profit-analyzer"];
 const LANGS = ["de","en","fa","ar","tr","it","fr","ko","zh","ja","es","sq"];
 
 export async function onRequest(context) {
