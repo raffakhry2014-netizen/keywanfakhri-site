@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Menu Engineering in Excel: Optimise Your Menu by Contribution Margin (with Example) | KeyOne</title>
+<meta name="description" content="Menu engineering step by step in Excel: calculate popularity and contribution margin per dish, classify dishes as Star, Plowhorse, Puzzle or Dog – with formulas, an example and a free template.">
+<link rel="canonical" href="https://keywanfakhri.com/guides/menu-engineering-excel/?lang=en">
+<link rel="alternate" hreflang="de" href="https://keywanfakhri.com/guides/menu-engineering-excel/"><link rel="alternate" hreflang="en" href="https://keywanfakhri.com/guides/menu-engineering-excel/?lang=en"><link rel="alternate" hreflang="fa" href="https://keywanfakhri.com/guides/menu-engineering-excel/?lang=fa"><link rel="alternate" hreflang="x-default" href="https://keywanfakhri.com/guides/menu-engineering-excel/">
+<meta property="og:type" content="article"><meta property="og:site_name" content="KeyOne — Keywan Fakhri"><meta property="og:title" content="Menu Engineering in Excel: Optimise Your Menu by Contribution Margin (with Example) | KeyOne"><meta property="og:description" content="Menu engineering step by step in Excel: calculate popularity and contribution margin per dish, classify dishes as Star, Plowhorse, Puzzle or Dog – with formulas, an example and a free template."><meta property="og:url" content="https://keywanfakhri.com/guides/menu-engineering-excel/?lang=en"><meta property="og:image" content="https://keywanfakhri.com/templates/img/rpa-en.jpg"><meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#087e7c">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23098287'/%3E%3Cpath d='M9 7v18m14-18L10 18m5-5 9 12' stroke='%23191919' stroke-width='3' fill='none'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="/fonts/fonts.css"><link rel="stylesheet" href="/legal.css">
+<style>:root{--accent:#087e7c;--accent-d:#066562;--ink:#162d2e;--muted:#5b6b6c;--line:#dce5e4;--pale:#eef7f5}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;font-family:'DM Sans',Arial,sans-serif;color:var(--ink);background:#fff;-webkit-text-size-adjust:100%;line-height:1.6}
+html[dir=rtl] body{font-family:'Vazirmatn','DM Sans',Arial,sans-serif}
+a{color:inherit;text-underline-offset:4px}
+a:focus-visible,button:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 40px}
+header.top{border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:84px;flex-wrap:wrap}
+.brand{position:relative;display:block;flex:none;width:172px;height:56px;overflow:hidden;direction:ltr}
+.brand img{position:absolute;width:272px;height:auto;max-width:none;left:-48px;top:-41px}
+.nav{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.nav a{text-decoration:none;font-size:15px;padding:8px 0}.nav a:hover{color:var(--accent)}
+.nav select{border:1px solid var(--line);background:#fff;border-radius:6px;padding:9px 10px;color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+.crumbs{font-size:13px;color:var(--muted);padding-top:20px}.crumbs a{text-decoration:none}.crumbs a:hover{color:var(--accent)}
+.hero{padding:34px 0 26px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:1.6px;color:var(--accent);margin:0 0 14px;text-transform:uppercase}
+html[dir=rtl] .eyebrow{letter-spacing:0}
+h1{font-family:Manrope,'DM Sans',Arial,sans-serif;font-size:clamp(30px,4vw,50px);font-weight:600;line-height:1.14;letter-spacing:-1.4px;margin:0;max-width:900px}
+h2{font-family:Manrope,'DM Sans',Arial,sans-serif;font-size:clamp(22px,2.4vw,28px);font-weight:600;letter-spacing:-.5px;margin:0 0 18px;line-height:1.25}
+h3{font-size:16.5px;margin:10px 0 6px}
+html[dir=rtl] h1,html[dir=rtl] h2{font-family:'Vazirmatn',Arial,sans-serif;letter-spacing:0}
+.lead{font-size:18.5px;line-height:1.7;color:var(--muted);max-width:780px;margin:18px 0 0}
+.meta{font-size:13.5px;color:var(--muted);margin:14px 0 0}
+.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:50px;padding:0 22px;border-radius:8px;font-weight:700;font-size:15.5px;text-decoration:none;border:1.5px solid var(--accent)}
+.btn.primary{background:var(--accent);color:#fff}.btn.primary:hover{background:var(--accent-d)}
+.btn.ghost{color:var(--accent-d);background:#fff}.btn.ghost:hover{background:var(--pale)}
+.btn svg{width:20px;height:20px}
+.shot{margin:18px auto 10px}.shot img{display:block;width:100%;height:auto;border-radius:16px;box-shadow:0 40px 80px -40px rgba(11,26,38,.6),0 0 0 1px rgba(11,26,38,.1)}
+.block{padding:46px 0 10px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{border:1px solid var(--line);border-radius:12px;padding:20px 20px 16px;background:#fff}
+.card svg{width:24px;height:24px}.card p{margin:0;color:var(--muted);font-size:15px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+.text{color:var(--muted);font-size:16.5px;margin:0}
+.steps{margin:0;padding-inline-start:22px}.steps li{margin:0 0 10px;font-size:16px}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%}th,td{padding:14px 18px;border-bottom:1px solid var(--line);text-align:start;vertical-align:top}
+tr:last-child th,tr:last-child td{border-bottom:0}th{width:30%;font-size:15px}td span{display:block;color:var(--muted);font-size:14.5px;margin-top:6px}
+code{font-family:'IBM Plex Mono',Consolas,monospace;font-size:13.5px;background:var(--pale);border:1px solid #d6ebe6;border-radius:6px;padding:3px 8px;display:inline-block;direction:ltr;unicode-bidi:plaintext}
+details{border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin:0 0 10px}
+summary{cursor:pointer;font-weight:700;font-size:16px}details p{margin:10px 0 0;color:var(--muted)}
+.cta{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;background:var(--pale);border:1px solid #d6ebe6;border-radius:16px;padding:28px 32px;margin-top:40px}
+.cta h2{margin:0}
+.rel{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.rel a{display:block;border:1px solid var(--line);border-radius:12px;padding:16px 18px;text-decoration:none}
+.rel a:hover{border-color:var(--accent)}.rel b{display:block;color:var(--accent-d);margin-bottom:4px}.rel span{font-size:14.5px;color:var(--muted)}
+.art{max-width:820px}
+.toc{background:var(--pale);border:1px solid #d6ebe6;border-radius:12px;padding:16px 22px;margin:10px 0 20px}
+.toc ol{margin:0;padding-inline-start:22px;columns:2;column-gap:30px}.toc li{margin:4px 0}.toc a{text-decoration:none}.toc a:hover{color:var(--accent)}
+.kpi{padding:26px 0 6px;border-top:1px solid var(--line)}
+.kpi h2{display:flex;align-items:baseline;gap:12px;margin-bottom:12px}
+.kpi .n{font-size:14px;font-weight:700;color:var(--accent);font-family:Manrope,Arial,sans-serif}
+.kpi p{font-size:16.5px;margin:0 0 12px}
+.formula{margin:0 0 14px}
+.tip{background:#fffaf2;border:1px solid #f3dfbf;border-radius:10px;padding:12px 16px;color:#5a4a2e}
+.tip b{color:#c47a12}
+.tools .rel{grid-template-columns:1fr 1fr;margin-top:16px}
+footer.foot{border-top:1px solid var(--line);padding:26px 0 18px;margin-top:56px;font-size:13.5px;color:var(--muted)}
+footer.foot .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+@media (max-width:900px){.wrap{padding:0 16px}.grid,.rel,.two,.tools .rel{grid-template-columns:1fr}.two{gap:10px}.toc ol{columns:1}header.top .wrap{min-height:70px;padding-top:8px;padding-bottom:8px}.nav{gap:12px}th{width:auto;display:block;border-bottom:0;padding-bottom:0}td{display:block}}
+@media (max-width:520px){.btn{width:100%;justify-content:center}}
+
+.hubl{grid-template-columns:1fr}.hubl a{padding:22px 24px}.hubl b{font-size:19px}.hubl span{display:block}.hubl .meta{margin-top:10px;font-size:13.5px;color:var(--accent-d)}
+
+.notice{display:inline-block;margin-top:14px;padding:10px 14px;border-radius:10px;background:#eef7f5;color:var(--accent-d);font-weight:600;font-size:15px}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.pcard{position:relative;border:1px solid var(--line);border-radius:14px;padding:22px 22px 20px;background:#fff;display:flex;flex-direction:column}
+.pcard.hot{border-color:var(--accent);box-shadow:0 10px 30px rgba(8,126,124,.12)}
+.pcard h3{margin:0 0 6px;font-size:18px}.pcard .price{font-size:26px;font-weight:700;color:var(--accent-d);margin:4px 0 10px}.pcard .price small{font-size:14px;font-weight:600;color:var(--muted)}
+.pcard .pd{color:var(--muted);font-size:15px;margin:0 0 12px}.pcard ul{list-style:none;padding:0;margin:0 0 18px;flex:1}.pcard li{display:flex;gap:8px;align-items:flex-start;font-size:14.5px;margin:6px 0}.pcard li svg{width:18px;height:18px;flex:none;margin-top:2px}
+.pcard .btn{justify-content:center}.badge{position:absolute;top:-11px;inset-inline-end:16px;background:var(--accent);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px}
+@media (max-width:900px){.pgrid{grid-template-columns:1fr}}
+
+table.dtable{width:100%;border-collapse:collapse;font-size:15px}table.dtable th{background:#eef7f5;color:var(--accent-d);text-align:start;padding:10px 12px;border-bottom:1px solid var(--line);width:auto;display:table-cell}table.dtable td{display:table-cell;padding:9px 12px;border-bottom:1px solid var(--line)}table.dtable tr:last-child td{font-weight:700}
+.bul{padding-inline-start:20px}.bul li{margin:6px 0}.formula code{white-space:pre-wrap;word-break:break-word}
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Menu Engineering in Excel: Optimise Your Menu by Contribution Margin", "description": "Menu engineering step by step in Excel: calculate popularity and contribution margin per dish, classify dishes as Star, Plowhorse, Puzzle or Dog – with formulas, an example and a free template.", "inLanguage": "en", "datePublished": "2026-10-16", "dateModified": "2026-10-16", "author": {"@type": "Person", "name": "Keywan Fakhri", "url": "https://keywanfakhri.com/about/", "jobTitle": "Industrial Engineer (M.Sc.)"}, "publisher": {"@type": "Organization", "name": "KeyOne", "logo": {"@type": "ImageObject", "url": "https://keywanfakhri.com/keyone-logo.png"}}, "mainEntityOfPage": "https://keywanfakhri.com/guides/menu-engineering-excel/?lang=en", "image": "https://keywanfakhri.com/templates/img/rpa-en.jpg"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Where does the 70% rule come from?", "acceptedAnswer": {"@type": "Answer", "text": "From the original Kasavana and Smith method. A dish counts as popular if it reaches at least 70% of the share it would have with an even split."}}, {"@type": "Question", "name": "How often should I do menu engineering?", "acceptedAnswer": {"@type": "Answer", "text": "Every quarter and before every new menu."}}, {"@type": "Question", "name": "Does it work for cafés and takeaways?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. It suits any range with fixed prices, including drinks and cake menus."}}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://keywanfakhri.com/?lang=en"}, {"@type": "ListItem", "position": 2, "name": "Articles", "item": "https://keywanfakhri.com/guides/?lang=en"}, {"@type": "ListItem", "position": 3, "name": "Menu Engineering in Excel: Optimise Your Menu by Contribution Margin", "item": "https://keywanfakhri.com/guides/menu-engineering-excel/?lang=en"}]}</script>
+</head>
+<body>
+<header class="top"><div class="wrap">
+ <a class="brand" href="/?lang=en" aria-label="KeyOne — by Keywan Fakhri"><img src="/keyone-logo.png" alt="KeyOne — by Keywan Fakhri" width="1774" height="887"></a>
+ <nav class="nav" aria-label="Navigation">
+  <a href="/?lang=en#projects">Projects</a><a href="/templates/?lang=en">Excel templates</a><a href="/guides/?lang=en" aria-current="page">Articles</a><a href="/services/?lang=en">Services</a><a href="/about/?lang=en">About</a><a href="/contact/?lang=en">Contact</a>
+  <label class="sr" for="lang">Language</label><select id="lang" aria-label="Language" onchange="try{localStorage.setItem('keyone-language',this.value)}catch(e){};location.href='/guides/menu-engineering-excel/'+(this.value==='de'?'?lang=de':'?lang='+this.value)"><option value="de">Deutsch</option><option value="en" selected>English</option><option value="fa">فارسی</option></select>
+ </nav>
+</div></header>
+<main id="main">
+<nav class="crumbs wrap" aria-label="Breadcrumb"><a href="/?lang=en">Home</a> › <a href="/guides/?lang=en">Articles</a> › <span>Menu Engineering in Excel: Optimise Your Menu by Contribution Margin</span></nav>
+<article class="wrap art">
+ <header class="hero"><p class="eyebrow">Articles · Hospitality</p><h1>Menu Engineering in Excel: Optimise Your Menu by Contribution Margin</h1><p class="lead">Menu engineering shows which dishes on your menu are popular and profitable – and which only take up space. You need just two numbers per dish: portions sold and contribution margin per portion.</p><p class="meta">by Keywan Fakhri, Industrial Engineer (M.Sc.), Konstanz, Germany · Updated: 16 October 2026</p></header>
+ <section class="kpi" id="s1"><h2>The idea in one sentence</h2><p>The Kasavana and Smith method (1982) places every dish by two questions: Is it ordered often? Does it earn more margin per portion than average? That gives four classes.</p><ul class="bul"><li>Star – popular and profitable</li><li>Plowhorse – popular but low margin</li><li>Puzzle – profitable but rarely ordered</li><li>Dog – neither popular nor profitable</li></ul></section><section class="kpi" id="s2"><h2>Step 1: Collect numbers per dish</h2><p>Take portions sold for one month from your POS. Food cost per portion comes from your recipe costing.</p><p class="formula" dir="auto"><code>Contribution margin = Net price − Food cost per portion</code></p></section><section class="kpi" id="s3"><h2>Step 2: Calculate the two thresholds</h2><p>The classic popularity threshold is 70% of the average menu mix. The margin benchmark is the weighted average across all dishes.</p><p class="formula" dir="auto"><code>Popularity threshold = 0.7 × Total portions ÷ Number of dishes</code></p><p class="formula" dir="auto"><code>Average margin = Sum (Portions × Margin) ÷ Total portions</code></p></section><section class="kpi" id="s4"><h2>Example: seven main courses in one month</h2><p>1,040 portions across 7 dishes: threshold = 0.7 × 1,040 ÷ 7 = 104 portions. Average margin = €10.89.</p><div class="tbl"><table class="dtable"><thead><tr><th>Dish</th><th>Portions</th><th>Margin / portion</th><th>Class</th></tr></thead><tbody><tr><td>Pizza Margherita</td><td>260</td><td>€8.40</td><td>Plowhorse</td></tr><tr><td>Spaghetti Carbonara</td><td>220</td><td>€10.60</td><td>Plowhorse</td></tr><tr><td>Cheeseburger</td><td>190</td><td>€10.10</td><td>Plowhorse</td></tr><tr><td>Wiener Schnitzel</td><td>180</td><td>€13.70</td><td>Star</td></tr><tr><td>Mushroom risotto</td><td>80</td><td>€12.40</td><td>Puzzle</td></tr><tr><td>Salmon fillet</td><td>70</td><td>€16.00</td><td>Puzzle</td></tr><tr><td>Vegetable curry</td><td>40</td><td>€7.90</td><td>Dog</td></tr></tbody></table></div><p>The schnitzel is the only Star. Pizza, carbonara and burger carry the kitchen but earn below average. Salmon and risotto pay off but are rarely ordered. The curry is a candidate for removal.</p></section><section class="kpi" id="s5"><h2>Step 3: The formula in Excel</h2><p>With portions in column B, margin in column C and the thresholds in F1 and F2:</p><p class="formula" dir="auto"><code>=IF(AND(B2&gt;=$F$1,C2&gt;=$F$2),&quot;Star&quot;,IF(B2&gt;=$F$1,&quot;Plowhorse&quot;,IF(C2&gt;=$F$2,&quot;Puzzle&quot;,&quot;Dog&quot;)))</code></p></section><section class="kpi" id="s6"><h2>What to do with each class</h2><div class="tbl"><table class="dtable"><thead><tr><th>Class</th><th>Action</th></tr></thead><tbody><tr><td>Star</td><td>Keep quality, feature it prominently, do not cut the price.</td></tr><tr><td>Plowhorse</td><td>Raise the price slightly or lower portion cost (side, supplier).</td></tr><tr><td>Puzzle</td><td>Describe it better, place it better, have staff recommend it.</td></tr><tr><td>Dog</td><td>Rework the recipe or take it off the menu.</td></tr></tbody></table></div></section><section class="kpi" id="s7"><h2>Common mistakes</h2><ol class="steps"><li>Comparing drinks and mains in one matrix – analyse by category.</li><li>Using gross prices – always net.</li><li>Looking at one weak month – use at least a full month, ideally a quarter.</li></ol></section>
+ <section class="kpi tools"><h2>Free Excel template</h2><p>The Restaurant Profit Analyzer runs this analysis automatically: matrix chart, classes and recommendations per dish, filterable by category and month.</p>
+  <div class="actions"><a class="btn primary" href="/templates/files/KeyOne_Restaurant_Profit_Analyzer.xlsx" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0 4.5-4.5M12 15l-4.5-4.5M5 19h14"/></svg><span>Free download (XLSX)</span></a><a class="btn ghost" href="/templates/restaurant-profit-analyzer/?lang=en">Restaurant Profit Analyzer</a></div></section>
+</article>
+<section class="block wrap art"><h2>Frequently asked questions</h2><details><summary>Where does the 70% rule come from?</summary><p>From the original Kasavana and Smith method. A dish counts as popular if it reaches at least 70% of the share it would have with an even split.</p></details><details><summary>How often should I do menu engineering?</summary><p>Every quarter and before every new menu.</p></details><details><summary>Does it work for cafés and takeaways?</summary><p>Yes. It suits any range with fixed prices, including drinks and cake menus.</p></details></section></main>
+<footer class="foot"><div class="wrap"><span>© KeyOne · by Keywan Fakhri</span><span dir="ltr">keywanfakhri1@gmail.com</span></div></footer>
+<nav class="keyone-legal" aria-label="Legal"><a data-legal-impressum href="/impressum/">Impressum</a><a data-legal-privacy href="/datenschutz/">Datenschutzerklärung</a></nav>
+<script>try{localStorage.setItem('keyone-language','en')}catch(e){}</script>
+<script src="/legal.js"></script><script src="/track.js" defer></script>
+</body></html>

@@ -15,6 +15,8 @@ The website is available in 12 languages (de, en, fa, ar, tr, it, fr, ko, zh, ja
 - [Restaurant Profit Analyzer – details, KPI formulas and FAQ](https://keywanfakhri.com/templates/restaurant-profit-analyzer/?lang=en)
 
 ## Guides
+- [How to calculate food cost (restaurants)](https://keywanfakhri.com/guides/wareneinsatz-berechnen/?lang=en): formula, worked example, per-dish costing with yield, price from target food cost, benchmarks (German original: https://keywanfakhri.com/guides/wareneinsatz-berechnen/).
+- [Menu engineering in Excel](https://keywanfakhri.com/guides/menu-engineering-excel/?lang=en): Kasavana & Smith matrix step by step – popularity threshold, weighted contribution margin, Excel formula, example with seven dishes and actions per class (German original: https://keywanfakhri.com/guides/menu-engineering-excel/).
 - [Articles (overview)](https://keywanfakhri.com/guides/?lang=en): all practical articles on warehousing, logistics and Excel reporting.
 - [Warehouse KPIs: the 10 most important metrics with formulas](https://keywanfakhri.com/guides/warehouse-kpis/?lang=en): on-time delivery, perfect order rate, picking accuracy, picking productivity, inventory turnover, days of supply, inventory accuracy, order cycle time, storage utilization, cost per order – with formulas and practical tips (German original: https://keywanfakhri.com/guides/warehouse-kpis/).
 
