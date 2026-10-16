@@ -9,10 +9,12 @@ The website is available in 12 languages (de, en, fa, ar, tr, it, fr, ko, zh, ja
 - [Warehouse Intelligence](https://keywanfakhri.com/templates/?lang=en#warehouse-intelligence): warehouse KPI dashboard in Excel – on-time delivery, picking accuracy, delay root causes (Pareto), order status and activity heatmap. 12 languages switchable inside Excel, up to 2,000 orders, protected formulas, no macros. Direct download: https://keywanfakhri.com/templates/files/KeyOne_Warehouse_Intelligence.xlsx
 - [Executive Reporting Center](https://keywanfakhri.com/templates/?lang=en#executive-reporting-center): multi-year operations reporting in Excel – daily, weekly, monthly, quarterly and yearly views, comparison with base year and targets by department, monthly heatmap, year-over-year comparison, statistics and a one-page management report. 12 languages, up to 10,000 rows. Direct download: https://keywanfakhri.com/templates/files/KeyOne_Executive_Reporting_Center.xlsx
 - [Restaurant Profit Analyzer](https://keywanfakhri.com/templates/?lang=en#restaurant-profit-analyzer): restaurant food cost and menu engineering in Excel – ingredient prices with yield, recipe costing, food cost percentage and gross profit per dish, automatic Star/Plowhorse/Puzzle/Dog classification, year-over-year comparison, top 10 dishes, sales by weekday and a one-page report. 12 languages, up to 20,000 sales rows, no macros.
+- [Cash Flow Planner](https://keywanfakhri.com/templates/?lang=en#cash-flow-planner): 13-week cash forecast and 12-month cash plan in Excel for small businesses – recurring payments, actual vs planned transactions, safety buffer warning, category breakdown. 12 languages, up to 10,000 transactions, no macros.
 
 - [Warehouse Intelligence – details, KPI formulas and FAQ](https://keywanfakhri.com/templates/warehouse-intelligence/?lang=en)
 - [Executive Reporting Center – details, KPI formulas and FAQ](https://keywanfakhri.com/templates/executive-reporting-center/?lang=en)
 - [Restaurant Profit Analyzer – details, KPI formulas and FAQ](https://keywanfakhri.com/templates/restaurant-profit-analyzer/?lang=en)
+- [Cash Flow Planner – details, KPI formulas and FAQ](https://keywanfakhri.com/templates/cash-flow-planner/?lang=en)
 
 ## Guides
 - [How to calculate food cost (restaurants)](https://keywanfakhri.com/guides/wareneinsatz-berechnen/?lang=en): formula, worked example, per-dish costing with yield, price from target food cost, benchmarks (German original: https://keywanfakhri.com/guides/wareneinsatz-berechnen/).
