@@ -77,6 +77,15 @@ footer.foot .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:
 @media (max-width:520px){.btn{width:100%;justify-content:center}}
 
 .hubl{grid-template-columns:1fr}.hubl a{padding:22px 24px}.hubl b{font-size:19px}.hubl span{display:block}.hubl .meta{margin-top:10px;font-size:13.5px;color:var(--accent-d)}
+
+.notice{display:inline-block;margin-top:14px;padding:10px 14px;border-radius:10px;background:#eef7f5;color:var(--accent-d);font-weight:600;font-size:15px}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.pcard{position:relative;border:1px solid var(--line);border-radius:14px;padding:22px 22px 20px;background:#fff;display:flex;flex-direction:column}
+.pcard.hot{border-color:var(--accent);box-shadow:0 10px 30px rgba(8,126,124,.12)}
+.pcard h3{margin:0 0 6px;font-size:18px}.pcard .price{font-size:26px;font-weight:700;color:var(--accent-d);margin:4px 0 10px}.pcard .price small{font-size:14px;font-weight:600;color:var(--muted)}
+.pcard .pd{color:var(--muted);font-size:15px;margin:0 0 12px}.pcard ul{list-style:none;padding:0;margin:0 0 18px;flex:1}.pcard li{display:flex;gap:8px;align-items:flex-start;font-size:14.5px;margin:6px 0}.pcard li svg{width:18px;height:18px;flex:none;margin-top:2px}
+.pcard .btn{justify-content:center}.badge{position:absolute;top:-11px;inset-inline-end:16px;background:var(--accent);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px}
+@media (max-width:900px){.pgrid{grid-template-columns:1fr}}
 </style>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "CollectionPage", "name": "Articoli – Magazzino, logistica e reporting in Excel", "description": "Articoli pratici di Keywan Fakhri su KPI di magazzino, logistica e reporting in Excel – con formule, esempi e modelli gratuiti.", "inLanguage": "it", "url": "https://keywanfakhri.com/guides/?lang=it", "hasPart": [{"@type": "Article", "headline": "KPI di magazzino: i 10 indicatori più importanti con formule", "url": "https://keywanfakhri.com/guides/warehouse-kpis/?lang=it"}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://keywanfakhri.com/?lang=it"}, {"@type": "ListItem", "position": 2, "name": "Articoli", "item": "https://keywanfakhri.com/guides/?lang=it"}]}</script>
 </head>
@@ -84,7 +93,7 @@ footer.foot .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:
 <header class="top"><div class="wrap">
  <a class="brand" href="/?lang=it" aria-label="KeyOne — by Keywan Fakhri"><img src="/keyone-logo.png" alt="KeyOne — by Keywan Fakhri" width="1774" height="887"></a>
  <nav class="nav" aria-label="Navigation">
-  <a href="/?lang=it#projects">Progetti</a><a href="/templates/?lang=it">Modelli Excel</a><a href="/guides/?lang=it" aria-current="page">Articoli</a><a href="/about/?lang=it">Chi sono</a><a href="/contact/?lang=it">Contatti</a>
+  <a href="/?lang=it#projects">Progetti</a><a href="/templates/?lang=it">Modelli Excel</a><a href="/guides/?lang=it" aria-current="page">Articoli</a><a href="/services/?lang=it">Servizi</a><a href="/about/?lang=it">Chi sono</a><a href="/contact/?lang=it">Contatti</a>
   <label class="sr" for="lang">Lingua</label><select id="lang" aria-label="Lingua" onchange="try{localStorage.setItem('keyone-language',this.value)}catch(e){};location.href='/guides/'+(this.value==='de'?'?lang=de':'?lang='+this.value)"><option value="de">Deutsch</option><option value="en">English</option><option value="fa">فارسی</option><option value="ar">العربية</option><option value="tr">Türkçe</option><option value="it" selected>Italiano</option><option value="fr">Français</option><option value="ko">한국어</option><option value="zh">中文（简体）</option><option value="ja">日本語</option><option value="es">Español</option><option value="sq">Shqip</option></select>
  </nav>
 </div></header>

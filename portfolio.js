@@ -5,6 +5,7 @@ function renderPortfolio(){
  document.querySelectorAll('[data-about-link],.site-nav a[href="/#about"]').forEach(a=>{a.dataset.aboutLink='';a.href='/about/?lang='+lang});
  document.querySelectorAll('[data-about-link],.site-nav a[href="/#about"]').forEach(a=>a.href="/about/?lang="+lang);
  document.querySelectorAll('[data-p]').forEach(el=>el.textContent=p[el.dataset.p]||'');
+ document.querySelectorAll('.site-nav a[href="#services"],.site-nav a[href="/#services"],[data-services-link]').forEach(a=>{a.dataset.servicesLink='';a.href='/services/?lang='+lang});
  document.querySelectorAll('.site-nav').forEach(n=>{let a=n.querySelector('[data-articles-link]');if(!a){a=document.createElement('a');a.dataset.articlesLink='';const ab=n.querySelector('[data-about-link],a[href="/#about"]');n.insertBefore(a,ab||null)}a.href='/guides/?lang='+lang;a.textContent=({de:'Artikel',en:'Articles',fa:'مقالات',ar:'مقالات',tr:'Makaleler',it:'Articoli',fr:'Articles',ko:'아티클',zh:'文章',ja:'記事',es:'Artículos',sq:'Artikuj'})[lang]||'Artikel'});
  document.title='KeyOne — Keywan Fakhri | '+p.projectsNav;
  document.querySelector('meta[name="description"]').content=p.heroText;

@@ -77,6 +77,15 @@ footer.foot .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:
 @media (max-width:520px){.btn{width:100%;justify-content:center}}
 
 .hubl{grid-template-columns:1fr}.hubl a{padding:22px 24px}.hubl b{font-size:19px}.hubl span{display:block}.hubl .meta{margin-top:10px;font-size:13.5px;color:var(--accent-d)}
+
+.notice{display:inline-block;margin-top:14px;padding:10px 14px;border-radius:10px;background:#eef7f5;color:var(--accent-d);font-weight:600;font-size:15px}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.pcard{position:relative;border:1px solid var(--line);border-radius:14px;padding:22px 22px 20px;background:#fff;display:flex;flex-direction:column}
+.pcard.hot{border-color:var(--accent);box-shadow:0 10px 30px rgba(8,126,124,.12)}
+.pcard h3{margin:0 0 6px;font-size:18px}.pcard .price{font-size:26px;font-weight:700;color:var(--accent-d);margin:4px 0 10px}.pcard .price small{font-size:14px;font-weight:600;color:var(--muted)}
+.pcard .pd{color:var(--muted);font-size:15px;margin:0 0 12px}.pcard ul{list-style:none;padding:0;margin:0 0 18px;flex:1}.pcard li{display:flex;gap:8px;align-items:flex-start;font-size:14.5px;margin:6px 0}.pcard li svg{width:18px;height:18px;flex:none;margin-top:2px}
+.pcard .btn{justify-content:center}.badge{position:absolute;top:-11px;inset-inline-end:16px;background:var(--accent);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px}
+@media (max-width:900px){.pgrid{grid-template-columns:1fr}}
 </style>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "倉庫 KPI：重要な10の指標と計算式", "description": "重要な倉庫 KPI 10項目を解説：納期遵守率、ピッキング精度、在庫回転率、在庫日数、在庫精度など – 計算式と実務のヒント付き。", "inLanguage": "ja", "datePublished": "2026-10-15", "dateModified": "2026-10-15", "author": {"@type": "Person", "name": "Keywan Fakhri", "url": "https://keywanfakhri.com/about/", "jobTitle": "Industrial Engineer (M.Sc.)"}, "publisher": {"@type": "Organization", "name": "KeyOne", "logo": {"@type": "ImageObject", "url": "https://keywanfakhri.com/keyone-logo.png"}}, "mainEntityOfPage": "https://keywanfakhri.com/guides/warehouse-kpis/?lang=ja", "image": "https://keywanfakhri.com/templates/img/hero-en.jpg"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "納期遵守率とパーフェクトオーダー率の違いは？", "acceptedAnswer": {"@type": "Answer", "text": "納期遵守率は通常タイミングだけを測ります。パーフェクトオーダー率は数量、品質、書類も確認します。"}}, {"@type": "Question", "name": "倉庫にはいくつの KPI が必要？", "acceptedAnswer": {"@type": "Answer", "text": "経営には5〜8個で十分です。数字を増やしても判断が良くなることはまれです。"}}, {"@type": "Question", "name": "倉庫 KPI はどのくらいの頻度で測るべき？", "acceptedAnswer": {"@type": "Answer", "text": "現場の KPI は日次または週次、コストと在庫の KPI は月次が目安です。"}}]}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "ホーム", "item": "https://keywanfakhri.com/?lang=ja"}, {"@type": "ListItem", "position": 2, "name": "記事", "item": "https://keywanfakhri.com/guides/?lang=ja"}, {"@type": "ListItem", "position": 3, "name": "倉庫 KPI：重要な10の指標と計算式", "item": "https://keywanfakhri.com/guides/warehouse-kpis/?lang=ja"}]}</script>
 </head>
@@ -84,7 +93,7 @@ footer.foot .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:
 <header class="top"><div class="wrap">
  <a class="brand" href="/?lang=ja" aria-label="KeyOne — by Keywan Fakhri"><img src="/keyone-logo.png" alt="KeyOne — by Keywan Fakhri" width="1774" height="887"></a>
  <nav class="nav" aria-label="Navigation">
-  <a href="/?lang=ja#projects">プロジェクト</a><a href="/templates/?lang=ja">Excel テンプレート</a><a href="/guides/?lang=ja" aria-current="page">記事</a><a href="/about/?lang=ja">プロフィール</a><a href="/contact/?lang=ja">お問い合わせ</a>
+  <a href="/?lang=ja#projects">プロジェクト</a><a href="/templates/?lang=ja">Excel テンプレート</a><a href="/guides/?lang=ja" aria-current="page">記事</a><a href="/services/?lang=ja">サービス</a><a href="/about/?lang=ja">プロフィール</a><a href="/contact/?lang=ja">お問い合わせ</a>
   <label class="sr" for="lang">言語</label><select id="lang" aria-label="言語" onchange="try{localStorage.setItem('keyone-language',this.value)}catch(e){};location.href='/guides/warehouse-kpis/'+(this.value==='de'?'?lang=de':'?lang='+this.value)"><option value="de">Deutsch</option><option value="en">English</option><option value="fa">فارسی</option><option value="ar">العربية</option><option value="tr">Türkçe</option><option value="it">Italiano</option><option value="fr">Français</option><option value="ko">한국어</option><option value="zh">中文（简体）</option><option value="ja" selected>日本語</option><option value="es">Español</option><option value="sq">Shqip</option></select>
  </nav>
 </div></header>

@@ -31,6 +31,9 @@ The website is available in 12 languages (de, en, fa, ar, tr, it, fr, ko, zh, ja
 - [10X model demo](https://keywanfakhri.com/projects/10x/?lang=en)
 - [6M screening demo](https://keywanfakhri.com/projects/6m/?lang=en)
 
+## Services & prices
+- [Services & prices](https://keywanfakhri.com/services/?lang=en): fixed-price custom Excel dashboards (from 490 €), customised Excel templates (from 149 €), websites for restaurants and small businesses (from 690 €), the Gastlyo digital menu (199 € + 29 €/month) and warehouse/process analysis (65 €/hour). Konstanz region and online; projects from December 2026.
+
 ## About & contact
 - [About Keywan Fakhri](https://keywanfakhri.com/about/?lang=en)
 - [Contact](https://keywanfakhri.com/contact/?lang=en) – e-mail: keywanfakhri1@gmail.com – LinkedIn: https://www.linkedin.com/in/rahmatallah-keywan-fakhri/
