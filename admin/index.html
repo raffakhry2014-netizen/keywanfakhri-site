@@ -118,6 +118,7 @@ td.l{direction:ltr;text-align:right;word-break:break-all}
     <b>KeyOne · پنل</b>
     <nav role="tablist">
       <button role="tab" data-tab="stats" aria-selected="true">آمار</button>
+      <button role="tab" data-tab="messages" aria-selected="false">پیام‌ها</button>
       <button role="tab" data-tab="content" aria-selected="false">ویرایش متن‌ها</button>
       <button role="tab" data-tab="files" aria-selected="false">فایل‌ها (پیشرفته)</button>
       <button role="tab" data-tab="history" aria-selected="false">تاریخچه</button>
@@ -173,6 +174,12 @@ td.l{direction:ltr;text-align:right;word-break:break-all}
         <div class="card"><h2>کشورها</h2><div id="sCountries"></div></div>
       </div>
       <p style="color:var(--muted);font-size:13px;margin-top:16px">آمار بدون کوکی و بدون ذخیره‌ی IP جمع می‌شود (فقط شمارش روزانه). ربات‌ها و بازدیدهای خود پنل حساب نمی‌شوند.</p>
+    </section>
+
+    <!-- MESSAGES -->
+    <section data-panel="messages" class="hidden">
+      <div class="toolbar"><span id="msgInfo" style="color:var(--muted);font-size:13px"></span><button class="btn ghost" id="reloadMsgs">بروزرسانی</button></div>
+      <div id="msgList"></div>
     </section>
 
     <!-- CONTENT -->
@@ -254,9 +261,18 @@ function openTab(t){
   $$("[data-tab]").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===t));
   $$("[data-panel]").forEach(p=>p.classList.toggle("hidden",p.dataset.panel!==t));
   history.replaceState(null,"","#"+t);
-  if(!loaded[t]){loaded[t]=true;({stats:loadStats,content:loadContent,files:loadFiles,history:loadHistory})[t]();}
+  if(!loaded[t]){loaded[t]=true;({stats:loadStats,messages:loadMessages,content:loadContent,files:loadFiles,history:loadHistory})[t]();}
 }
 $$("[data-tab]").forEach(b=>b.onclick=()=>openTab(b.dataset.tab));
+
+// ---------- messages ----------
+async function loadMessages(){
+  let d;try{d=await api("messages");}catch(e){$("#msgList").innerHTML='<div class="empty">بارگذاری پیام‌ها ممکن نشد.</div>';return;}
+  $("#msgInfo").innerHTML=!d.configured?"دیتابیس (<code>DB</code>) وصل نیست؛ پیام‌ها ذخیره نمی‌شوند.":d.mail?"هر پیام جدید به ایمیل هم فرستاده می‌شود.":"پیام‌ها اینجا ذخیره می‌شوند. برای دریافت ایمیل، <code>RESEND_API_KEY</code> را در Cloudflare تعریف کنید.";
+  $("#msgList").innerHTML=d.items.length?d.items.map(m=>`<div class="card" style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><b>${esc(m.name)}</b> · <a dir="ltr" href="mailto:${esc(m.email)}">${esc(m.email)}</a> <small style="color:var(--muted)">${esc(m.lang||"")}</small></div><small style="color:var(--muted)" dir="ltr">${esc(new Date(m.created).toLocaleString("de-DE"))}${m.mailed?" · ✉":""}</small></div><p dir="auto" style="white-space:pre-wrap;margin:10px 0">${esc(m.message)}</p><div style="display:flex;gap:8px"><a class="btn" href="mailto:${esc(m.email)}?subject=${encodeURIComponent("Re: Ihre Nachricht an KeyOne")}">پاسخ</a><button class="btn ghost" data-del="${m.id}">حذف</button></div></div>`).join(""):'<div class="empty">هنوز پیامی نیامده.</div>';
+  $$("[data-del]").forEach(b=>b.onclick=async()=>{if(!confirm("این پیام حذف شود؟"))return;await api("messages/delete",{method:"POST",body:JSON.stringify({id:b.dataset.del})});loadMessages();});
+}
+$("#reloadMsgs").onclick=loadMessages;
 
 // ---------- stats ----------
 let days=30, projectNames={};

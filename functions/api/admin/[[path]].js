@@ -3,8 +3,10 @@
 //   ADMIN_PASSWORD  (Secret)  – Passwort für das Panel
 //   GITHUB_TOKEN    (Secret)  – Fine-grained Token, nur dieses Repository, "Contents: Read and write"
 //   DB              (D1-Binding) – Datenbank für die Statistik
+//   RESEND_API_KEY  (Secret, optional) – E-Mail-Benachrichtigung für das Kontaktformular
 //   GITHUB_REPO     (optional) – Standard: raffakhry2014-netizen/keywanfakhri-site
 import { SCHEMA, aiInfo } from "../track.js";
+import { MSG_SCHEMA } from "../contact.js";
 
 const COOKIE = "keyone_admin";
 const SESSION_HOURS = 12;
@@ -132,6 +134,18 @@ export async function onRequest({ request, env, params }) {
     if (route === "stats") {
       const days = Math.min(365, Math.max(1, parseInt(url.searchParams.get("days") || "30", 10)));
       return json(await stats(env, days));
+    }
+
+    if (route === "messages" && method === "GET") {
+      if (!env.DB) return json({ configured: false, items: [] });
+      await env.DB.exec(MSG_SCHEMA.replace(/\n\s*/g, " "));
+      const r = await env.DB.prepare("SELECT id, created, name, email, message, lang, mailed FROM messages ORDER BY id DESC LIMIT 200").all();
+      return json({ configured: true, mail: !!env.RESEND_API_KEY, items: r.results });
+    }
+    if (route === "messages/delete" && method === "POST") {
+      const { id } = await request.json().catch(() => ({}));
+      if (env.DB) await env.DB.prepare("DELETE FROM messages WHERE id=?").bind(parseInt(id, 10) || 0).run();
+      return json({ ok: true });
     }
 
     if (!env.GITHUB_TOKEN) return json({ error: "setup", missing: "GITHUB_TOKEN" }, 503);
