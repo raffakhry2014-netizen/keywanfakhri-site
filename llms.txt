@@ -23,6 +23,9 @@ The website is available in 12 languages (de, en, fa, ar, tr, it, fr, ko, zh, ja
 - [E-commerce Profit Tracker – details, KPI formulas and FAQ](https://keywanfakhri.com/templates/ecommerce-profit-tracker/?lang=en)
 
 ## Guides
+- [Hospital logistics KPIs: 8 key metrics with formulas](https://keywanfakhri.com/guides/krankenhauslogistik-kpis/?lang=en): fill rate, stockout rate, expiry rate, days of supply, inventory turnover, inventory accuracy, request-to-ward lead time, logistics cost per case – with example and tips (German original: https://keywanfakhri.com/guides/krankenhauslogistik-kpis/).
+- [How to build a cash flow forecast](https://keywanfakhri.com/guides/liquiditaetsplan-erstellen/?lang=en): 13-week structure, worked example, minimum cash balance, common mistakes (German original: https://keywanfakhri.com/guides/liquiditaetsplan-erstellen/).
+- [How to calculate annual leave in Germany](https://keywanfakhri.com/guides/urlaubsanspruch-berechnen/?lang=en): statutory minimum, part-time conversion, pro-rata leave, remaining leave, Excel setup (German original: https://keywanfakhri.com/guides/urlaubsanspruch-berechnen/).
 - [How to calculate food cost (restaurants)](https://keywanfakhri.com/guides/wareneinsatz-berechnen/?lang=en): formula, worked example, per-dish costing with yield, price from target food cost, benchmarks (German original: https://keywanfakhri.com/guides/wareneinsatz-berechnen/).
 - [Menu engineering in Excel](https://keywanfakhri.com/guides/menu-engineering-excel/?lang=en): Kasavana & Smith matrix step by step – popularity threshold, weighted contribution margin, Excel formula, example with seven dishes and actions per class (German original: https://keywanfakhri.com/guides/menu-engineering-excel/).
 - [Articles (overview)](https://keywanfakhri.com/guides/?lang=en): all practical articles on warehousing, logistics and Excel reporting.
