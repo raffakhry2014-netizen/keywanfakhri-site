@@ -17,7 +17,7 @@ sq:{tabs:["Inxhinieri logjistike dhe procesesh","Për gastronominë","Analizë f
 const AREA_ORDER=['eng','gastro','fin','tpl'];
 function projectAreaOf(project){
  if(project.type==='template')return 'tpl';
- if(['logistics','prozessatlas','lagerplaner'].includes(project.id))return 'eng';
+ if(['logistics','prozessatlas','lagerplaner','lager-explorer'].includes(project.id))return 'eng';
  if(['10x','6m'].includes(project.id)||project.type==='finance')return 'fin';
  if(project.id==='gastlyo'||project.type==='hospitality')return 'gastro';
  return 'eng';
