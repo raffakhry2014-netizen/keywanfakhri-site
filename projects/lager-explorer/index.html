@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Warehouse Visual Explorer · Keywan Fakhri</title>
+<meta name="description" content="Interaktive Konzeptdemo eines Schmalgang-Hochregallagers in 2D und 3D: Belegung, freie Plätze, gleiche Artikel und Begehung im Gang. Fiktive Daten.">
+<link rel="canonical" href="https://keywanfakhri.com/projects/lager-explorer/">
+<meta property="og:title" content="Warehouse Visual Explorer · 2D/3D-Lagerdemo">
+<meta property="og:description" content="Interaktive Konzeptdemo eines Hochregallagers in 2D und 3D. Fiktive Daten.">
+<meta property="og:url" content="https://keywanfakhri.com/projects/lager-explorer/">
+<style>
+:root{--blue:#0f3d5c;--bright:#1f6f8b;--yellow:#f39c12;--text:#17385c;--surface:#fff;--bg:#eef5ff}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;min-height:100vh;background:linear-gradient(145deg,#eef5ff,#fafcff 60%,#fff8df);font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:var(--text)}
+.app-nav{position:sticky;top:0;z-index:90;display:flex;align-items:center;gap:15px;justify-content:space-between;flex-wrap:wrap;padding:12px max(16px,calc((100vw - 1440px)/2));background:var(--blue);border-bottom:4px solid var(--yellow);box-shadow:0 3px 18px #0a35632a}
+.app-brand{display:flex;align-items:center;gap:11px;min-width:215px;color:white}
+.app-mark{display:grid;place-items:center;background:var(--yellow);color:var(--blue);font-size:22px;font-weight:900;border-radius:10px;width:40px;height:40px}
+.app-brand strong{display:block;font-size:16px}.app-brand small{display:block;font-size:11px;color:#d7eaff;margin-top:2px}
+.app-tabs{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.app-tab{font:700 13px system-ui,sans-serif;border:1px solid transparent;padding:10px 14px;border-radius:10px;background:transparent;color:#eaf3ff;cursor:pointer}
+.app-tab:hover{background:#1c5a73}
+.app-tab[aria-selected="true"]{background:var(--yellow);color:var(--blue)}
+.app-tab:focus-visible,.app-language select:focus-visible{outline:3px solid white;outline-offset:3px}
+.app-language{display:flex;align-items:center;gap:8px;font-size:12px;color:white}
+.app-language select{font:inherit;max-width:140px;border:1px solid #a8c3e5;border-radius:9px;padding:9px 10px;color:var(--blue);background:white}
+#viewbox{min-height:650px}
+.view{display:block;width:100%;border:0;min-height:730px;background:transparent}
+.view[hidden]{display:none!important}
+.app-foot{text-align:center;padding:12px 10px 26px;color:#587695;font-size:12px}
+@media(max-width:740px){.app-nav{position:relative;padding:12px}.app-brand{min-width:0}.app-tabs{order:3;width:100%;justify-content:space-between;gap:4px}.app-tab{padding:9px 10px}.app-language{margin-left:auto}}
+</style>
+</head>
+<body>
+<header class="app-nav">
+  <div class="app-brand"><span class="app-mark">W</span><div><strong>Warehouse Visual Explorer</strong><small id="appSub"></small></div></div>
+  <nav class="app-tabs" role="tablist" aria-label="Views">
+    <button type="button" class="app-tab" id="tab2d" role="tab" aria-controls="view2d" aria-selected="true" data-view="2d"></button>
+    <button type="button" class="app-tab" id="tab3d" role="tab" aria-controls="view3d" aria-selected="false" data-view="3d"></button>
+    <button type="button" class="app-tab" id="tabGuide" role="tab" aria-controls="viewguide" aria-selected="false" data-view="guide"></button>
+  </nav>
+  <div class="app-language"><label for="language" id="langLabel"></label>
+    <select id="language" aria-label="Language"><option value="de">Deutsch</option><option value="en">English</option><option value="fa">فارسی</option><option value="ar">العربية</option><option value="tr">Türkçe</option><option value="it">Italiano</option><option value="fr">Français</option><option value="es">Español</option><option value="sq">Shqip</option><option value="ko">한국어</option><option value="zh">中文</option><option value="ja">日本語</option></select>
+  </div>
+</header>
+<main id="viewbox">
+  <iframe class="view" id="view2d" title="2D" loading="eager"></iframe>
+  <iframe class="view" id="view3d" title="3D" hidden></iframe>
+  <iframe class="view" id="viewguide" title="Guide" hidden></iframe>
+</main>
+
+<script>
+const SOURCE=null;
+const NAV={"de": {"tab2d": "2D Belegung", "tab3d": "3D Interaktiv", "tabGuide": "Hilfe / Guide", "langLabel": "Sprache", "appSub": "Interaktive Lagerdemo · fiktive Daten"}, "en": {"tab2d": "2D occupancy", "tab3d": "3D interactive", "tabGuide": "Help / Guide", "langLabel": "Language", "appSub": "Interactive warehouse demo · fictitious data"}, "fa": {"tab2d": "نمای دو‌بعدی", "tab3d": "نمای سه‌بعدی", "tabGuide": "راهنما", "langLabel": "زبان", "appSub": "دموی تعاملی انبار · داده‌های ساختگی"}, "tr": {"tab2d": "2D görünüm", "tab3d": "3D etkileşimli", "tabGuide": "Yardım / Rehber", "langLabel": "Dil", "appSub": "Etkileşimli depo demosu · kurgusal veriler"}, "ar": {"tab2d": "عرض ثنائي الأبعاد", "tab3d": "عرض ثلاثي الأبعاد", "tabGuide": "الدليل", "langLabel": "اللغة", "appSub": "عرض تفاعلي للمستودع · بيانات تجريبية"}, "fr": {"tab2d": "Vue 2D", "tab3d": "Vue 3D", "tabGuide": "Aide / Guide", "langLabel": "Langue", "appSub": "Démo interactive d’entrepôt · données fictives"}, "it": {"tab2d": "Occupazione 2D", "tab3d": "3D interattivo", "tabGuide": "Aiuto / Guida", "langLabel": "Lingua", "appSub": "Demo interattiva del magazzino · dati fittizi"}, "es": {"tab2d": "Ocupación 2D", "tab3d": "3D interactivo", "tabGuide": "Ayuda / Guía", "langLabel": "Idioma", "appSub": "Demo interactiva de almacén · datos ficticios"}, "sq": {"tab2d": "Zënia 2D", "tab3d": "3D interaktiv", "tabGuide": "Ndihmë / Udhëzues", "langLabel": "Gjuha", "appSub": "Demo interaktive e magazinës · të dhëna fiktive"}, "zh": {"tab2d": "2D 占用", "tab3d": "3D 交互", "tabGuide": "帮助 / 指南", "langLabel": "语言", "appSub": "交互式仓库演示 · 虚构数据"}, "ja": {"tab2d": "2D 占有状況", "tab3d": "3D インタラクティブ", "tabGuide": "ヘルプ / ガイド", "langLabel": "言語", "appSub": "インタラクティブ倉庫デモ · 架空データ"}, "ko": {"tab2d": "2D 점유 현황", "tab3d": "3D 인터랙티브", "tabGuide": "도움말 / 가이드", "langLabel": "언어", "appSub": "인터랙티브 창고 데모 · 가상 데이터"}};
+const NAMES=['2d','3d','guide'];
+let current='2d';
+let lang='de';
+try{const old=localStorage.getItem('wve-language'); if(NAV[old])lang=old;}catch(e){}
+const qlang=new URLSearchParams(location.search).get('lang');if(NAV[qlang])lang=qlang;
+const frames=Object.fromEntries(NAMES.map(name=>[name,document.getElementById('view'+name)]));
+const loaded=new Set();
+
+function writeLanguage(){
+ const v=NAV[lang];
+ document.getElementById('appSub').textContent=v.appSub;
+ document.getElementById('tab2d').textContent=v.tab2d;
+ document.getElementById('tab3d').textContent=v.tab3d;
+ document.getElementById('tabGuide').textContent=v.tabGuide;
+ document.getElementById('langLabel').textContent=v.langLabel;
+ document.getElementById('language').value=lang;
+ document.documentElement.lang=lang;
+ document.documentElement.dir=(lang==='fa'||lang==='ar')?'rtl':'ltr';
+ // Keep toolbar navigation orientation predictable even for RTL labels
+ document.querySelector('.app-tabs').dir='ltr';
+}
+
+function syncFrame(name){
+ const iframe=frames[name];
+ if(!loaded.has(name)||!iframe.contentWindow)return;
+ try{
+   const child=iframe.contentWindow;
+   if(typeof child.changeLanguage==='function') child.changeLanguage(lang);
+   refreshHeight(name);
+ }catch(e){console.warn('Frame synchronization:',e);}
+}
+function refreshHeight(name){
+ const iframe=frames[name];
+ if(name!==current||!loaded.has(name))return;
+ try{
+   const doc=iframe.contentDocument;
+   if(!doc||!doc.body)return;
+   // Measure actual content rather than body.scrollHeight (body has min-height:100vh).
+   let bottom=0;
+   for(const child of doc.body.children){
+     if(['SCRIPT','STYLE','META','LINK','TITLE'].includes(child.tagName))continue;
+     const style=doc.defaultView.getComputedStyle(child);
+     if(style.display==='none'||style.position==='fixed')continue;
+     const rect=child.getBoundingClientRect();
+     if(rect.height>0)bottom=Math.max(bottom,rect.bottom);
+   }
+   const target=Math.max(670,Math.ceil(bottom+22));
+   if(Math.abs(iframe.clientHeight-target)>6)iframe.style.height=target+'px';
+ }catch(e){}
+}
+function mount(name){
+ if(loaded.has(name))return;
+ loaded.add(name);
+ const iframe=frames[name];
+ iframe.addEventListener('load',()=>{
+   syncFrame(name);
+   try{
+     const doc=iframe.contentDocument;
+     if(doc&&doc.body&&typeof ResizeObserver!=='undefined'){
+       const ro=new ResizeObserver(()=>refreshHeight(name));
+       ro.observe(doc.body);
+       iframe._ro=ro;
+     }
+     setTimeout(()=>refreshHeight(name),100);
+     setTimeout(()=>refreshHeight(name),550);
+   }catch(e){}
+ },{once:true});
+ try{localStorage.setItem('wve-language',lang);}catch(e){}
+ iframe.src='./'+name+'.html?lang='+lang;
+}
+function switchPage(name){
+ if(!NAMES.includes(name))return;
+ current=name;
+ for(const id of NAMES){
+   frames[id].hidden=id!==name;
+   const b=document.querySelector('[data-view="'+id+'"]');
+   b.setAttribute('aria-selected',String(id===name));
+   b.tabIndex=id===name?0:-1;
+ }
+ mount(name);
+ syncFrame(name);
+ requestAnimationFrame(()=>{
+   refreshHeight(name);
+   try{frames[name].contentWindow.dispatchEvent(new Event('resize'));}catch(e){}
+ });
+ window.scrollTo({top:0,behavior:'instant'});
+}
+document.querySelectorAll('.app-tab').forEach(b=>b.addEventListener('click',()=>switchPage(b.dataset.view)));
+document.getElementById('language').addEventListener('change',e=>{
+ lang=e.target.value;
+ try{localStorage.setItem('wve-language',lang);}catch(err){}
+ try{const u=new URL(location.href);u.searchParams.set('lang',lang);history.replaceState(null,'',u.pathname+u.search);}catch(err){}
+ writeLanguage();
+ for(const name of loaded)syncFrame(name);
+});
+writeLanguage();
+switchPage('2d');
+</script>
+</body>
+</html>
