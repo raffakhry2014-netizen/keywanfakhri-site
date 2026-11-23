@@ -1,24 +1,24 @@
 <!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Geschützter Bereich</title><style>
 *{box-sizing:border-box}body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0B2545;font-family:Inter,'Segoe UI',Arial,sans-serif;color:#E8EEF7;padding:20px}
-.c{background:#0F3460;border:1px solid #2E5C9A;border-radius:14px;padding:28px 30px;width:100%;max-width:520px}
+.c{background:#0F3460;border:1px solid #2E5C9A;border-radius:14px;padding:28px 30px;width:100%;max-width:640px}
 h1{font-size:19px;margin:0 0 4px}p{color:#9FB3CF;font-size:13px;margin:0 0 16px}
 input{width:100%;padding:10px 12px;border-radius:8px;border:1px solid #2E5C9A;background:#081B36;color:#fff;font-size:15px}
 button,.b{margin-top:12px;width:100%;padding:11px;border:0;border-radius:8px;background:#F2C14E;color:#0B2545;font-weight:700;font-size:15px;cursor:pointer}
 .e{color:#FF7A7A;font-size:13px;margin-top:10px;min-height:16px}small{display:block;margin-top:18px;color:#6f84a3;font-size:11px;text-align:center}
 .it{display:flex;align-items:center;gap:12px;background:#0A2142;border:1px solid #2E5C9A;border-radius:10px;padding:12px 14px;margin-top:10px}
-.it .i{font-size:24px}.it .t{flex:1}.it .t b{display:block;font-size:14px}.it .t span{font-size:12px;color:#9FB3CF}
+.it .i{font-size:24px}.it .t{flex:1}.it .dsc{margin:3px 0 4px;font-size:12px;line-height:1.45;color:#C9D6E8}.it .dsc em{color:#F2C14E;font-style:normal;font-weight:700}.it{align-items:flex-start}.it .i{margin-top:2px}.it .t b{display:block;font-size:14px}.it .t span{font-size:12px;color:#9FB3CF}
 .it button{width:auto;margin:0;padding:8px 14px;font-size:13px}.it button.s{background:#2EC4B6}
 video{width:100%;margin-top:12px;border-radius:8px;display:none}
 </style></head><body><div class="c" id="box">
 <form id="f"><h1>Geschützter Bereich</h1><p>3D-Modell neue Halle · Bitte Passwort eingeben</p>
 <input id="pw" type="password" autocomplete="current-password" autofocus><button>Öffnen</button><div class="e" id="e"></div></form>
-<div id="files" style="display:none"><h1>3D-Modell neue Halle</h1><p>Interaktives Modell öffnen oder Dateien herunterladen.</p><div id="list"></div><video id="vid" controls></video><div class="e" id="e2"></div></div>
+<div id="files" style="display:none"><h1>3D-Modell neue Halle</h1><p>Vier Dateien rund um das 3D-Modell der neuen Halle. Unter jedem Eintrag steht, wofür er gedacht ist.</p><div id="list"></div><video id="vid" controls></video><div class="e" id="e2"></div></div>
 <small>Rahmatallah (Keywan) Fakhri Fakhrabadi · vertraulich</small></div>
 <div id="ov" style="display:none;position:fixed;inset:0;z-index:50;background:#0B2545"><iframe id="ovf" style="position:absolute;inset:0;width:100%;height:100%;border:0" allowfullscreen></iframe>
 <button id="back" style="position:fixed;left:255px;top:11px;z-index:51;width:auto;margin:0;padding:7px 14px;border-radius:18px;font-size:13px;background:#F2C14E;color:#0B2545;font-weight:700;box-shadow:0 4px 18px rgba(0,0,0,.45)">← Übersicht &amp; Downloads</button></div>
 <script>
-(()=>{const SALT="GgCp6nBuleqKvX3/cDprPw==",CHK="Hr6ShibHRtFabm4RByIYGpiDQNvCOu0bNfAUUx2b",IT=250000,ITEMS=[{"bin": "m.bin", "name": "Lager_3D_Cockpit.html", "label": "3D-Cockpit: Regalhöhen + Live-Monitoring", "size": "1,6 MB", "kind": "model"}, {"bin": "v.bin", "name": "3D_Modell_Tour.mp4", "label": "Video: Tour durch das Modell (1 Min.)", "size": "7 MB", "kind": "video"}, {"bin": "d.bin", "name": "3D_Modell_Neue_Halle_Ueberblick.pdf", "label": "Überblick (PDF)", "size": "2,8 MB", "kind": "pdf"}, {"bin": "x.bin", "name": "Datenerfassung_3D_Modell.xlsx", "label": "Datenerfassung (Excel, 3-sprachig)", "size": "0,1 MB", "kind": "xlsx"}];let K=null;
+(()=>{const SALT="GgCp6nBuleqKvX3/cDprPw==",CHK="Hr6ShibHRtFabm4RByIYGpiDQNvCOu0bNfAUUx2b",IT=250000,ITEMS=[{"bin": "m.bin", "desc": "Interaktives 3D-Modell mit zwei Ansichten: <em>Regalhöhen</em> (echte Höhen aller 30 Zeilen, 10 Höhen-Modelle) und <em>Live-Monitoring</em> (Ausblick mit fiktiven Daten). Mit Assistent „Frag Keywan“.", "name": "Lager_3D_Cockpit.html", "label": "3D-Cockpit: Regalhöhen + Live-Monitoring", "size": "1,6 MB", "kind": "model"}, {"bin": "v.bin", "desc": "Kurzes Video (1 Min.): Tour durch die Höhen-Modelle und Frontansicht einer Zeile – zum schnellen Überblick ohne Bedienung.", "name": "3D_Modell_Tour.mp4", "label": "Video: Tour durch das Modell (1 Min.)", "size": "7 MB", "kind": "video"}, {"bin": "d.bin", "desc": "Überblick zum Ausdrucken: Tabelle der 10 Höhen-Modelle (Palettenhöhe je Ebene) und Bilder der wichtigsten Ansichten.", "name": "3D_Modell_Neue_Halle_Ueberblick.pdf", "label": "Überblick (PDF)", "size": "2,8 MB", "kind": "pdf"}, {"bin": "x.bin", "desc": "Arbeitsdatei: hier werden alle fehlenden Daten für das Modell gesammelt (Tore, Stapler, Palettenklassen, Kunden …) – grün = bekannt, gelb = offen. Deutsch, Englisch, Persisch.", "name": "Datenerfassung_3D_Modell.xlsx", "label": "Datenerfassung (Excel, 3-sprachig)", "size": "0,1 MB", "kind": "xlsx"}];let K=null;
 const d=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
 async function dec(buf){const u=new Uint8Array(buf);return crypto.subtle.decrypt({name:'AES-GCM',iv:u.slice(0,12)},K,u.slice(12))}
 document.getElementById('f').onsubmit=async ev=>{ev.preventDefault();const e=document.getElementById('e');e.textContent='…';
@@ -29,7 +29,7 @@ const ICON={model:'🧊',video:'🎬',pdf:'📄',xlsx:'📊'};
 function show(){document.getElementById('f').style.display='none';document.getElementById('files').style.display='block';
  const L=document.getElementById('list');
  ITEMS.forEach(it=>{const r=document.createElement('div');r.className='it';
-  r.innerHTML=`<div class="i">${ICON[it.kind]||'📁'}</div><div class="t"><b>${it.label}</b><span>${it.name} · ${it.size}</span></div>`;
+  r.innerHTML=`<div class="i">${ICON[it.kind]||'📁'}</div><div class="t"><b>${it.label}</b><p class="dsc">${it.desc||''}</p><span>${it.name} · ${it.size}</span></div>`;
   if(it.kind==='model'){const b=document.createElement('button');b.textContent='Öffnen';b.className='s';b.onclick=()=>run(it,b,'open');r.appendChild(b)}
   else{if(it.kind==='video'){const p=document.createElement('button');p.textContent='Abspielen';p.className='s';p.onclick=()=>run(it,p,'play');r.appendChild(p)}
    const b=document.createElement('button');b.textContent='Download';b.onclick=()=>run(it,b,'dl');r.appendChild(b)}
