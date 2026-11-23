@@ -105,10 +105,8 @@ const CH={de:['Was ist in den Dateien?','Was ist das 3D-Cockpit?','Wofür ist di
 const det=q=>/[؀-ۿ]/.test(q)?'fa':/\b(what|which|is|how|file|files|open|real|safe|where|the|who|are|you)\b/i.test(q)?'en':/\b(was|wofür|ist|sind|die|der|wer|wie|datei)\b/i.test(q)?'de':null;
 const nm=s=>s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
 let SPK=false;
-function male(lg){const vs=(window.speechSynthesis&&speechSynthesis.getVoices())||[];const own=vs.filter(v=>v.lang&&v.lang.toLowerCase().startsWith(lg));
- const m=/(male|mann|stefan|conrad|killian|florian|ralf|markus|hans|david|guy|christopher|eric|roger|brian|ryan|george|farid|amir|daniel|thomas|james|andrew)/i,f=/(female|frau|katja|hedda|amala|seraphina|zira|aria|jenny|michelle|sonia|libby|dilara|anna|helena|susan|hazel|samantha|karen)/i;
- return own.find(v=>m.test(v.name))||own.find(v=>!f.test(v.name))||own[0]||null}
-function speakTxt(h,lg){if(!SPK||!window.speechSynthesis)return;const u=new SpeechSynthesisUtterance(h.replace(/<[^>]+>/g,' ').replace(/[🧊🎬📄📊]/g,'').replace(/\s+/g,' '));u.lang={de:'de-DE',en:'en-US',fa:'fa-IR'}[lg];const v=male(lg);if(v)u.voice=v;u.pitch=0.85;u.rate=0.98;speechSynthesis.cancel();speechSynthesis.speak(u)}
+function male(lg){const vs=(window.speechSynthesis&&speechSynthesis.getVoices())||[];const own=vs.filter(v=>v.lang&&v.lang.toLowerCase().startsWith(lg));const M=/(male|mann|stefan|conrad|killian|florian|ralf|markus|hans|michael|karsten|jonas|bernd|david|guy|christopher|eric|roger|brian|ryan|george|farid|amir|daniel|thomas|james|andrew|mark|richard|davis|tony|jason)/i;const nat=v=>/natural|online/i.test(v.name)?0:1;const ms=own.filter(v=>M.test(v.name)&&!/female/i.test(v.name)).sort((a,b)=>nat(a)-nat(b));let v=ms[0]||null;window.__vm=!!v;if(!v)v=own.find(x=>/^microsoft/i.test(x.name))||own[0]||null;return v}
+function speakTxt(h,lg){if(!SPK||!window.speechSynthesis)return;const u=new SpeechSynthesisUtterance(h.replace(/<[^>]+>/g,' ').replace(/[🧊🎬📄📊]/g,'').replace(/\s+/g,' '));u.lang={de:'de-DE',en:'en-US',fa:'fa-IR'}[lg];const v=male(lg);if(v)u.voice=v;u.pitch=(window.__vm?0.9:0.55);u.rate=0.98;speechSynthesis.cancel();speechSynthesis.speak(u)}
 const add=(c,h)=>{const e=document.createElement('div');e.className=c;e.dir='auto';e.innerHTML=h;$('gm').appendChild(e);$('gm').scrollTop=1e6};
 function reply(h,lg){add('ga',h);speakTxt(h,lg)}
 function ans(q){const l=det(q)||LG,n=nm(q);let hit=null;for(const key of ['excel','pdf','video','cockpit','real','safe','open','who','files']){if(GK[key].k.some(k=>n.includes(nm(k)))){hit=GK[key];break}}
