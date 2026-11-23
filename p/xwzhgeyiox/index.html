@@ -15,6 +15,8 @@ video{width:100%;margin-top:12px;border-radius:8px;display:none}
 <input id="pw" type="password" autocomplete="current-password" autofocus><button>Öffnen</button><div class="e" id="e"></div></form>
 <div id="files" style="display:none"><h1>3D-Modell neue Halle</h1><p>Interaktives Modell öffnen oder Dateien herunterladen.</p><div id="list"></div><video id="vid" controls></video><div class="e" id="e2"></div></div>
 <small>Rahmatallah (Keywan) Fakhri Fakhrabadi · vertraulich</small></div>
+<div id="ov" style="display:none;position:fixed;inset:0;z-index:50;background:#0B2545"><iframe id="ovf" style="position:absolute;inset:0;width:100%;height:100%;border:0" allowfullscreen></iframe>
+<button id="back" style="position:fixed;left:255px;top:11px;z-index:51;width:auto;margin:0;padding:7px 14px;border-radius:18px;font-size:13px;background:#F2C14E;color:#0B2545;font-weight:700;box-shadow:0 4px 18px rgba(0,0,0,.45)">← Übersicht &amp; Downloads</button></div>
 <script>
 (()=>{const SALT="GgCp6nBuleqKvX3/cDprPw==",CHK="Hr6ShibHRtFabm4RByIYGpiDQNvCOu0bNfAUUx2b",IT=250000,ITEMS=[{"bin": "m.bin", "name": "Lager_3D_Cockpit.html", "label": "3D-Cockpit: Regalhöhen + Live-Monitoring", "size": "1,6 MB", "kind": "model"}, {"bin": "v.bin", "name": "3D_Modell_Tour.mp4", "label": "Video: Tour durch das Modell (1 Min.)", "size": "7 MB", "kind": "video"}, {"bin": "d.bin", "name": "3D_Modell_Neue_Halle_Ueberblick.pdf", "label": "Überblick (PDF)", "size": "2,8 MB", "kind": "pdf"}, {"bin": "x.bin", "name": "Datenerfassung_3D_Modell.xlsx", "label": "Datenerfassung (Excel, 3-sprachig)", "size": "0,1 MB", "kind": "xlsx"}];let K=null;
 const d=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
@@ -32,11 +34,11 @@ function show(){document.getElementById('f').style.display='none';document.getEl
   else{if(it.kind==='video'){const p=document.createElement('button');p.textContent='Abspielen';p.className='s';p.onclick=()=>run(it,p,'play');r.appendChild(p)}
    const b=document.createElement('button');b.textContent='Download';b.onclick=()=>run(it,b,'dl');r.appendChild(b)}
   L.appendChild(r)})}
-const cache={};
+const cache={};document.getElementById('back').onclick=()=>{document.getElementById('ov').style.display='none';document.body.style.overflow=''};
 async function get(it){if(cache[it.bin])return cache[it.bin];const r=await fetch(it.bin,{cache:'no-store'});if(!r.ok)throw new Error(r.status);return cache[it.bin]=await dec(await r.arrayBuffer())}
 async function run(it,btn,mode){const t=btn.textContent;btn.textContent='…';const e2=document.getElementById('e2');e2.textContent='';
  try{const buf=await get(it);
-  if(mode==='open'){const h=new TextDecoder().decode(buf);document.open();document.write(h.replace('<head>','<head><meta name="robots" content="noindex,nofollow">'));document.close();return}
+  if(mode==='open'){if(!window._mu)window._mu=URL.createObjectURL(new Blob([buf],{type:'text/html'}));const ov=document.getElementById('ov'),fr=document.getElementById('ovf');if(fr.src!==window._mu)fr.src=window._mu;ov.style.display='block';document.body.style.overflow='hidden';btn.textContent=t;return}
   const type={video:'video/mp4',pdf:'application/pdf',xlsx:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}[it.kind]||'application/octet-stream';
   const url=URL.createObjectURL(new Blob([buf],{type}));
   if(mode==='play'){const v=document.getElementById('vid');v.src=url;v.style.display='block';v.play()}
