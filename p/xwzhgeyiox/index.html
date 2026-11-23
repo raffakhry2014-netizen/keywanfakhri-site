@@ -1,0 +1,46 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow,noarchive"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Geschützter Bereich</title><style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0B2545;font-family:Inter,'Segoe UI',Arial,sans-serif;color:#E8EEF7;padding:20px}
+.c{background:#0F3460;border:1px solid #2E5C9A;border-radius:14px;padding:28px 30px;width:100%;max-width:520px}
+h1{font-size:19px;margin:0 0 4px}p{color:#9FB3CF;font-size:13px;margin:0 0 16px}
+input{width:100%;padding:10px 12px;border-radius:8px;border:1px solid #2E5C9A;background:#081B36;color:#fff;font-size:15px}
+button,.b{margin-top:12px;width:100%;padding:11px;border:0;border-radius:8px;background:#F2C14E;color:#0B2545;font-weight:700;font-size:15px;cursor:pointer}
+.e{color:#FF7A7A;font-size:13px;margin-top:10px;min-height:16px}small{display:block;margin-top:18px;color:#6f84a3;font-size:11px;text-align:center}
+.it{display:flex;align-items:center;gap:12px;background:#0A2142;border:1px solid #2E5C9A;border-radius:10px;padding:12px 14px;margin-top:10px}
+.it .i{font-size:24px}.it .t{flex:1}.it .t b{display:block;font-size:14px}.it .t span{font-size:12px;color:#9FB3CF}
+.it button{width:auto;margin:0;padding:8px 14px;font-size:13px}.it button.s{background:#2EC4B6}
+video{width:100%;margin-top:12px;border-radius:8px;display:none}
+</style></head><body><div class="c" id="box">
+<form id="f"><h1>Geschützter Bereich</h1><p>3D-Modell neue Halle · Bitte Passwort eingeben</p>
+<input id="pw" type="password" autocomplete="current-password" autofocus><button>Öffnen</button><div class="e" id="e"></div></form>
+<div id="files" style="display:none"><h1>3D-Modell neue Halle</h1><p>Interaktives Modell öffnen oder Dateien herunterladen.</p><div id="list"></div><video id="vid" controls></video><div class="e" id="e2"></div></div>
+<small>Rahmatallah (Keywan) Fakhri Fakhrabadi · vertraulich</small></div>
+<script>
+(()=>{const SALT="GgCp6nBuleqKvX3/cDprPw==",CHK="v9BVyyws9fkOqdxMUoTbY0MFSju8K63DavrhNB/x",IT=250000,ITEMS=[{"bin": "m.bin", "name": "Neubau_Regale_3D.html", "label": "3D-Modell (interaktiv)", "size": "0,9 MB", "kind": "model"}, {"bin": "d.bin", "name": "3D_Modell_Neue_Halle_Ueberblick.pdf", "label": "Überblick (PDF)", "size": "2,8 MB", "kind": "pdf"}, {"bin": "x.bin", "name": "Datenerfassung_3D_Modell.xlsx", "label": "Datenerfassung (Excel, 3-sprachig)", "size": "0,1 MB", "kind": "xlsx"}];let K=null;
+const d=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function dec(buf){const u=new Uint8Array(buf);return crypto.subtle.decrypt({name:'AES-GCM',iv:u.slice(0,12)},K,u.slice(12))}
+document.getElementById('f').onsubmit=async ev=>{ev.preventDefault();const e=document.getElementById('e');e.textContent='…';
+ try{const k0=await crypto.subtle.importKey('raw',new TextEncoder().encode(document.getElementById('pw').value),'PBKDF2',false,['deriveKey']);
+  K=await crypto.subtle.deriveKey({name:'PBKDF2',salt:d(SALT),iterations:IT,hash:'SHA-256'},k0,{name:'AES-GCM',length:256},false,['decrypt']);
+  await dec(d(CHK).buffer);show()}catch(x){K=null;e.textContent='Falsches Passwort'}};
+const ICON={model:'🧊',video:'🎬',pdf:'📄',xlsx:'📊'};
+function show(){document.getElementById('f').style.display='none';document.getElementById('files').style.display='block';
+ const L=document.getElementById('list');
+ ITEMS.forEach(it=>{const r=document.createElement('div');r.className='it';
+  r.innerHTML=`<div class="i">${ICON[it.kind]||'📁'}</div><div class="t"><b>${it.label}</b><span>${it.name} · ${it.size}</span></div>`;
+  if(it.kind==='model'){const b=document.createElement('button');b.textContent='Öffnen';b.className='s';b.onclick=()=>run(it,b,'open');r.appendChild(b)}
+  else{if(it.kind==='video'){const p=document.createElement('button');p.textContent='Abspielen';p.className='s';p.onclick=()=>run(it,p,'play');r.appendChild(p)}
+   const b=document.createElement('button');b.textContent='Download';b.onclick=()=>run(it,b,'dl');r.appendChild(b)}
+  L.appendChild(r)})}
+const cache={};
+async function get(it){if(cache[it.bin])return cache[it.bin];const r=await fetch(it.bin,{cache:'no-store'});if(!r.ok)throw new Error(r.status);return cache[it.bin]=await dec(await r.arrayBuffer())}
+async function run(it,btn,mode){const t=btn.textContent;btn.textContent='…';const e2=document.getElementById('e2');e2.textContent='';
+ try{const buf=await get(it);
+  if(mode==='open'){const h=new TextDecoder().decode(buf);document.open();document.write(h.replace('<head>','<head><meta name="robots" content="noindex,nofollow">'));document.close();return}
+  const type={video:'video/mp4',pdf:'application/pdf',xlsx:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}[it.kind]||'application/octet-stream';
+  const url=URL.createObjectURL(new Blob([buf],{type}));
+  if(mode==='play'){const v=document.getElementById('vid');v.src=url;v.style.display='block';v.play()}
+  else{const a=document.createElement('a');a.href=url;a.download=it.name;document.body.appendChild(a);a.click();a.remove()}
+ }catch(x){e2.textContent='Fehler beim Laden ('+x.message+')'}btn.textContent=t}
+})();
+</script></body></html>
