@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>بازدیدهای پورتال پروژه</title>
+<style>
+:root{--bg:#f3f6f9;--card:#fff;--ink:#16263a;--mut:#5b6b7d;--line:#dbe3ea;--teal:#0f6e6a;--teal2:#e3f4f3;--own:#8a6d00;--ownb:#fff5d6}
+@media (prefers-color-scheme:dark){:root{--bg:#0f151c;--card:#18212b;--ink:#e4ebf2;--mut:#9aa8b8;--line:#2c3a48;--teal:#4cc4bb;--teal2:#143331;--own:#e9c55a;--ownb:#352c10}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.7 Tahoma,"Segoe UI",system-ui,sans-serif}
+header{background:#0f3b39;color:#fff;padding:12px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+header a{color:#b9d6d2;text-decoration:none}header b{font-size:17px}
+.w{max-width:980px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:12px 0}
+.sub{color:var(--mut);font-size:13px}
+button{font:inherit;padding:7px 12px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+button.p{background:var(--teal);color:#fff;border-color:var(--teal);font-weight:600}
+.k{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.k div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.k b{display:block;font-size:22px;direction:ltr;text-align:right}.k span{color:var(--mut);font-size:12.5px}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:start;vertical-align:top}
+th{font-size:12px;color:var(--mut)}
+tr.own td{background:var(--ownb);color:var(--own)}
+.bars{display:flex;align-items:flex-end;gap:3px;height:90px;margin-top:8px;direction:ltr}
+.bars div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%}
+.bars i{display:block;background:var(--teal);border-radius:3px 3px 0 0}.bars i.o{background:var(--own)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+label{display:flex;gap:6px;align-items:center;color:var(--mut);font-size:13.5px}
+.ltr{direction:ltr;unicode-bidi:isolate}
+@media (max-width:640px){.k{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<header><b>بازدیدهای پورتال پروژه</b><span class="sub" style="color:#b9d6d2">صفحه‌ی <span class="ltr">/p/xwzhgeyiox/</span></span><span style="flex:1"></span><a href="/admin/">← بازگشت به پنل</a></header>
+<div class="w">
+ <div class="card" id="msg">در حال بارگذاری …</div>
+ <div id="out" hidden>
+  <div class="card row"><span id="ownst"></span><button id="mark"></button><label><input type="checkbox" id="hideown" checked> بازدیدهای خودم را نشان نده</label></div>
+  <div class="k" id="kpi"></div>
+  <div class="card"><b>۳۰ روز اخیر</b> <span class="sub">(سبز = دیگران، زرد = خودم)</span><div class="bars" id="bars"></div></div>
+  <div class="card"><b>بازدیدها</b> <span class="sub">(هر بازدید = کارهای پشت سر هم با فاصله‌ی کمتر از ۳۰ دقیقه)</span><div style="overflow-x:auto"><table id="tab"></table></div></div>
+  <div class="sub">فقط زمان، نوع کار، اسم فایل و نوع دستگاه ذخیره می‌شود؛ بدون IP و بدون کوکی.</div>
+ </div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const isOwn=()=>{try{return localStorage.getItem('portal_owner')==='1'}catch(e){return false}};
+function ownUI(){$('ownst').textContent=isOwn()?'✓ این مرورگر «مال من» علامت خورده است؛ بازدیدهایش جدا شمرده می‌شود.':'این مرورگر هنوز «مال من» علامت نخورده است.';$('mark').textContent=isOwn()?'برداشتن علامت':'این مرورگر را مال من علامت بزن';$('mark').className=isOwn()?'':'p'}
+$('mark').onclick=()=>{try{isOwn()?localStorage.removeItem('portal_owner'):localStorage.setItem('portal_owner','1')}catch(e){}ownUI()};
+const LBL={view:'صفحه باز شد',unlock:'رمز درست',open:'مدل باز شد',play:'ویدیو پخش شد',dl:'دانلود'};
+const fmt=t=>new Date(t).toLocaleString('fa-IR',{dateStyle:'medium',timeStyle:'short'});
+let rows=[];
+function sessions(list){const s=[];[...list].reverse().forEach(r=>{const t=new Date(r.ts).getTime(),last=s[s.length-1];
+  if(last&&last.own===r.own&&t-last.end<30*60e3){last.end=t;last.ev.push(r)}else s.push({start:t,end:t,own:r.own,dev:r.dev,ev:[r]})});return s.reverse()}
+function draw(){
+  const hide=$('hideown').checked,oth=rows.filter(r=>!r.own),S=sessions(hide?oth:rows),O=sessions(oth);
+  const unl=O.filter(s=>s.ev.some(e=>e.event==='unlock')).length,last=O[0];
+  $('kpi').innerHTML=`<div><b>${O.length.toLocaleString('fa-IR')}</b><span>بازدید دیگران</span></div><div><b>${unl.toLocaleString('fa-IR')}</b><span>با رمز درست</span></div><div><b>${oth.filter(r=>r.event==='open').length.toLocaleString('fa-IR')}</b><span>باز شدن مدل سه‌بعدی</span></div><div><b style="font-size:15px">${last?fmt(last.start):'–'}</b><span>آخرین بازدید دیگران</span></div>`;
+  const days=[...Array(30)].map((_,i)=>{const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-29+i);return d.getTime()});
+  const per=own=>days.map(d=>sessions(rows.filter(r=>!!r.own===own)).filter(s=>{const x=new Date(s.start);x.setHours(0,0,0,0);return x.getTime()===d}).length);
+  const a=per(false),o=per(true),mx=Math.max(1,...a.map((v,i)=>v+(hide?0:o[i])));
+  $('bars').innerHTML=days.map((d,i)=>`<div title="${new Date(d).toLocaleDateString('fa-IR')}: ${a[i]}${hide?'':' + '+o[i]}">${hide?'':`<i class="o" style="height:${o[i]/mx*100}%"></i>`}<i style="height:${a[i]/mx*100}%"></i></div>`).join('');
+  $('tab').innerHTML='<tr><th>شروع</th><th>چه کسی</th><th>دستگاه</th><th>کارها</th></tr>'+(S.map(s=>`<tr class="${s.own?'own':''}"><td>${fmt(s.start)}</td><td>${s.own?'خودم':'دیگران'}</td><td>${s.dev==='mobile'?'موبایل':'کامپیوتر'}</td><td>${s.ev.map(e=>LBL[e.event]+(e.item?' <span class="ltr sub">('+e.item.replace(/[<>&]/g,'')+')</span>':'')).join(' ← ')}</td></tr>`).join('')||'<tr><td colspan="4">هنوز بازدیدی ثبت نشده است.</td></tr>');
+}
+$('hideown').onchange=draw;
+(async()=>{try{const r=await fetch('/api/admin/portal',{cache:'no-store',credentials:'same-origin'});
+  if(r.status===401){$('msg').innerHTML='اول در <a href="/admin/">پنل مدیریت</a> وارد شو، بعد این صفحه را دوباره باز کن.';return}
+  const j=await r.json();if(!j.configured){$('msg').textContent='پایگاه داده‌ی آمار (D1) وصل نیست.';return}
+  rows=j.rows.map(x=>({...x,own:!!x.own}));$('msg').hidden=true;$('out').hidden=false;ownUI();draw()}
+ catch(e){$('msg').textContent='خطا: '+e.message}})();
+</script>
+</body>
+</html>
