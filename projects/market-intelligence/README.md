@@ -1,0 +1,33 @@
+# Forecast evidence and public watchlist
+
+## 2027 mosaic interface
+
+The public landing page now shows 28 clickable mosaic tiles. Native modal dialogs provide the annual 2027 view, Q1–Q4, historical forecaster evidence and a scenario summary at the bottom. Escape and the close control dismiss the dialog and return focus to the tile; charts are cleared when the dialog closes. A separate overview includes all 28 assets and switches between the annual horizon and each quarter.
+
+`outlook-2027.json` stores 23 source-backed forecasts: World Bank annual averages for seven commodities, EIA annual and Q1–Q4 averages for Brent/WTI/Henry Hub gas (15 records), and Alex Thorn/Galaxy's by-year-end 2027 Bitcoin target (one record, dated December 18, 2025). Nine assets have yearly targets; three have complete quarterly coverage. All others explicitly lack imported targets. Annual averages, quarterly averages and a by-year-end target keep their own price definitions. No conversion of 2026/2030 targets, no invented quarterly interpolation and no claimed price targets for ETFs from underlying index forecasts.
+
+`outlook-engine.js` validates horizon, source, issue date, currency and duplicate observations. The bearish/base/bullish table displays only explicitly published scenarios. The imported reports contain baseline targets, not a complete three-case numerical distribution; unsupported bearish/bullish cases remain unavailable. Different benchmark definitions stay in separate rows and historical LBMA accuracy is not attached to World Bank targets. Every target links its original report. Static snapshots remain manually reviewed and do not call paid providers.
+
+Additional validation: `node --test tests/outlook-2027.test.mjs`, including exact EIA source columns, missing-quarter handling, separating baselines from scenarios, duplicate/future/incompatible data rejection and imported coverage.
+
+The primary screen compares documented forecasts with actual annual outcomes. Charts are supplementary and load only when expanded. This release covers gold (10 eligible individual analysts), silver (9), platinum (8), and one evaluated institution (EIA) for Brent, WTI and Henry Hub gas. Only gold/silver/platinum have comparative rankings. The other 22 assets lack verified comparable five-year history. No list is padded to ten.
+
+`evidence.json` contains 405 LBMA records and 18 EIA records, with original source URLs, named identities, units, currencies, benchmark definitions, forecast dates/date precision and linked annual outcomes. World Bank annual averages for seven commodities and Finder aggregates for five crypto assets are contextual forecasts, never assigned historical ranks. ETF outlook links are asset-class context, not fund-share targets.
+
+`research-engine.js` computes a weighted mean of yearly absolute percentage errors: `sum(weight * abs(forecast - actual) / actual * 100)`. Weights: 2021 9%, 2022 13%, 2023 18%, 2024 25%, 2025 35%. This is a declared preference for recency, not fitted to results. All five completed years, one observation per forecaster/year, linked evidence and the same currency/unit/benchmark are required. Duplicate, missing or incompatible records cannot earn a rank. Current-year forecasts do not affect scores. Lower error is better; it is not a probability of future success. Five observations is a small sample. Rankings describe the imported panel, not all market analysts.
+
+Historical selections are fixed early-year vintages: LBMA annual surveys and EIA January STEO. Later revisions do not replace forecasts. LBMA dates are submission deadlines, except 2021 (launch publication upper bound). The 2026 page inconsistently gives January 12/13; January 13 is a disclosed conservative bound. EIA dates are publication dates. EIA outcomes use official annual historical spot tables reviewed September 30, 2026, rather than preliminary next-January STEO values; revisions, aggregation and rounding may cause small differences. Its latest imported forecast is September 2026, distinct from scored January vintages. Peter Fertig and Jonathan Butler have eligible historical LBMA records but no imported 2026 forecast, shown explicitly.
+
+Individual analysts remain separate across employers. Media reporting an institution's forecast do not inherit its forecasting score. No article text or daily licensed benchmark series is redistributed. Source pages may later be revised. Static evidence and deterministic scoring make no paid API calls.
+
+28 fixed assets: 8 commodities, 10 US-listed ETFs and 10 crypto pairs. Definitions live in `watchlist.json`; timestamps refer to the catalog review, not market-price freshness.
+
+The page embeds the official TradingView advanced chart with attribution, a daily interval and the exchange timezone. Provider data may be live, delayed or end-of-day. A daily interval is not a scheduled daily snapshot; the current bar can be incomplete. No chart data is scraped, copied into our API, converted, or cross-checked against a second source. Unsupported symbols have a source link and must not be assigned a substitute price. Commodity futures/CFD references and crypto exchange pairs are labeled explicitly.
+
+The evidence is a manually reviewed snapshot with its actual timestamp. No automatic weekly/monthly research scheduler is implemented. The page states this explicitly; refreshing the page does not create a new review date. Historical accuracy does not guarantee future accuracy. Open the per-analyst evidence for original forecasts, outcomes and date evidence.
+
+The legacy Twelve Data / Alpha Vantage cross-check code is preserved but its API is disabled by default. Enabling it requires the server variable `ENABLE_LICENSED_MARKET_API=true`, appropriate provider rights/subscriptions and a server-side `ADMIN_PASSWORD`; requests must carry that password as a Bearer token. Never put it in the public frontend. Enabling this API can incur OpenAI research costs unless `quoteOnly=true`. Existing secrets alone cannot trigger provider calls in public mode.
+
+Official embed documentation: https://www.tradingview.com/widget-docs/widgets/charts/advanced-chart/demos/basic-area-chart/
+
+Validation: `node --test tests/price-check.test.mjs tests/research-engine.test.mjs`. Tests cover unsafe/incompatible history, future dates, incomplete years, duplicate forecasts, pending-year exclusion, exact imported panel counts, EIA vintage selection, an independently fixed gold error score and existing no-paid-call/secret-redaction behavior. Browser checks cover all 28 selectors, source history, filters/search, missing-history states and supplementary chart disclosure.
